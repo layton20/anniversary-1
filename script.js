@@ -103,6 +103,243 @@ if (isOpeningOverlayVisible()) {
   document.body.classList.add('opening-locked');
 }
 
+function createUiSoundEngine() {
+  let audioContext = null;
+  let noiseBuffer = null;
+  let outputNode = null;
+
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+
+  const getContext = () => {
+    if (!AudioContextClass) return null;
+    if (!audioContext) {
+      audioContext = new AudioContextClass();
+      const masterFilter = audioContext.createBiquadFilter();
+      masterFilter.type = 'lowpass';
+      masterFilter.frequency.setValueAtTime(1950, audioContext.currentTime);
+      masterFilter.Q.setValueAtTime(0.55, audioContext.currentTime);
+
+      const masterGain = audioContext.createGain();
+      masterGain.gain.setValueAtTime(0.72, audioContext.currentTime);
+
+      masterFilter.connect(masterGain);
+      masterGain.connect(audioContext.destination);
+      outputNode = masterFilter;
+    }
+    if (audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
+    return audioContext;
+  };
+
+  const getNoiseBuffer = (ctx) => {
+    if (noiseBuffer && noiseBuffer.sampleRate === ctx.sampleRate) return noiseBuffer;
+
+    noiseBuffer = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.22), ctx.sampleRate);
+    const data = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < data.length; i += 1) {
+      data[i] = (Math.random() * 2 - 1) * (1 - (i / data.length));
+    }
+    return noiseBuffer;
+  };
+
+  const playTone = (ctx, options) => {
+    const {
+      now,
+      type = 'sine',
+      frequency = 440,
+      endFrequency = frequency,
+      attack = 0.01,
+      decay = 0.18,
+      volume = 0.12,
+      startTime = 0,
+      destination = outputNode || ctx.destination
+    } = options;
+
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const startAt = now + startTime;
+    const stopAt = startAt + decay;
+
+    osc.type = type;
+    osc.frequency.setValueAtTime(frequency, startAt);
+    osc.frequency.exponentialRampToValueAtTime(Math.max(40, endFrequency), stopAt);
+
+    gain.gain.setValueAtTime(0.0001, startAt);
+    gain.gain.exponentialRampToValueAtTime(volume, startAt + attack);
+    gain.gain.exponentialRampToValueAtTime(0.0001, stopAt);
+
+    osc.connect(gain);
+    gain.connect(destination);
+    osc.start(startAt);
+    osc.stop(stopAt + 0.02);
+  };
+
+  const playNoise = (ctx, options) => {
+    const {
+      now,
+      type = 'bandpass',
+      frequency = 1200,
+      q = 0.8,
+      volume = 0.05,
+      decay = 0.12,
+      startTime = 0,
+      destination = outputNode || ctx.destination
+    } = options;
+
+    const source = ctx.createBufferSource();
+    source.buffer = getNoiseBuffer(ctx);
+
+    const filter = ctx.createBiquadFilter();
+    filter.type = type;
+    filter.frequency.setValueAtTime(frequency, now + startTime);
+    filter.Q.setValueAtTime(q, now + startTime);
+
+    const gain = ctx.createGain();
+    const startAt = now + startTime;
+    const stopAt = startAt + decay;
+    gain.gain.setValueAtTime(volume, startAt);
+    gain.gain.exponentialRampToValueAtTime(0.0001, stopAt);
+
+    source.connect(filter);
+    filter.connect(gain);
+    gain.connect(destination);
+    source.start(startAt);
+    source.stop(stopAt + 0.02);
+  };
+
+  const safelyPlay = (callback) => {
+    try {
+      const ctx = getContext();
+      if (!ctx) return;
+      callback(ctx, ctx.currentTime);
+    } catch (error) {
+      // Audio should fail silently on unsupported/restricted environments.
+    }
+  };
+
+  return {
+    playClick() {
+      safelyPlay((ctx, now) => {
+        playTone(ctx, {
+          now,
+          type: 'sine',
+          frequency: 620,
+          endFrequency: 430,
+          attack: 0.008,
+          decay: 0.11,
+          volume: 0.024
+        });
+        playNoise(ctx, {
+          now,
+          type: 'bandpass',
+          frequency: 1120,
+          q: 0.55,
+          volume: 0.006,
+          decay: 0.05
+        });
+      });
+    },
+
+    playSwitch() {
+      safelyPlay((ctx, now) => {
+        playTone(ctx, {
+          now,
+          type: 'sine',
+          frequency: 430,
+          endFrequency: 560,
+          attack: 0.016,
+          decay: 0.16,
+          volume: 0.028
+        });
+        playTone(ctx, {
+          now,
+          type: 'sine',
+          frequency: 620,
+          endFrequency: 760,
+          attack: 0.02,
+          decay: 0.18,
+          volume: 0.016,
+          startTime: 0.035
+        });
+      });
+    },
+
+    playMemoryOpen() {
+      safelyPlay((ctx, now) => {
+        playTone(ctx, {
+          now,
+          type: 'sine',
+          frequency: 470,
+          endFrequency: 660,
+          attack: 0.03,
+          decay: 0.34,
+          volume: 0.026
+        });
+        playTone(ctx, {
+          now,
+          type: 'sine',
+          frequency: 700,
+          endFrequency: 920,
+          attack: 0.028,
+          decay: 0.38,
+          volume: 0.014,
+          startTime: 0.06
+        });
+      });
+    },
+
+    playPaper() {
+      safelyPlay((ctx, now) => {
+        playNoise(ctx, {
+          now,
+          type: 'bandpass',
+          frequency: 760,
+          q: 0.45,
+          volume: 0.018,
+          decay: 0.13
+        });
+        playTone(ctx, {
+          now,
+          type: 'sine',
+          frequency: 260,
+          endFrequency: 190,
+          attack: 0.01,
+          decay: 0.09,
+          volume: 0.009,
+          startTime: 0.012
+        });
+      });
+    }
+  };
+}
+
+const uiSounds = createUiSoundEngine();
+
+document.addEventListener('click', (event) => {
+  const target = event.target.closest('button, [role="button"]');
+  if (!target || target.disabled) return;
+
+  if (target === heroDigicamTrigger) return;
+
+  if (target.matches('.memory-orb')) {
+    uiSounds.playMemoryOpen();
+    return;
+  }
+
+  if (target.matches('.memory-close, .locker-door, .folded-note, #infernoStartBtn') || target === openingEnvelopeBtn) {
+    uiSounds.playPaper();
+    return;
+  }
+
+  if (target.matches('[data-desktop-app]')) {
+    uiSounds.playSwitch();
+    return;
+  }
+
+  uiSounds.playClick();
+});
+
 let activeTrackCard = null;
 let notesTimer = null;
 let ticking = false;
@@ -1156,6 +1393,7 @@ function initHeadspaceMemories() {
 
   memoryPop?.addEventListener('click', (event) => {
     if (event.target === memoryPop) {
+      uiSounds.playPaper();
       closeMemory();
     }
   });

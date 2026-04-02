@@ -1,92 +1,180 @@
 /**
  * envelope-scene.js
- * Romantic envelope opening interaction (vanilla JS).
+ * Letter section interaction: turn on vinyl, then unlock and open the envelope.
  */
 
 (function initRomanticEnvelope() {
-  const envelope = document.getElementById('romanticEnvelope');
-  const heartsHost = document.getElementById('envelopeHearts');
-  const letter = document.getElementById('romanticLetter');
-  const letterText = document.getElementById('romanticLetterText');
+  const envelopeStage = document.getElementById('letterEnvelopeStage');
+  const letter = document.getElementById('letterPopup');
+  const hint = document.getElementById('envelopeHint');
+  const lockNote = document.getElementById('letterLockNote');
+  const vinylPowerBtn = document.getElementById('vinylPowerBtn');
+  const vinylTurntable = document.getElementById('vinylTurntable');
+  const vinylStatus = document.getElementById('vinylStatus');
 
-  if (!envelope || !letter || !letterText) return;
+  if (!envelopeStage || !letter || !hint || !vinylPowerBtn || !vinylTurntable || !vinylStatus) return;
 
-  const fullMessage = letterText.getAttribute('data-fulltext') || '';
   let opened = false;
-  let typeTimer = null;
+  let vinylReady = false;
+  let ambienceStarted = false;
+  let ambienceContext = null;
 
-  function typeMessage(text) {
-    if (typeTimer) {
-      window.clearInterval(typeTimer);
-      typeTimer = null;
-    }
+  function startVinylAmbience() {
+    if (ambienceStarted) return;
 
-    letterText.textContent = '';
-    let i = 0;
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
 
-    typeTimer = window.setInterval(() => {
-      i += 1;
-      letterText.textContent = text.slice(0, i);
-      if (i >= text.length) {
-        window.clearInterval(typeTimer);
-        typeTimer = null;
+    try {
+      ambienceContext = new AudioContextClass();
+      if (ambienceContext.state === 'suspended') {
+        ambienceContext.resume();
       }
-    }, 23);
+
+      const now = ambienceContext.currentTime;
+      const master = ambienceContext.createGain();
+      master.gain.setValueAtTime(0.0001, now);
+      master.gain.exponentialRampToValueAtTime(0.012, now + 1.3);
+      master.connect(ambienceContext.destination);
+
+      const masterFilter = ambienceContext.createBiquadFilter();
+      masterFilter.type = 'lowpass';
+      masterFilter.frequency.setValueAtTime(1500, now);
+      masterFilter.Q.setValueAtTime(0.55, now);
+      master.disconnect();
+      master.connect(masterFilter);
+      masterFilter.connect(ambienceContext.destination);
+
+      const bedOsc = ambienceContext.createOscillator();
+      bedOsc.type = 'sine';
+      bedOsc.frequency.setValueAtTime(182, now);
+
+      const bedGain = ambienceContext.createGain();
+      bedGain.gain.setValueAtTime(0.0007, now);
+      bedOsc.connect(bedGain);
+      bedGain.connect(master);
+
+      const lfo = ambienceContext.createOscillator();
+      lfo.type = 'sine';
+      lfo.frequency.setValueAtTime(0.14, now);
+      const lfoGain = ambienceContext.createGain();
+      lfoGain.gain.setValueAtTime(0.00035, now);
+      lfo.connect(lfoGain);
+      lfoGain.connect(bedGain.gain);
+
+      const noiseBuffer = ambienceContext.createBuffer(1, Math.floor(ambienceContext.sampleRate * 1.6), ambienceContext.sampleRate);
+      const data = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < data.length; i += 1) {
+        data[i] = (Math.random() * 2 - 1) * 0.32;
+      }
+
+      const crackle = ambienceContext.createBufferSource();
+      crackle.buffer = noiseBuffer;
+      crackle.loop = true;
+
+      const crackleLowpass = ambienceContext.createBiquadFilter();
+      crackleLowpass.type = 'lowpass';
+      crackleLowpass.frequency.setValueAtTime(1600, now);
+      const crackleHighpass = ambienceContext.createBiquadFilter();
+      crackleHighpass.type = 'highpass';
+      crackleHighpass.frequency.setValueAtTime(860, now);
+
+      const crackleGain = ambienceContext.createGain();
+      crackleGain.gain.setValueAtTime(0.0025, now);
+
+      crackle.connect(crackleLowpass);
+      crackleLowpass.connect(crackleHighpass);
+      crackleHighpass.connect(crackleGain);
+      crackleGain.connect(master);
+
+      const needleTone = ambienceContext.createOscillator();
+      needleTone.type = 'triangle';
+      needleTone.frequency.setValueAtTime(860, now);
+      needleTone.frequency.exponentialRampToValueAtTime(410, now + 0.16);
+      const needleGain = ambienceContext.createGain();
+      needleGain.gain.setValueAtTime(0.0001, now);
+      needleGain.gain.exponentialRampToValueAtTime(0.012, now + 0.02);
+      needleGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.2);
+      needleTone.connect(needleGain);
+      needleGain.connect(master);
+
+      bedOsc.start(now);
+      lfo.start(now);
+      crackle.start(now);
+      needleTone.start(now + 0.03);
+      needleTone.stop(now + 0.24);
+      ambienceStarted = true;
+    } catch (error) {
+      // Audio should fail silently on unsupported/restricted environments.
+    }
   }
 
-  function spawnHearts() {
-    if (!heartsHost) return;
-    heartsHost.innerHTML = '';
-
-    const count = 16;
-    const glyphs = ['', '', ''];
-
-    for (let i = 0; i < count; i += 1) {
-      const heart = document.createElement('span');
-      heart.className = 'burst-heart';
-      heart.textContent = glyphs[Math.floor(Math.random() * glyphs.length)];
-
-      const driftX = (Math.random() * 160) - 80;
-      const rise = Math.random() * 60;
-      const size = Math.random();
-      const dur = 1.05 + Math.random() * 0.9;
-
-      heart.style.setProperty('--driftX', `${driftX.toFixed(1)}px`);
-      heart.style.setProperty('--rise', `${rise.toFixed(1)}px`);
-      heart.style.setProperty('--size', size.toFixed(2));
-      heart.style.setProperty('--dur', `${dur.toFixed(2)}s`);
-
-      heart.style.animationDelay = `${(Math.random() * 0.22).toFixed(2)}s`;
-
-      heartsHost.appendChild(heart);
-
-      window.setTimeout(() => {
-        heart.remove();
-      }, (dur + 0.3) * 1000);
+  function updateLockedState() {
+    envelopeStage.classList.toggle('is-locked', !vinylReady);
+    envelopeStage.classList.toggle('is-ready', vinylReady);
+    envelopeStage.setAttribute('data-locked', String(!vinylReady));
+    hint.disabled = !vinylReady;
+    hint.setAttribute('aria-disabled', String(!vinylReady));
+    hint.textContent = vinylReady ? 'tap to open' : 'start the record first';
+    if (lockNote) {
+      lockNote.hidden = vinylReady;
     }
   }
 
   function openEnvelope() {
-    if (opened) return;
+    if (!vinylReady || opened) return;
     opened = true;
 
-    envelope.classList.add('is-open');
-    envelope.setAttribute('aria-expanded', 'true');
-
-    spawnHearts();
+    envelopeStage.classList.add('is-opened');
+    envelopeStage.setAttribute('aria-expanded', 'true');
+    hint.hidden = true;
 
     window.setTimeout(() => {
-      letter.classList.add('is-visible');
+      letter.hidden = false;
+      requestAnimationFrame(() => {
+        letter.classList.add('visible');
+      });
       letter.setAttribute('aria-hidden', 'false');
-      typeMessage(fullMessage);
+      vinylStatus.textContent = 'Now playing: OUR STORY. The letter is ready for you.';
     }, 420);
   }
 
-  envelope.addEventListener('click', openEnvelope);
-  envelope.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
+  function nudgeLockedState() {
+    if (vinylReady) return;
+    envelopeStage.classList.remove('is-shaking');
+    void envelopeStage.offsetWidth;
+    envelopeStage.classList.add('is-shaking');
+    vinylStatus.textContent = 'Turn the record on first, then the envelope will open.';
+  }
+
+  vinylPowerBtn.addEventListener('click', () => {
+    if (vinylReady) return;
+    vinylReady = true;
+    vinylTurntable.classList.add('is-spinning');
+    vinylPowerBtn.classList.add('is-on');
+    vinylPowerBtn.textContent = 'now spinning';
+    vinylPowerBtn.setAttribute('aria-pressed', 'true');
+    updateLockedState();
+    startVinylAmbience();
+    vinylStatus.textContent = 'The record is spinning. Now you can open the envelope.';
+  });
+
+  envelopeStage.addEventListener('click', (event) => {
+    if (event.target.closest('#letterPopup')) return;
+    if (!vinylReady) {
+      nudgeLockedState();
+      return;
+    }
+
+    if (event.target === hint || event.target === envelopeStage || event.target.tagName === 'CANVAS') {
       openEnvelope();
     }
   });
+
+  hint.addEventListener('click', (event) => {
+    event.preventDefault();
+    openEnvelope();
+  });
+
+  updateLockedState();
 })();
