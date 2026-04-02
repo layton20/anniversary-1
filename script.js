@@ -1,4 +1,4 @@
-const trackCards = document.querySelectorAll('.track-card');
+﻿const trackCards = document.querySelectorAll('.track-card');
 const trackGrid = document.getElementById('trackGrid');
 const togglePlayBtn = document.getElementById('togglePlayBtn');
 const audioPlayer = document.getElementById('audioPlayer');
@@ -42,6 +42,16 @@ const readyCheck = document.getElementById('readyCheck');
 const readyCountdown = document.getElementById('readyCountdown');
 const acceptReadyBtn = document.getElementById('acceptReadyBtn');
 const declineReadyBtn = document.getElementById('declineReadyBtn');
+const champCrashOverlay = document.getElementById('champCrashOverlay');
+const champCrashRetryBtn = document.getElementById('champCrashRetryBtn');
+const chatRestrictedModal = document.getElementById('chatRestrictedModal');
+const chatRestrictedBackdrop = document.getElementById('chatRestrictedBackdrop');
+const chatRestrictedCloseBtn = document.getElementById('chatRestrictedCloseBtn');
+const chatRestrictedUnderstandBtn = document.getElementById('chatRestrictedUnderstandBtn');
+const chatRestrictedPanel = document.getElementById('chatRestrictedPanel');
+const chatRestrictedPill = document.getElementById('chatRestrictedPill');
+const chatRestrictedCopy = document.getElementById('chatRestrictedCopy');
+const chatLogList = document.getElementById('chatLogList');
 const swapRoleBtn = document.getElementById('swapRoleBtn');
 const ellaRole = document.getElementById('ellaRole');
 const youRole = document.getElementById('youRole');
@@ -53,12 +63,45 @@ const memoryClose = document.getElementById('memoryClose');
 const memoryPopTitle = document.getElementById('memoryPopTitle');
 const memoryPopImage = document.getElementById('memoryPopImage');
 const memoryPopMessage = document.getElementById('memoryPopMessage');
+const strawberryDesk = document.getElementById('strawberryDesk');
+const resistSection = document.getElementById('resist-memory');
+const resistCanvas = document.getElementById('resistCanvas');
+const resistSpeaker = document.getElementById('resistSpeaker');
+const resistDialogueText = document.getElementById('resistDialogueText');
+const resistChoices = document.getElementById('resistChoices');
 const guidedPager = document.getElementById('guidedPager');
 const guidedPrevBtn = document.getElementById('guidedPrevBtn');
 const guidedNextBtn = document.getElementById('guidedNextBtn');
 const guidedDots = document.getElementById('guidedDots');
+const digicamZoom = document.getElementById('digicamZoom');
+const digicamPanY = document.getElementById('digicamPanY');
+const heroDigicamTrigger = document.getElementById('heroDigicamTrigger');
+const heroPolaroidStack = document.getElementById('heroPolaroidStack');
+const heroHeartBurst = document.getElementById('heroHeartBurst');
+const heroPolaroidReset = document.getElementById('heroPolaroidReset');
 const storyPanels = Array.from(document.querySelectorAll('.story-panel'));
 // envelope-scene.js handles the love letter section now
+
+function isOpeningOverlayVisible() {
+  if (!openingOverlay) return false;
+  return !openingOverlay.classList.contains('hidden')
+    && !openingOverlay.hidden
+    && openingOverlay.getAttribute('aria-hidden') !== 'true';
+}
+
+function closeOpeningOverlay() {
+  if (!openingOverlay || !isOpeningOverlayVisible()) return;
+
+  openingOverlay.classList.add('hidden');
+  openingOverlay.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('opening-locked');
+
+  window.dispatchEvent(new CustomEvent('openingOverlayClosed'));
+}
+
+if (isOpeningOverlayVisible()) {
+  document.body.classList.add('opening-locked');
+}
 
 let activeTrackCard = null;
 let notesTimer = null;
@@ -67,6 +110,8 @@ let callDurationSeconds = (24 * 60 * 60) + (7 * 60) + 12;
 let queueSeconds = 0;
 let queueTimerHandle = null;
 let readyTimerHandle = null;
+let riotNoticeAcknowledged = false;
+let queueStartPending = false;
 let activeStoryPanelIndex = 0;
 let infernoVaultRenderer = null;
 let infernoVaultScene = null;
@@ -80,6 +125,452 @@ let infernoVaultCurrentOpen = 0;
 let infernoVaultTargetEnergy = 0.25;
 let infernoVaultCurrentEnergy = 0.25;
 const infernoVaultClock = typeof THREE !== 'undefined' ? new THREE.Clock() : null;
+let resistCtx = null;
+let resistRaf = null;
+let resistVisible = true;
+let resistTypingTimer = null;
+const resistParticles = [];
+
+const RESIST_CONFIG = {
+  minWidth: 280,
+  minHeight: 240,
+  particleCount: 32,
+  connectionDistance: 130,
+  typingDelay: 18
+};
+
+function resizeResistCanvas() {
+  if (!resistCanvas) return;
+  const width = Math.max(RESIST_CONFIG.minWidth, resistCanvas.clientWidth || RESIST_CONFIG.minWidth);
+  const height = Math.max(RESIST_CONFIG.minHeight, resistCanvas.clientHeight || RESIST_CONFIG.minHeight);
+  resistCanvas.width = Math.floor(width * Math.min(window.devicePixelRatio || 1, 2));
+  resistCanvas.height = Math.floor(height * Math.min(window.devicePixelRatio || 1, 2));
+}
+
+function initResistParticles() {
+  if (!resistCanvas) return;
+  const width = resistCanvas.width;
+  const height = resistCanvas.height;
+  resistParticles.length = 0;
+
+  for (let i = 0; i < RESIST_CONFIG.particleCount; i += 1) {
+    resistParticles.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      vx: (Math.random() * 0.46) - 0.23,
+      vy: (Math.random() * 0.42) - 0.21,
+      size: 0.9 + (Math.random() * 1.8)
+    });
+  }
+}
+
+function animateResistCanvas() {
+  if (!resistCtx || !resistCanvas) return;
+  if (!resistVisible) {
+    resistRaf = null;
+    return;
+  }
+
+  const width = resistCanvas.width;
+  const height = resistCanvas.height;
+  resistCtx.clearRect(0, 0, width, height);
+
+  const pulse = 0.14 + ((Math.sin(Date.now() * 0.0014) + 1) * 0.08);
+  const gradient = resistCtx.createLinearGradient(0, 0, width, height);
+  gradient.addColorStop(0, `rgba(96, 168, 255, ${0.17 + pulse})`);
+  gradient.addColorStop(1, 'rgba(8, 15, 28, 0.04)');
+  resistCtx.fillStyle = gradient;
+  resistCtx.fillRect(0, 0, width, height);
+
+  resistParticles.forEach((particle, index) => {
+    particle.x += particle.vx;
+    particle.y += particle.vy;
+
+    if (particle.x < -8) particle.x = width + 8;
+    if (particle.x > width + 8) particle.x = -8;
+    if (particle.y < -8) particle.y = height + 8;
+    if (particle.y > height + 8) particle.y = -8;
+
+    resistCtx.fillStyle = 'rgba(184, 220, 255, 0.84)';
+    resistCtx.beginPath();
+    resistCtx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+    resistCtx.fill();
+
+    for (let j = index + 1; j < resistParticles.length; j += 1) {
+      const other = resistParticles[j];
+      const dx = particle.x - other.x;
+      const dy = particle.y - other.y;
+      const distance = Math.hypot(dx, dy);
+
+      if (distance < RESIST_CONFIG.connectionDistance) {
+        const alpha = 1 - (distance / RESIST_CONFIG.connectionDistance);
+        resistCtx.strokeStyle = `rgba(124, 182, 255, ${alpha * 0.18})`;
+        resistCtx.lineWidth = 1;
+        resistCtx.beginPath();
+        resistCtx.moveTo(particle.x, particle.y);
+        resistCtx.lineTo(other.x, other.y);
+        resistCtx.stroke();
+      }
+    }
+  });
+
+  resistRaf = window.requestAnimationFrame(animateResistCanvas);
+}
+
+const RESIST_DIALOGUE = {
+  start: {
+    speaker: 'Watcher',
+    text: 'Memory corridor online. Select a thread. Resist forgetting.',
+    choices: [
+      { label: 'Trace when Ella became home', nextId: 'home' },
+      { label: 'Open the devotion file', nextId: 'love' },
+      { label: 'Project our shared future', nextId: 'future' },
+      { label: 'Replay one midnight call', nextId: 'nightcall' },
+      { label: 'Open the vow terminal', nextId: 'promise' }
+    ]
+  },
+  home: {
+    speaker: 'Watcher',
+    text: 'The loop was simple: call, laugh, breathe, stay. Somewhere in those repeats, distance lost authority and Ella became home.',
+    choices: [
+      { label: 'Return to memory index', nextId: 'start' },
+      { label: 'Jump to future thread', nextId: 'future' },
+      { label: 'Simulate alternate timeline', nextId: 'whatif' }
+    ]
+  },
+  love: {
+    speaker: 'Watcher',
+    text: 'Ella carries gentleness like light. She makes ordinary hours feel ceremonial, like each small moment deserves to be kept.',
+    choices: [
+      { label: 'Replay from beginning', nextId: 'start' },
+      { label: 'Commit to promise', nextId: 'promise' },
+      { label: 'Read impact report', nextId: 'impact' }
+    ]
+  },
+  future: {
+    speaker: 'Watcher',
+    text: 'Future log accepted: one kitchen, one playlist, and a thousand tiny rituals that say anniversary is not a date, but a daily practice.',
+    choices: [
+      { label: 'Seal this memory', nextId: 'promise' },
+      { label: 'Return to archive', nextId: 'start' },
+      { label: 'Load first journey plan', nextId: 'trip' }
+    ]
+  },
+  nightcall: {
+    speaker: 'You',
+    text: 'On those midnight calls, even silence had shape. Different countries, same heartbeat, same soft goodnight.',
+    choices: [
+      { label: 'Back to archive', nextId: 'start' },
+      { label: 'Continue to vow terminal', nextId: 'promise' }
+    ]
+  },
+  impact: {
+    speaker: 'Watcher',
+    text: 'Impact summary: fear reduced, hope amplified. Ella turns survival mode into living mode.',
+    choices: [
+      { label: 'Return', nextId: 'start' },
+      { label: 'Project forward', nextId: 'future' }
+    ]
+  },
+  trip: {
+    speaker: 'Watcher',
+    text: 'Journey draft: train windows, shared headphones, one photo every stop, and one laugh we will quote for years.',
+    choices: [
+      { label: 'Append future log', nextId: 'future' },
+      { label: 'Seal with vow', nextId: 'promise' }
+    ]
+  },
+  whatif: {
+    speaker: 'You',
+    text: 'Alternate timeline rejected. A life without Ella is a version of me with less light. I choose this timeline, every time.',
+    choices: [
+      { label: 'Back to home thread', nextId: 'home' },
+      { label: 'Restart corridor', nextId: 'start' }
+    ]
+  },
+  promise: {
+    speaker: 'You',
+    text: 'Final vow: in every loop, every timeline, every anniversary, I choose you first, Ella. Always <3',
+    choices: [
+      { label: 'Restart corridor', nextId: 'start' },
+      { label: 'One more memory thread', nextId: 'nightcall' }
+    ]
+  }
+};
+
+function typeResistText(text) {
+  if (!resistDialogueText) return;
+  if (resistTypingTimer) {
+    window.clearInterval(resistTypingTimer);
+    resistTypingTimer = null;
+  }
+
+  resistDialogueText.textContent = '';
+  let cursor = 0;
+  resistTypingTimer = window.setInterval(() => {
+    cursor += 1;
+    resistDialogueText.textContent = text.slice(0, cursor);
+    if (cursor >= text.length) {
+      window.clearInterval(resistTypingTimer);
+      resistTypingTimer = null;
+    }
+  }, RESIST_CONFIG.typingDelay);
+}
+
+function renderResistNode(nodeId) {
+  const node = RESIST_DIALOGUE[nodeId] || RESIST_DIALOGUE.start;
+  if (resistSpeaker) resistSpeaker.textContent = node.speaker;
+  typeResistText(node.text);
+
+  if (!resistChoices) return;
+  resistChoices.innerHTML = '';
+
+  (node.choices || []).forEach((choice) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'resist-choice';
+    button.textContent = choice.label;
+    button.addEventListener('click', () => {
+      renderResistNode(choice.nextId);
+    });
+    resistChoices.appendChild(button);
+  });
+}
+
+function initDigicam() {
+  const wrappers = document.querySelectorAll('.digicam-wrapper');
+  if (!wrappers.length) return;
+
+  const applyFitVars = () => {
+    const zoomValue = digicamZoom ? Number(digicamZoom.value) : 1.22;
+    const panYValue = digicamPanY ? Number(digicamPanY.value) : 40;
+
+    wrappers.forEach((wrapper) => {
+      wrapper.style.setProperty('--photo-scale', zoomValue.toFixed(2));
+      wrapper.style.setProperty('--photo-y', `${panYValue}%`);
+    });
+  };
+
+  digicamZoom?.addEventListener('input', applyFitVars);
+  digicamPanY?.addEventListener('input', applyFitVars);
+  applyFitVars();
+
+  wrappers.forEach((wrapper) => {
+    const strip = wrapper.querySelector('.digicam-strip');
+    const flash = wrapper.querySelector('.digicam-flash');
+    const counter = wrapper.querySelector('.digicam-counter');
+    if (!strip || !flash || !counter) return;
+
+    const photos = strip.querySelectorAll('.digicam-photo');
+    const total = photos.length;
+    if (!total) return;
+
+    let current = 0;
+    let autoTimer = null;
+
+    function showPhoto(idx, skipFlash) {
+      current = ((idx % total) + total) % total;
+      strip.style.transform = `translateX(calc(-25% * ${current}))`;
+      counter.textContent = `${current + 1} / ${total}`;
+
+      if (!skipFlash) {
+        flash.classList.remove('pop');
+        void flash.offsetWidth;
+        flash.classList.add('pop');
+      }
+    }
+
+    function advance() {
+      showPhoto(current + 1, false);
+    }
+
+    function resetTimer() {
+      clearInterval(autoTimer);
+      autoTimer = setInterval(advance, 3500);
+    }
+
+    wrapper.addEventListener('click', () => {
+      advance();
+      resetTimer();
+    });
+
+    wrapper.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        advance();
+        resetTimer();
+      }
+    });
+
+    showPhoto(0, true);
+    resetTimer();
+  });
+}
+
+function initHeroPolaroidBlast() {
+  if (!heroDigicamTrigger || !heroPolaroidStack || !heroHeartBurst) return;
+  let unleashed = false;
+  let unleashing = false;
+  let shutterAudioContext = null;
+
+  const playShutterSound = () => {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
+
+    try {
+      if (!shutterAudioContext) {
+        shutterAudioContext = new AudioContextClass();
+      }
+
+      if (shutterAudioContext.state === 'suspended') {
+        shutterAudioContext.resume();
+      }
+
+      const now = shutterAudioContext.currentTime;
+      const gain = shutterAudioContext.createGain();
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.42, now + 0.008);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+      gain.connect(shutterAudioContext.destination);
+
+      const osc = shutterAudioContext.createOscillator();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(1240, now);
+      osc.frequency.exponentialRampToValueAtTime(180, now + 0.1);
+      osc.connect(gain);
+      osc.start(now);
+      osc.stop(now + 0.12);
+
+      const buffer = shutterAudioContext.createBuffer(1, Math.floor(shutterAudioContext.sampleRate * 0.06), shutterAudioContext.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < data.length; i += 1) {
+        data[i] = (Math.random() * 2 - 1) * (1 - (i / data.length));
+      }
+
+      const noise = shutterAudioContext.createBufferSource();
+      noise.buffer = buffer;
+      const noiseFilter = shutterAudioContext.createBiquadFilter();
+      noiseFilter.type = 'highpass';
+      noiseFilter.frequency.setValueAtTime(1400, now);
+      const noiseGain = shutterAudioContext.createGain();
+      noiseGain.gain.setValueAtTime(0.22, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.07);
+
+      noise.connect(noiseFilter);
+      noiseFilter.connect(noiseGain);
+      noiseGain.connect(shutterAudioContext.destination);
+      noise.start(now + 0.01);
+      noise.stop(now + 0.08);
+    } catch (error) {
+      // Audio should fail silently on unsupported/restricted environments.
+    }
+  };
+
+  const spawnHearts = (count = 18) => {
+    const hostRect = heroHeartBurst.getBoundingClientRect();
+    const triggerRect = heroDigicamTrigger.getBoundingClientRect();
+    const originX = (triggerRect.left - hostRect.left) + (triggerRect.width / 2);
+    const originY = (triggerRect.top - hostRect.top) + (triggerRect.height / 2);
+    const glyphs = ['❤', '♡', '💗'];
+
+    for (let i = 0; i < count; i += 1) {
+      const heart = document.createElement('span');
+      heart.className = 'hero-heart';
+      heart.textContent = glyphs[Math.floor(Math.random() * glyphs.length)];
+
+      const dx = (Math.random() * 260) - 130;
+      const dy = -80 - (Math.random() * 170);
+      const duration = 700 + Math.floor(Math.random() * 360);
+      const scale = (0.75 + (Math.random() * 0.9)).toFixed(2);
+
+      heart.style.left = `${originX}px`;
+      heart.style.top = `${originY}px`;
+      heart.style.setProperty('--dx', `${dx.toFixed(1)}px`);
+      heart.style.setProperty('--dy', `${dy.toFixed(1)}px`);
+      heart.style.setProperty('--heart-dur', `${duration}ms`);
+      heart.style.setProperty('--heart-scale', scale);
+
+      heroHeartBurst.appendChild(heart);
+      window.setTimeout(() => {
+        heart.remove();
+      }, duration + 120);
+    }
+  };
+
+  const unleashPolaroids = () => {
+    if (unleashing) return;
+    unleashing = true;
+
+    playShutterSound();
+    heroDigicamTrigger.classList.remove('is-sneeze');
+    void heroDigicamTrigger.offsetWidth;
+    heroDigicamTrigger.classList.add('is-sneeze');
+
+    spawnHearts(22);
+    window.setTimeout(() => {
+      spawnHearts(16);
+    }, 180);
+
+    window.setTimeout(() => {
+      if (!unleashed) {
+        unleashed = true;
+        heroPolaroidStack.classList.add('is-unleashed');
+        if (heroPolaroidReset) heroPolaroidReset.hidden = false;
+      }
+
+      heroDigicamTrigger.classList.add('is-fired');
+      window.setTimeout(() => {
+        heroDigicamTrigger.classList.remove('is-sneeze');
+        unleashing = false;
+      }, 680);
+    }, 220);
+  };
+
+  const resetPolaroids = () => {
+    if (unleashing) return;
+    unleashed = false;
+    heroDigicamTrigger.classList.remove('is-fired');
+    heroDigicamTrigger.classList.remove('is-sneeze');
+    heroPolaroidStack.classList.remove('is-unleashed');
+    if (heroPolaroidReset) heroPolaroidReset.hidden = true;
+  };
+
+  heroDigicamTrigger.addEventListener('click', unleashPolaroids);
+  heroDigicamTrigger.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      unleashPolaroids();
+    }
+  });
+
+  heroPolaroidReset?.addEventListener('click', resetPolaroids);
+}
+
+function initResistSection() {
+  if (!resistSection || !resistCanvas) return;
+
+  resistCtx = resistCanvas.getContext('2d');
+  resizeResistCanvas();
+  initResistParticles();
+  renderResistNode('start');
+
+  window.addEventListener('resize', () => {
+    resizeResistCanvas();
+    initResistParticles();
+  });
+
+  const visibilityObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      resistVisible = entry.isIntersecting;
+      if (resistVisible && !resistRaf) {
+        resistRaf = window.requestAnimationFrame(animateResistCanvas);
+      }
+    });
+  }, { threshold: 0.28 });
+
+  visibilityObserver.observe(resistSection);
+  resistRaf = window.requestAnimationFrame(animateResistCanvas);
+}
 
 function resizeInfernoVaultScene() {
   if (!infernoVaultRenderer || !infernoVaultCamera || !infernoVaultCanvas) return;
@@ -222,37 +713,7 @@ function initInfernoVaultScene() {
   }
 }
 
-function closeOpeningOverlay() {
-  if (!openingOverlay) return;
-  openingOverlay.classList.add('hidden');
-  openingOverlay.setAttribute('aria-hidden', 'true');
-  window.dispatchEvent(new CustomEvent('openingOverlayClosed'));
-}
-
-function isOpeningOverlayVisible() {
-  if (!openingOverlay) return false;
-  const ariaHidden = openingOverlay.getAttribute('aria-hidden') === 'true';
-  const hasHiddenClass = openingOverlay.classList.contains('hidden');
-  return !ariaHidden && !hasHiddenClass;
-}
-
-function renderGuidedDots() {
-  if (!guidedDots || !storyPanels.length) return;
-
-  guidedDots.innerHTML = '';
-  storyPanels.forEach((_, index) => {
-    const dot = document.createElement('button');
-    dot.type = 'button';
-    dot.className = 'guided-dot';
-    dot.setAttribute('aria-label', `Go to section ${index + 1}`);
-    dot.addEventListener('click', () => applyGuidedPanel(index, true));
-    guidedDots.appendChild(dot);
-  });
-}
-
 function applyGuidedPanel(index, forceAnimate = false) {
-  if (!storyPanels.length) return;
-
   const previousIndex = activeStoryPanelIndex;
   const safeIndex = Math.max(0, Math.min(index, storyPanels.length - 1));
   activeStoryPanelIndex = safeIndex;
@@ -298,6 +759,23 @@ function applyGuidedPanel(index, forceAnimate = false) {
       index: safeIndex
     }
   }));
+}
+
+function renderGuidedDots() {
+  if (!guidedDots) return;
+  guidedDots.innerHTML = '';
+
+  storyPanels.forEach((_, panelIndex) => {
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.className = 'guided-dot';
+    dot.setAttribute('aria-label', `Go to section ${panelIndex + 1}`);
+    dot.classList.toggle('active', panelIndex === activeStoryPanelIndex);
+    dot.addEventListener('click', () => {
+      applyGuidedPanel(panelIndex, true);
+    });
+    guidedDots.appendChild(dot);
+  });
 }
 
 function initGuidedMode() {
@@ -450,6 +928,13 @@ function setQueueIdle() {
   startQueueBtn && (startQueueBtn.disabled = false);
   cancelQueueBtn && (cancelQueueBtn.disabled = true);
   if (readyCheck) readyCheck.hidden = true;
+
+  if (chatRestrictedPanel) chatRestrictedPanel.classList.remove('is-alert');
+  if (chatRestrictedPill) chatRestrictedPill.textContent = 'All Chat Enabled';
+  if (chatRestrictedCopy) chatRestrictedCopy.textContent = 'System: You can use all chat normally.';
+  if (chatRestrictedModal) chatRestrictedModal.hidden = true;
+  if (champCrashOverlay) champCrashOverlay.hidden = true;
+  queueStartPending = false;
 }
 
 function showReadyCheck() {
@@ -480,21 +965,35 @@ function showReadyCheck() {
 function initQueueLobby() {
   if (!startQueueBtn || !cancelQueueBtn || !queueTimer || !queueState) return;
 
-  startQueueBtn.addEventListener('click', () => {
+  const setChatModalOpen = (isOpen) => {
+    if (!chatRestrictedModal) return;
+    chatRestrictedModal.hidden = !isOpen;
+  };
+
+  const closeChatModal = () => {
+    setChatModalOpen(false);
+    queueStartPending = false;
+    if (!riotNoticeAcknowledged) {
+      setChatRestricted(false);
+    }
+  };
+
+  const beginQueueSearch = () => {
     if (queueTimerHandle) return;
 
     startQueueBtn.disabled = true;
     cancelQueueBtn.disabled = false;
     queueState.textContent = 'Searching';
     queueState.classList.add('searching');
-    queueHint && (queueHint.textContent = 'Queueing for Ranked Duo...');
+    queueHint && (queueHint.textContent = 'Queueing for Ranked Solo/Duo...');
     queueRing?.classList.add('searching');
+    setChatRestricted(true);
 
     queueTimerHandle = window.setInterval(() => {
       queueSeconds += 1;
       queueTimer.textContent = formatClock(queueSeconds);
 
-      if (queueSeconds === 8) {
+      if (queueSeconds === 3) {
         if (queueTimerHandle) {
           window.clearInterval(queueTimerHandle);
           queueTimerHandle = null;
@@ -502,11 +1001,63 @@ function initQueueLobby() {
         showReadyCheck();
       }
     }, 1000);
+  };
+
+  const setChatRestricted = (isRestricted) => {
+    if (!chatRestrictedPanel || !chatRestrictedPill || !chatRestrictedCopy) return;
+    chatRestrictedPanel.classList.toggle('is-alert', isRestricted);
+
+    if (isRestricted) {
+      chatRestrictedPill.textContent = 'Chat Restricted: 5 Games';
+      chatRestrictedCopy.textContent = 'Penalty reason: abusive language in all chat.';
+      if (chatLogList && !chatLogList.dataset.bumped) {
+        const extraLog = document.createElement('li');
+        extraLog.textContent = '[System]: You have been chat restricted for abusive language in all chat.';
+        chatLogList.prepend(extraLog);
+        chatLogList.dataset.bumped = 'true';
+      }
+      return;
+    }
+
+    chatRestrictedPill.textContent = 'All Chat Enabled';
+    chatRestrictedCopy.textContent = 'System: You can use all chat normally.';
+  };
+
+  startQueueBtn.addEventListener('click', () => {
+    if (queueTimerHandle) return;
+    if (!riotNoticeAcknowledged) {
+      queueStartPending = true;
+      setChatRestricted(true);
+      setChatModalOpen(true);
+      return;
+    }
+
+    beginQueueSearch();
+  });
+
+  chatRestrictedUnderstandBtn?.addEventListener('click', () => {
+    riotNoticeAcknowledged = true;
+    setChatModalOpen(false);
+
+    if (queueStartPending) {
+      queueStartPending = false;
+      beginQueueSearch();
+    }
+  });
+
+  chatRestrictedCloseBtn?.addEventListener('click', closeChatModal);
+  chatRestrictedBackdrop?.addEventListener('click', closeChatModal);
+
+  window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && chatRestrictedModal && !chatRestrictedModal.hidden) {
+      closeChatModal();
+    }
   });
 
   cancelQueueBtn.addEventListener('click', () => {
     setQueueIdle();
     queueHint && (queueHint.textContent = 'Queue cancelled.');
+    setChatRestricted(false);
   });
 
   acceptReadyBtn?.addEventListener('click', () => {
@@ -520,11 +1071,30 @@ function initQueueLobby() {
     queueState.classList.remove('searching');
     queueState.classList.add('found');
     cancelQueueBtn.disabled = true;
+    setChatRestricted(true);
+
+    if (champCrashOverlay) {
+      window.setTimeout(() => {
+        champCrashOverlay.hidden = false;
+        const fill = document.getElementById('champCrashFill');
+        if (fill) {
+          fill.style.animation = 'none';
+          void fill.offsetWidth;
+          fill.style.animation = '';
+        }
+      }, 680);
+    }
+  });
+
+  champCrashRetryBtn?.addEventListener('click', () => {
+    setQueueIdle();
+    queueHint && (queueHint.textContent = 'Connection lost. Press Find Match to retry.');
   });
 
   declineReadyBtn?.addEventListener('click', () => {
     setQueueIdle();
     queueHint && (queueHint.textContent = 'Declined. Back to lobby.');
+    setChatRestricted(false);
   });
 
   swapRoleBtn?.addEventListener('click', () => {
@@ -595,6 +1165,178 @@ function initHeadspaceMemories() {
       closeMemory();
     }
   });
+}
+
+function initStrawberryDesktop() {
+  if (!strawberryDesk) return;
+
+  const appButtons = Array.from(strawberryDesk.querySelectorAll('[data-desktop-app]'));
+  const panes = Array.from(strawberryDesk.querySelectorAll('[data-pane]'));
+  if (!appButtons.length || !panes.length) return;
+
+  const setActiveApp = (appName) => {
+    strawberryDesk.setAttribute('data-active-app', appName);
+
+    appButtons.forEach((btn) => {
+      const isActive = btn.getAttribute('data-desktop-app') === appName;
+      btn.classList.toggle('is-active', isActive);
+      btn.setAttribute('aria-pressed', String(isActive));
+    });
+
+    panes.forEach((pane) => {
+      const isActive = pane.getAttribute('data-pane') === appName;
+      pane.classList.toggle('is-active', isActive);
+      pane.hidden = !isActive;
+    });
+  };
+
+  appButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const appName = btn.getAttribute('data-desktop-app') || 'photos';
+      setActiveApp(appName);
+    });
+  });
+
+  const spotifyToggle = strawberryDesk.querySelector('#spotifyJamToggle');
+  const spotifyProgressFill = strawberryDesk.querySelector('#spotifyProgressFill');
+  const spotifyNowTitle = strawberryDesk.querySelector('#spotifyNowTitle');
+  const spotifyHeroTitle = strawberryDesk.querySelector('.spotify-hero h3');
+  const spotifyPlaylists = Array.from(strawberryDesk.querySelectorAll('.spotify-side-item'));
+  const spotifyTracks = Array.from(strawberryDesk.querySelectorAll('.spotify-track'));
+  let spotifyProgress = 0;
+  let spotifyTimer = null;
+
+  const stopSpotify = () => {
+    if (spotifyTimer) {
+      window.clearInterval(spotifyTimer);
+      spotifyTimer = null;
+    }
+    if (spotifyToggle) {
+      spotifyToggle.textContent = 'Play';
+      spotifyToggle.setAttribute('aria-pressed', 'false');
+    }
+  };
+
+  spotifyToggle?.addEventListener('click', () => {
+    const currentlyPlaying = spotifyToggle.getAttribute('aria-pressed') === 'true';
+    if (currentlyPlaying) {
+      stopSpotify();
+      return;
+    }
+
+    spotifyToggle.textContent = 'Pause';
+    spotifyToggle.setAttribute('aria-pressed', 'true');
+    if (spotifyTimer) window.clearInterval(spotifyTimer);
+
+    spotifyTimer = window.setInterval(() => {
+      spotifyProgress = (spotifyProgress + 1.4) % 100;
+      if (spotifyProgressFill) spotifyProgressFill.style.width = `${spotifyProgress.toFixed(1)}%`;
+    }, 180);
+  });
+
+  spotifyTracks.forEach((trackBtn) => {
+    trackBtn.addEventListener('click', () => {
+      spotifyTracks.forEach((btn) => btn.classList.remove('is-active'));
+      trackBtn.classList.add('is-active');
+      const title = trackBtn.getAttribute('data-track-title') || 'Bodies';
+      if (spotifyNowTitle) spotifyNowTitle.textContent = title;
+      spotifyProgress = 0;
+      if (spotifyProgressFill) spotifyProgressFill.style.width = '0%';
+    });
+  });
+
+  spotifyPlaylists.forEach((playlistBtn) => {
+    playlistBtn.addEventListener('click', () => {
+      spotifyPlaylists.forEach((btn) => btn.classList.remove('is-active'));
+      playlistBtn.classList.add('is-active');
+      const playlistName = playlistBtn.getAttribute('data-playlist-name') || 'emyan + johnny';
+      if (spotifyHeroTitle) spotifyHeroTitle.textContent = playlistName;
+    });
+  });
+
+  const photoSegments = Array.from(strawberryDesk.querySelectorAll('.photos-segment'));
+  const photoThumbs = Array.from(strawberryDesk.querySelectorAll('.photos-thumb'));
+  const previewImage = strawberryDesk.querySelector('#photosPreviewImage');
+  const previewTitle = strawberryDesk.querySelector('#photosPreviewTitle');
+  const previewDate = strawberryDesk.querySelector('#photosPreviewDate');
+  const previewPlace = strawberryDesk.querySelector('#photosPreviewPlace');
+
+  const selectPhotoThumb = (thumb) => {
+    if (!thumb) return;
+    photoThumbs.forEach((btn) => btn.classList.remove('is-active'));
+    thumb.classList.add('is-active');
+
+    const src = thumb.getAttribute('data-photo-src') || '';
+    const title = thumb.getAttribute('data-photo-title') || 'Memory';
+    const date = thumb.getAttribute('data-photo-date') || 'Unknown date';
+    const place = thumb.getAttribute('data-photo-place') || 'Unknown place';
+    if (previewImage && src) previewImage.src = src;
+    if (previewImage) previewImage.alt = title;
+    if (previewTitle) previewTitle.textContent = title;
+    if (previewDate) previewDate.textContent = date;
+    if (previewPlace) previewPlace.textContent = place;
+  };
+
+  const applyPhotoView = (viewName) => {
+    const normalizedView = viewName || 'all';
+    photoSegments.forEach((segmentBtn) => {
+      const segmentView = segmentBtn.getAttribute('data-photos-view') || 'all';
+      segmentBtn.classList.toggle('is-active', segmentView === normalizedView);
+    });
+
+    photoThumbs.forEach((thumb) => {
+      const group = thumb.getAttribute('data-photo-group') || 'all';
+      thumb.hidden = normalizedView !== 'all' && group !== normalizedView;
+    });
+
+    const activeThumb = photoThumbs.find((thumb) => thumb.classList.contains('is-active') && !thumb.hidden);
+    if (activeThumb) {
+      selectPhotoThumb(activeThumb);
+      return;
+    }
+
+    const firstVisible = photoThumbs.find((thumb) => !thumb.hidden);
+    if (firstVisible) selectPhotoThumb(firstVisible);
+  };
+
+  photoThumbs.forEach((thumb) => {
+    thumb.addEventListener('click', () => {
+      if (thumb.hidden) return;
+      selectPhotoThumb(thumb);
+    });
+  });
+
+  photoSegments.forEach((segmentBtn) => {
+    segmentBtn.addEventListener('click', () => {
+      const viewName = segmentBtn.getAttribute('data-photos-view') || 'all';
+      applyPhotoView(viewName);
+    });
+  });
+
+  const discordChannels = Array.from(strawberryDesk.querySelectorAll('.discord-channel'));
+  const discordMessages = Array.from(strawberryDesk.querySelectorAll('.discord-message'));
+  const discordChannelTitle = strawberryDesk.querySelector('#discordChannelTitle');
+  const discordComposerChannel = strawberryDesk.querySelector('#discordComposerChannel');
+
+  discordChannels.forEach((channelBtn) => {
+    channelBtn.addEventListener('click', () => {
+      const channel = channelBtn.getAttribute('data-channel') || 'general';
+      discordChannels.forEach((btn) => btn.classList.toggle('is-active', btn === channelBtn));
+      discordMessages.forEach((msg) => {
+        msg.hidden = msg.getAttribute('data-channel') !== channel;
+      });
+      if (discordChannelTitle) discordChannelTitle.textContent = `# ${channel}`;
+      if (discordComposerChannel) discordComposerChannel.textContent = channel;
+    });
+  });
+
+  const initialDiscordChannel = discordChannels.find((btn) => btn.classList.contains('is-active'))?.getAttribute('data-channel') || 'general';
+  if (discordChannelTitle) discordChannelTitle.textContent = `# ${initialDiscordChannel}`;
+  if (discordComposerChannel) discordComposerChannel.textContent = initialDiscordChannel;
+
+  const initialPhotoView = photoSegments.find((btn) => btn.classList.contains('is-active'))?.getAttribute('data-photos-view') || 'all';
+  applyPhotoView(initialPhotoView);
+  setActiveApp(strawberryDesk.getAttribute('data-active-app') || 'spotify');
 }
 
 function initHandwriteText() {
@@ -671,6 +1413,28 @@ function initAppleHandwriting() {
       }, '-=0.25');
   };
 
+  const setupScrollHandwrite = (svg) => {
+    const drawTargets = setupTargets(svg);
+    if (!drawTargets.length) return;
+
+    window.gsap.timeline({
+      defaults: { ease: 'power2.out' },
+      scrollTrigger: {
+        trigger: svg,
+        start: 'top 82%',
+        toggleActions: 'play none none reset'
+      }
+    }).to(drawTargets, {
+      strokeDashoffset: 0,
+      duration: 1.75,
+      stagger: 0.2
+    }).to(drawTargets, {
+      fill: '#3f2d20',
+      duration: 0.28,
+      stagger: 0.05
+    }, '-=0.25');
+  };
+
   svgs.forEach((svg) => {
     const mode = svg.getAttribute('data-handwrite-svg') || 'scroll';
 
@@ -681,25 +1445,13 @@ function initAppleHandwriting() {
 
     const inGuidedMode = document.body.classList.contains('guided-mode');
     if (!inGuidedMode && window.ScrollTrigger) {
-      const drawTargets = setupTargets(svg);
-      if (!drawTargets.length) return;
-
-      window.gsap.timeline({
-        defaults: { ease: 'power2.out' },
-        scrollTrigger: {
-          trigger: svg,
-          start: 'top 82%',
-          toggleActions: 'play none none reset'
-        }
-      }).to(drawTargets, {
-        strokeDashoffset: 0,
-        duration: 1.75,
-        stagger: 0.2
-      }).to(drawTargets, {
-        fill: '#3f2d20',
-        duration: 0.28,
-        stagger: 0.05
-      }, '-=0.25');
+      if (isOpeningOverlayVisible()) {
+        window.addEventListener('openingOverlayClosed', () => {
+          setupScrollHandwrite(svg);
+        }, { once: true });
+      } else {
+        setupScrollHandwrite(svg);
+      }
       return;
     }
 
@@ -913,7 +1665,7 @@ function makeNote() {
 
   const note = document.createElement('span');
   note.className = 'note';
-  note.textContent = Math.random() > 0.5 ? '♪' : '♫';
+  note.textContent = Math.random() > 0.5 ? 'â™ª' : 'â™«';
   note.style.left = `${Math.random() * 90 + 5}%`;
   note.style.fontSize = `${0.8 + Math.random() * 0.6}rem`;
   notesContainer.appendChild(note);
@@ -943,7 +1695,17 @@ function updateScrollProgress() {
 
 function updateMotionSections() {
   motionSections.forEach((section) => {
-    section.classList.add('motion-active');
+    const rect = section.getBoundingClientRect();
+    const vh = window.innerHeight || 1;
+    const centerOffset = (rect.top + (rect.height / 2)) - (vh / 2);
+    const normalized = Math.max(-1, Math.min(1, centerOffset / (vh * 0.9)));
+    const inView = rect.bottom > vh * 0.14 && rect.top < vh * 0.86;
+    const focused = Math.abs(centerOffset) < Math.min(vh * 0.24, rect.height * 0.35);
+
+    section.classList.toggle('motion-active', inView);
+    section.classList.toggle('is-inview', inView);
+    section.classList.toggle('is-focused', focused);
+    section.style.setProperty('--parallax-y', `${(-normalized * 22).toFixed(2)}px`);
   });
 }
 
@@ -959,6 +1721,7 @@ function onScrollAnimate() {
 }
 
 window.addEventListener('resize', onScrollAnimate);
+window.addEventListener('scroll', onScrollAnimate, { passive: true });
 
 mailboxGrid?.addEventListener('click', (event) => {
   const card = event.target.closest('.locker-door');
@@ -1089,12 +1852,9 @@ infernoStartBtn?.addEventListener('click', () => {
 
 const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-      observer.unobserve(entry.target);
-    }
+    entry.target.classList.toggle('visible', entry.isIntersecting);
   });
-}, { threshold: 0.18 });
+}, { threshold: 0.38 });
 
 document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
 
@@ -1107,7 +1867,11 @@ initFlightRouteAnimation();
 initQueueLobby();
 initOpenLetter();
 initHeadspaceMemories();
+initStrawberryDesktop();
 initHandwriteText();
 initAppleHandwriting();
 initInfernoVaultScene();
+initResistSection();
 initGuidedMode();
+initDigicam();
+initHeroPolaroidBlast();

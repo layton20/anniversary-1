@@ -7,7 +7,7 @@
   <title>For Ella - Our Cozy Anniversary</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Rajdhani:wght@400;500;600;700&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -21,14 +21,12 @@
   <div class="rila-scatter" aria-hidden="true">
     <img class="rila-sticker rila-s1" src="assets/gifs/rilakkuma_wobble.gif" alt="" />
     <img class="rila-sticker rila-s2" src="assets/gifs/korilakkuma_wobble.gif" alt="" />
-    <img class="rila-sticker rila-s3" src="assets/gifs/rilakkuma_dancing.gif" alt="" />
     <img class="rila-sticker rila-s4" src="assets/gifs/rilakkuma_wobble.gif" alt="" />
     <img class="rila-sticker rila-s5" src="assets/gifs/korilakkuma_wobble.gif" alt="" />
     <img class="rila-sticker rila-s6" src="assets/gifs/rilakkuma_wobble.gif" alt="" />
     <img class="rila-sticker rila-s7" src="assets/gifs/hello_kitty_wobble.gif" alt="" />
     <img class="rila-sticker rila-s8" src="assets/gifs/mamegoma_wobble.gif" alt="" />
     <img class="rila-sticker rila-s9" src="assets/gifs/kiiroitori_wobble.gif" alt="" />
-    <img class="rila-sticker miku-s1" src="assets/gifs/miku_dance_2.gif" alt="" />
   </div>
 
   <div class="opening-overlay" id="openingOverlay" aria-hidden="false">
@@ -43,7 +41,7 @@
         <span class="opening-envelope-icon" aria-hidden="true">💌</span>
       </button>
       <p class="opening-caption">you've got new emails</p>
-      <p id="openingEnvelopeMessage" class="opening-message">tap the envelope to open your mail.</p>
+      <p id="openingEnvelopeMessage" class="opening-message">🎧 best experienced with sound</p>
     </div>
   </div>
 
@@ -53,7 +51,7 @@
 
   <header class="hero section story-panel reveal" id="intro" data-motion>
     <div class="hero-content">
-      <p class="eyebrow">Happy Anniversary</p>
+      <p class="eyebrow">Happy 1st Anniversary!</p>
       <h1 class="hero-handwrite-title">
         <span class="sr-only">For Ella, with all my heart</span>
         <svg class="apple-handwrite apple-handwrite--hero" data-handwrite-svg="scroll" viewBox="0 0 800 220" role="img" aria-label="For Ella, with all my heart">
@@ -62,12 +60,21 @@
         </svg>
       </h1>
       <p class="hero-text">
-        This little corner of the internet is for us. Soft memories, future adventures,
-        and songs that feel like home.
+        I've never done this before for anyone. I never will for anyone but you.
+      </p>
+      <p>
+        I hope this website makes you smile even if it is a bit cringe and embarrassing. I love you <3
       </p>
     </div>
     <div class="hero-photo" aria-label="Placeholder for favorite polaroid photos">
-      <div class="polaroid-stack">
+      <button id="heroDigicamTrigger" class="hero-digicam-trigger" type="button" aria-label="Develop memory photos">
+        <img src="assets/images/digi_cam_cybershot_template.png" alt="Silver digicam" loading="lazy" />
+      </button>
+      <button id="heroPolaroidReset" class="hero-polaroid-reset" type="button" hidden>restack</button>
+
+      <div id="heroHeartBurst" class="hero-heart-burst" aria-hidden="true"></div>
+
+      <div id="heroPolaroidStack" class="polaroid-stack">
         <!-- Replace these placeholders with your own images by setting background-image inline or via CSS. -->
         <article class="polaroid polaroid-1">
           <div class="photo-cutout hero-shot hero-shot-1">PHOTO 01</div>
@@ -104,11 +111,38 @@
           <h2>League Duo Lobby</h2>
           <p>A cleaner queue-lobby vibe with click interactions, ready check, and duo banter.</p>
         </div>
-        <div class="queue-client motion-card" id="queueClient">
+        <div class="queue-client motion-card charm-frame charm-frame-league" id="queueClient">
           <div class="queue-header">
-            <p>RANKED DUO - LOBBY</p>
+            <p>RANKED SOLO/DUO - CHAMP SELECT</p>
             <span class="queue-state" id="queueState">Idle</span>
           </div>
+
+          <article class="champ-select-board" aria-label="Champ select style draft board">
+            <div class="team-column blue-team">
+              <h3>Blue Side</h3>
+              <div class="team-picks">
+                <span class="pick-chip">TOP</span>
+                <span class="pick-chip is-locked">JG</span>
+                <span class="pick-chip">MID</span>
+                <span class="pick-chip">BOT</span>
+                <span class="pick-chip">SUP</span>
+              </div>
+            </div>
+            <div class="draft-center">
+              <p>Hovering: <strong>Akali</strong> and <strong>Zac</strong></p>
+              <div class="draft-timer-ring" aria-hidden="true"></div>
+            </div>
+            <div class="team-column red-team">
+              <h3>Red Side</h3>
+              <div class="team-picks">
+                <span class="pick-chip">TOP</span>
+                <span class="pick-chip">JG</span>
+                <span class="pick-chip">MID</span>
+                <span class="pick-chip">BOT</span>
+                <span class="pick-chip">SUP</span>
+              </div>
+            </div>
+          </article>
 
           <div class="queue-main">
             <aside class="party-panel">
@@ -156,12 +190,51 @@
             </aside>
           </div>
 
+          <div class="chat-restricted-modal-shell" id="chatRestrictedModal" hidden>
+            <div class="chat-restricted-backdrop" id="chatRestrictedBackdrop" aria-hidden="true"></div>
+            <article class="chat-restricted-panel" id="chatRestrictedPanel" role="dialog" aria-modal="true" aria-live="polite" aria-labelledby="chatRestrictedTitle">
+              <header>
+                <p class="chat-restricted-title" id="chatRestrictedTitle">Riot Behavior Notice</p>
+                <button id="chatRestrictedCloseBtn" class="chat-restricted-close" type="button" aria-label="Close behavior notice">x</button>
+              </header>
+              <span class="chat-restricted-pill" id="chatRestrictedPill">All Chat Enabled</span>
+              <p class="chat-restricted-copy" id="chatRestrictedCopy">System: You can use all chat normally.</p>
+              <div class="chat-log-wrap">
+                <p class="chat-log-label">Recent Team Chat Logs</p>
+                <ul class="chat-log-list" id="chatLogList">
+                  <li>[You]: i love my gf&lt;3</li>
+                  <li>[You]: i LOVE my gf&lt;3</li>
+                  <li>[You]: you fat bastard, stand up and tell me what your chair smells like</li>
+                  <li>[Ella]: omg chat banned again??</li>
+                </ul>
+              </div>
+              <div class="chat-restricted-actions">
+                <button id="chatRestrictedUnderstandBtn" class="queue-btn queue-btn-primary" type="button">I Understand</button>
+              </div>
+            </article>
+          </div>
+
           <div class="ready-check" id="readyCheck" hidden>
             <p class="ready-title">MATCH FOUND</p>
             <p class="ready-count">Accept within <span id="readyCountdown">10</span>s</p>
             <div class="ready-actions">
               <button id="acceptReadyBtn" class="queue-btn queue-btn-primary" type="button">Accept</button>
               <button id="declineReadyBtn" class="queue-btn" type="button">Decline</button>
+            </div>
+          </div>
+
+          <div class="champ-crash-overlay" id="champCrashOverlay" hidden aria-live="assertive">
+            <div class="champ-crash-inner">
+              <div class="champ-crash-bar-wrap">
+                <p class="champ-crash-bar-label">ENTERING CHAMP SELECT<span class="champ-crash-ellipsis" aria-hidden="true"></span></p>
+                <div class="champ-crash-bar">
+                  <div class="champ-crash-fill" id="champCrashFill"></div>
+                </div>
+              </div>
+              <img class="champ-crash-miku" src="assets/gifs/miku_spinning.gif" alt="Hatsune Miku spinning" />
+              <p class="champ-crash-code">GAME ENDED: ENEMY DODGED</p>
+              <p class="champ-crash-msg">Champ select dissolved before lock-in.<br>Reason: <code>Most likely scared of us</code><br><span class="champ-crash-sub">Reward granted: You get +30 LP.</span></p>
+              <button id="champCrashRetryBtn" class="queue-btn" type="button">Queue Again</button>
             </div>
           </div>
         </div>
@@ -250,19 +323,12 @@
         <div class="music-shell">
           <aside class="playlist-placeholder">
             <p class="spotify-tag">Now in queue</p>
-            <h3>Private Playlist</h3>
+            <h3>Secret Playlist</h3>
             <p>
-              This box can become your private playlist preview. Keep it private by linking
+              This box can become your secret playlist preview. Keep it low-key by linking
               externally or embedding only when you are comfortable.
             </p>
-            <a class="btn btn-secondary" href="#" target="_blank" rel="noopener noreferrer">
-              Open on Spotify
-            </a>
             <!--
-              REPLACE THIS LINK:
-              - Put your private Spotify playlist URL in the anchor above.
-              - Example: https://open.spotify.com/playlist/xxxxxxxxxxxxxxxx
-
               OPTIONAL EMBED (public or shared private access only):
               - Replace this placeholder with Spotify iframe embed code.
               - Keep in mind GitHub Pages allows iframe embeds from Spotify.
@@ -381,6 +447,296 @@
             </div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <section class="section story-panel reveal" id="strawberry-booth" data-motion>
+      <div class="panel-pin">
+        <div class="section-heading">
+          <h2>Strawberry Photo Booth</h2>
+          <p>A scrapbook desktop corner with charm stickers and cute photo strips for us.</p>
+        </div>
+
+        <div class="strawberry-desk" id="strawberryDesk" data-active-app="spotify">
+          <span class="strawberry-charm charm-1" aria-hidden="true">
+            <img src="assets/images/korillakuma_charm.png" alt="" loading="lazy" />
+          </span>
+          <span class="strawberry-charm charm-2" aria-hidden="true">
+            <img src="assets/images/korilakkuma_clip.png" alt="" loading="lazy" />
+          </span>
+          <span class="strawberry-charm charm-3" aria-hidden="true">
+            <img src="assets/images/blue_bow.png" alt="" loading="lazy" />
+          </span>
+
+          <div class="scrapbook-notes">
+            <img class="paper-sticker paper-sticker-ripped" src="assets/images/ripped_lined_paper_sticker.jpg" alt="" aria-hidden="true" loading="lazy" />
+            <img class="paper-sticker paper-sticker-heart" src="assets/images/heart_blank_middle.jpg" alt="" aria-hidden="true" loading="lazy" />
+
+            <article class="note-template ripped-template motion-card">
+              <h3>Our Tiny Note</h3>
+              <p>
+                This is your text zone for the ripped lined paper sticker. Replace this with your own
+                message and keep the cozy scrapbook vibe.
+              </p>
+            </article>
+
+            <article class="note-template heart-template motion-card">
+              <h3>Heart Memo</h3>
+              <p>
+                This is where a short sweet line can go. You can treat it like a mini sticky note to Ella.
+              </p>
+            </article>
+          </div>
+
+          <article class="macbook-frame motion-card charm-frame charm-frame-desk" aria-label="Mac desktop inspired memory board">
+            <header class="macbook-topbar">
+              <span class="dot dot-red" aria-hidden="true"></span>
+              <span class="dot dot-yellow" aria-hidden="true"></span>
+              <span class="dot dot-green" aria-hidden="true"></span>
+              <p>ella-and-us.desktop</p>
+            </header>
+
+            <div class="macbook-screen">
+              <aside class="desktop-icons" aria-label="Desktop apps">
+                <button class="desktop-icon is-active" type="button" data-desktop-app="spotify" aria-pressed="true">
+                  <img src="assets/images/spotify_logo.png" alt="Spotify app" loading="lazy" />
+                  <span>Spotify</span>
+                </button>
+                <button class="desktop-icon" type="button" data-desktop-app="photos" aria-pressed="false">
+                  <img src="assets/images/photos_logo.png" alt="Photos app" loading="lazy" />
+                  <span>Photos</span>
+                </button>
+                <button class="desktop-icon" type="button" data-desktop-app="discord" aria-pressed="false">
+                  <img src="assets/images/discord_logo.png" alt="Discord app" loading="lazy" />
+                  <span>Discord</span>
+                </button>
+                <button class="desktop-icon" type="button" data-desktop-app="browser" aria-pressed="false">
+                  <span class="desktop-icon-glyph" aria-hidden="true">🌐</span>
+                  <span>Browser</span>
+                </button>
+              </aside>
+
+              <div class="desktop-workspace">
+                <section class="desktop-pane pane-spotify is-active" data-pane="spotify" aria-label="Spotify jam window">
+                  <article class="spotify-window">
+                    <div class="spotify-layout">
+                      <aside class="spotify-sidebar" aria-label="Spotify sidebar">
+                        <h4>Library</h4>
+                        <button class="spotify-side-item is-active" type="button" data-playlist-name="emyan + johnny">emyan + johnny</button>
+                        <button class="spotify-side-item" type="button" data-playlist-name="My Playlist #1314">My Playlist #1314</button>
+                        <button class="spotify-side-item" type="button" data-playlist-name="one fire, twin flame">one fire, twin flame</button>
+                      </aside>
+
+                      <div class="spotify-main">
+                        <header class="spotify-topbar">
+                          <div class="spotify-nav-arrows" aria-hidden="true">
+                            <span></span>
+                            <span></span>
+                          </div>
+                          <p>Your Library</p>
+                          <button class="spotify-install" type="button">Install App</button>
+                        </header>
+                        <header class="spotify-hero">
+                          <div class="spotify-cover"></div>
+                          <div>
+                            <p class="spotify-label">Public Playlist</p>
+                            <h3>emyan + johnny</h3>
+                            <a class="spotify-link" href="https://open.spotify.com/playlist/37i9dQZF1EJBakrweSWaXT?si=8c37d8b2f00c4444" target="_blank" rel="noopener noreferrer">Open Our Jam</a>
+                          </div>
+                        </header>
+
+                        <div class="spotify-controls-row">
+                          <button id="spotifyJamToggle" class="spotify-play-btn" type="button" aria-pressed="false">Play</button>
+                          <div class="spotify-progress"><span id="spotifyProgressFill"></span></div>
+                        </div>
+
+                        <div class="spotify-list" id="spotifyList">
+                          <button class="spotify-track is-active" type="button" data-track-title="Bodies">Bodies</button>
+                          <button class="spotify-track" type="button" data-track-title="Senses">Senses</button>
+                          <button class="spotify-track" type="button" data-track-title="blue salvia">blue salvia</button>
+                          <button class="spotify-track" type="button" data-track-title="Bags">Bags</button>
+                        </div>
+                        <p class="spotify-now">Now playing: <span id="spotifyNowTitle">Bodies</span></p>
+                      </div>
+
+                      <aside class="spotify-friends" aria-label="Friend activity">
+                        <h4>Friend Activity</h4>
+                        <p><strong>ella</strong> - Cupid</p>
+                        <p><strong>you</strong> - Bodies</p>
+                        <p><strong>ella</strong> - Lovembomb</p>
+                      </aside>
+                    </div>
+                  </article>
+                </section>
+
+                <section class="desktop-pane pane-photos" data-pane="photos" aria-label="mac photos app" hidden>
+                  <article class="photos-window">
+                    <header class="photos-toolbar">
+                      <h3>Photos</h3>
+                      <div class="photos-segments" role="tablist" aria-label="Photos views">
+                        <button class="photos-segment" type="button" data-photos-view="years">Years</button>
+                        <button class="photos-segment" type="button" data-photos-view="months">Months</button>
+                        <button class="photos-segment" type="button" data-photos-view="days">Days</button>
+                        <button class="photos-segment is-active" type="button" data-photos-view="all">All Photos</button>
+                      </div>
+                    </header>
+
+                    <div class="photos-content">
+                      <div class="photos-grid" id="photosGrid">
+                        <button class="photos-thumb is-active" type="button" data-photo-group="years" data-photo-src="assets/images/johnny_avatar.jpg" data-photo-title="Avatar Day" data-photo-date="Apr 2025" data-photo-place="Discord"><img src="assets/images/johnny_avatar.jpg" alt="Avatar memory" loading="lazy" /></button>
+                        <button class="photos-thumb" type="button" data-photo-group="months" data-photo-src="assets/images/matcha.png" data-photo-title="Matcha Date" data-photo-date="May 2025" data-photo-place="Cafe"><img src="assets/images/matcha.png" alt="Matcha date" loading="lazy" /></button>
+                        <button class="photos-thumb" type="button" data-photo-group="days" data-photo-src="assets/images/sushi.png" data-photo-title="Sushi Night" data-photo-date="Jul 2025" data-photo-place="Sushi Bar"><img src="assets/images/sushi.png" alt="Sushi night" loading="lazy" /></button>
+                        <button class="photos-thumb" type="button" data-photo-group="days" data-photo-src="assets/images/hero-placeholder.jpg" data-photo-title="Beach Day" data-photo-date="Aug 2025" data-photo-place="Coast"><img src="assets/images/hero-placeholder.jpg" alt="Beach memory" loading="lazy" /></button>
+                      </div>
+                      <figure class="photos-preview">
+                        <img id="photosPreviewImage" src="assets/images/johnny_avatar.jpg" alt="Selected photo preview" loading="lazy" />
+                        <figcaption id="photosPreviewTitle">Avatar Day</figcaption>
+                        <p class="photos-meta"><span id="photosPreviewDate">Apr 2025</span> · <span id="photosPreviewPlace">Discord</span></p>
+                      </figure>
+                    </div>
+
+                  </article>
+                </section>
+
+                <section class="desktop-pane pane-discord" data-pane="discord" aria-label="discord server window" hidden>
+                  <article class="discord-window">
+                    <aside class="discord-channels">
+                      <button class="discord-channel is-active" type="button" data-channel="general"># general</button>
+                      <button class="discord-channel" type="button" data-channel="music"># music</button>
+                    </aside>
+                    <div class="discord-main">
+                      <header class="discord-header">
+                        <h4 id="discordChannelTitle"># general</h4>
+                        <div class="discord-actions" aria-hidden="true">
+                          <span></span>
+                          <span></span>
+                          <span></span>
+                        </div>
+                      </header>
+                      <div class="discord-chat" id="discordChat">
+                        <p class="discord-message" data-channel="general"><strong>you:</strong> goodnight ella, i love you&lt;3</p>
+                        <p class="discord-message" data-channel="general"><strong>ella:</strong> goodnight, i love you too ❤️</p>
+                        <p class="discord-message" data-channel="general"><strong>you:</strong> new pfp coming soon?</p>
+                        <p class="discord-message discord-message-media" data-channel="general"><img src="assets/images/Screenshot 2025-05-21 002250.png" alt="Inside-joke profile picture preview" loading="lazy" /></p>
+                        <p class="discord-message" data-channel="music" hidden><strong>you:</strong> goodnight ella, i love you&lt;3</p>
+                        <p class="discord-message" data-channel="music" hidden><strong>ella:</strong> goodnight, i love you too ❤️</p>
+                        <p class="discord-message" data-channel="music" hidden><strong>you:</strong> new pfp coming soon?</p>
+                        <p class="discord-message discord-message-media" data-channel="music" hidden><img src="assets/images/Screenshot 2025-05-21 002250.png" alt="Inside-joke profile picture preview" loading="lazy" /></p>
+                      </div>
+                      <p class="discord-composer">Message #<span id="discordComposerChannel">general</span></p>
+                    </div>
+                    <aside class="discord-members" aria-label="Server members">
+                      <h4>Members - 2</h4>
+                      <p><span class="member-dot online"></span> ella</p>
+                      <p><span class="member-dot online"></span> you</p>
+                    </aside>
+                  </article>
+                </section>
+
+                <section class="desktop-pane pane-browser" data-pane="browser" aria-label="browser camera window" hidden>
+                  <article class="browser-window">
+                    <header class="browser-topbar">
+                      <div class="browser-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+                      <p class="browser-tab-title">ella lens archive</p>
+                    </header>
+                    <div class="browser-address-row">
+                      <span class="browser-lock" aria-hidden="true">🔒</span>
+                      <p>https://strawberry.love/lens</p>
+                    </div>
+                    <div class="browser-content">
+                      <p class="browser-kicker">in-app browser simulation</p>
+                      <h4>camera reel</h4>
+                      <div class="digicam-wrapper digicam-wrapper-mini" role="button" tabindex="0" aria-label="Click to view next portrait of Ella in browser app">
+                        <div class="digicam-body-layer">
+                          <div class="digicam-lcd">
+                            <div class="digicam-strip">
+                              <img src="assets/images/nugochan_0.png" alt="Portrait illustration of Ella" class="digicam-photo" loading="lazy" />
+                              <img src="assets/images/nugochan_1.png" alt="Portrait illustration of Ella" class="digicam-photo" loading="lazy" />
+                              <img src="assets/images/nugochan_2.png" alt="Portrait illustration of Ella" class="digicam-photo" loading="lazy" />
+                              <img src="assets/images/nugochan_3.png" alt="Portrait illustration of Ella" class="digicam-photo" loading="lazy" />
+                            </div>
+                          </div>
+                          <div class="digicam-flash" aria-hidden="true"></div>
+                          <div class="digicam-counter" aria-live="polite">1 / 4</div>
+                          <img class="digicam-body-overlay" src="assets/images/digi_cam_Template.png" alt="" aria-hidden="true" />
+                        </div>
+                      </div>
+                      <p class="browser-footnote">tap the camera to flip through</p>
+                    </div>
+                  </article>
+                </section>
+              </div>
+
+              <div class="food-sticker-tray" aria-label="Food and charm sticker row">
+                <span class="food-sticker"><img src="assets/images/ramen_bowl.png" alt="Ramen sticker" loading="lazy" /></span>
+                <span class="food-sticker"><img src="assets/images/sushi.png" alt="Sushi sticker" loading="lazy" /></span>
+                <span class="food-sticker"><img src="assets/images/milk_tea.png" alt="Milk tea sticker" loading="lazy" /></span>
+                <span class="food-sticker"><img src="assets/images/strawberry_mochi.png" alt="Strawberry mochi sticker" loading="lazy" /></span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section story-panel reveal" id="ella-portraits" data-motion>
+      <div class="panel-pin">
+        <div class="section-heading">
+          <h2>ella, through the lens</h2>
+          <p>art by <a href="https://www.instagram.com/nugochan/" target="_blank" rel="noopener noreferrer">@nugochan</a> &middot; she looks exactly like this</p>
+        </div>
+        <div class="digicam-scene">
+          <div class="digicam-wrapper digicam-wrapper-hero" role="button" tabindex="0" aria-label="Click to view next portrait of Ella">
+            <div class="digicam-body-layer">
+              <div class="digicam-lcd">
+                <div class="digicam-strip">
+                  <img src="assets/images/nugochan_0.png" alt="Portrait illustration of Ella" class="digicam-photo" loading="lazy" />
+                  <img src="assets/images/nugochan_1.png" alt="Portrait illustration of Ella" class="digicam-photo" loading="lazy" />
+                  <img src="assets/images/nugochan_2.png" alt="Portrait illustration of Ella" class="digicam-photo" loading="lazy" />
+                  <img src="assets/images/nugochan_3.png" alt="Portrait illustration of Ella" class="digicam-photo" loading="lazy" />
+                </div>
+              </div>
+              <div class="digicam-flash" aria-hidden="true"></div>
+              <div class="digicam-counter" aria-live="polite">1 / 4</div>
+              <img class="digicam-body-overlay" src="assets/images/digi_cam_Template.png" alt="" aria-hidden="true" />
+            </div>
+          </div>
+          <p class="digicam-hint">tap to flip through</p>
+
+          <div class="digicam-controls" aria-label="Digicam fit controls">
+            <label for="digicamZoom">zoom</label>
+            <input id="digicamZoom" type="range" min="1" max="1.8" step="0.01" value="1.22" />
+            <label for="digicamPanY">pan y</label>
+            <input id="digicamPanY" type="range" min="15" max="75" step="1" value="40" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section story-panel reveal" id="resist-memory" data-motion>
+      <div class="panel-pin">
+        <div class="section-heading">
+          <h2 class="resist-logo-heading">
+            <img class="resist-logo-img" src="assets/images/1000xRESIST_logo.png" alt="1000xRESIST" />
+            <span class="resist-logo-sub">Memory Corridor</span>
+          </h2>
+          <p>A surreal terminal where your choices reveal soft memories and future promises.</p>
+        </div>
+
+        <article class="resist-stage motion-card charm-frame charm-frame-resist" id="resistStage" aria-label="1000xRESIST inspired dialogue scene">
+          <canvas id="resistCanvas" aria-hidden="true"></canvas>
+          <div class="resist-overlay" aria-hidden="true">
+            <img class="resist-overlay-avatar" src="assets/images/Watcher_1kxr_screenshot_09.png" alt="" loading="lazy" />
+          </div>
+
+          <div class="resist-dialogue-wrap" id="resistDialogueWrap">
+            <p class="resist-speaker" id="resistSpeaker">Watcher</p>
+            <div class="resist-dialogue-box">
+              <p class="resist-dialogue-text" id="resistDialogueText">Initializing memory corridor...</p>
+              <div class="resist-choices" id="resistChoices"></div>
+            </div>
+          </div>
+        </article>
       </div>
     </section>
 
@@ -661,16 +1017,6 @@
       </div>
     </section>
   </main>
-
-  <nav id="guidedPager" class="guided-pager" aria-label="Story navigation" hidden>
-    <button id="guidedPrevBtn" class="guided-arrow-btn" type="button" aria-label="Previous section">
-      <span aria-hidden="true">‹</span>
-    </button>
-    <div id="guidedDots" class="guided-dots" aria-hidden="false"></div>
-    <button id="guidedNextBtn" class="guided-arrow-btn" type="button" aria-label="Next section">
-      <span aria-hidden="true">›</span>
-    </button>
-  </nav>
 
   <footer class="footer">
     <p>Made with love, warm tones, and soft blue for your favorite person.</p>

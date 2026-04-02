@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Love letter chapter." />
+  <title>For Ella - Letter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-shapes" aria-hidden="true"><span class="shape shape-1"></span><span class="shape shape-2"></span><span class="shape shape-3"></span></div>
+  <div class="scroll-progress" aria-hidden="true"><div id="scrollProgressFill"></div></div>
+
+  <header class="site-nav">
+    <a class="site-brand" href="index.html">For Ella</a>
+    <nav class="site-links" aria-label="Primary">
+      <a href="fandom.html">Duo Lobby</a><a href="headspace.html">Headspace</a><a href="music.html">Music</a><a href="timeline.html">Timeline</a><a href="inferno.html">Inferno</a><a href="letter.html" aria-current="page">Letter</a><a href="truth.html">Finale</a>
+    </nav>
+  </header>
+
+  <main class="page-shell">
+    <section class="section story-panel reveal" id="letter" data-motion>
+      <div class="panel-pin">
+        <div class="section-heading">
+          <h2>You've Got Mail 💌</h2>
+          <p>Click the envelope to open it.</p>
+        </div>
+
+        <div class="envelope-scene-wrap">
+          <canvas id="envelopeCanvas" aria-hidden="true"></canvas>
+          <div class="letter-popup" id="letterPopup" aria-hidden="true" hidden>
+            <div class="letter-paper" id="letterPaper">
+              <p class="letter-greeting">My love,</p>
+              <p>Thank you for being my safest place and my biggest adventure. Every section of this little site points to one truth - I love you.</p>
+              <p class="letter-sign">Forever yours.</p>
+            </div>
+          </div>
+          <button class="envelope-click-hint" id="envelopeHint" aria-label="Open envelope">tap to open</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"><p><a href="index.html">Back to hub</a></p></footer>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.min.js"></script>
+  <script src="three-bouquet.js"></script>
+  <script src="script.js"></script>
+  <script src="envelope-scene.js"></script>
+</body>
+</html>

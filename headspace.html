@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Headspace Memories chapter." />
+  <title>For Ella - Headspace Memories</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-shapes" aria-hidden="true">
+    <span class="shape shape-1"></span>
+    <span class="shape shape-2"></span>
+    <span class="shape shape-3"></span>
+  </div>
+  <div class="scroll-progress" aria-hidden="true"><div id="scrollProgressFill"></div></div>
+
+  <header class="site-nav">
+    <a class="site-brand" href="index.html">For Ella</a>
+    <nav class="site-links" aria-label="Primary">
+      <a href="fandom.html">Duo Lobby</a>
+      <a href="headspace.html" aria-current="page">Headspace</a>
+      <a href="music.html">Music</a>
+      <a href="timeline.html">Timeline</a>
+      <a href="inferno.html">Inferno</a>
+      <a href="letter.html">Letter</a>
+      <a href="truth.html">Finale</a>
+    </nav>
+  </header>
+
+  <main class="page-shell">
+    <section class="section story-panel reveal" id="photos" data-motion>
+      <div class="panel-pin">
+        <div class="section-heading">
+          <h2>Headspace Memories</h2>
+          <p>Dreamy little fragments of us. Tap one to relive it.</p>
+        </div>
+
+        <div class="headspace-field">
+          <span class="headspace-float float-heart" aria-hidden="true">❤</span>
+          <span class="headspace-float float-star" aria-hidden="true">✦</span>
+          <span class="headspace-float float-note" aria-hidden="true">♪</span>
+          <span class="headspace-float float-heart-2" aria-hidden="true">♡</span>
+
+          <div class="photo-grid headspace-grid" id="headspaceGrid">
+            <button class="memory-orb" type="button" data-memory-title="A Sunny Day With You" data-memory-image="assets/images/omori.png" data-memory-message="Sunlight, your laugh, and that one tiny moment I knew my heart was already yours.">
+              <span class="memory-name">A Sunny Day With You</span>
+              <span class="memory-tag">A Memory I Never Want To Forget</span>
+            </button>
+
+            <button class="memory-orb" type="button" data-memory-title="Rain Window Promise" data-memory-image="assets/images/memory-02.jpg" data-memory-message="We watched rain race down the window and talked about our future like it was already home.">
+              <span class="memory-name">Rain Window Promise</span>
+              <span class="memory-tag">A Memory I Never Want To Forget</span>
+            </button>
+
+            <button class="memory-orb" type="button" data-memory-title="Midnight Laugh Quest" data-memory-image="assets/images/memory-03.jpg" data-memory-message="It was late, we were tired, and somehow everything turned into the funniest conversation ever.">
+              <span class="memory-name">Midnight Laugh Quest</span>
+              <span class="memory-tag">A Memory I Never Want To Forget</span>
+            </button>
+
+            <button class="memory-orb" type="button" data-memory-title="Home Is You" data-memory-image="assets/images/memory-04.jpg" data-memory-message="No matter how far apart we are, every path in my headspace still leads back to you.">
+              <span class="memory-name">Home Is You</span>
+              <span class="memory-tag">A Memory I Never Want To Forget</span>
+            </button>
+          </div>
+
+          <div class="memory-pop" id="memoryPop" hidden aria-hidden="true">
+            <button class="memory-close" id="memoryClose" type="button" aria-label="Close memory">×</button>
+            <article class="memory-sheet">
+              <p class="memory-kicker">Headspace Memory</p>
+              <h3 id="memoryPopTitle">A Sunny Day With You</h3>
+              <img id="memoryPopImage" src="assets/images/omori.png" alt="Memory photo" loading="lazy" />
+              <p id="memoryPopMessage">A memory opens here.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"><p><a href="index.html">Back to hub</a></p></footer>
+  <script src="script.js"></script>
+</body>
+</html>
