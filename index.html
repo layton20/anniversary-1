@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A cozy anniversary website with photos, music, memories, and love notes." />
+  <title>For Ella - Our Cozy Anniversary</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-shapes" aria-hidden="true">
+    <span class="shape shape-1"></span>
+    <span class="shape shape-2"></span>
+    <span class="shape shape-3"></span>
+  </div>
+
+  <!-- Rilakkuma scatter stickers — floats on edges throughout the page -->
+  <div class="rila-scatter" aria-hidden="true">
+    <img class="rila-sticker rila-s1" src="assets/gifs/rilakkuma_wobble.gif" alt="" />
+    <img class="rila-sticker rila-s2" src="assets/gifs/korilakkuma_wobble.gif" alt="" />
+    <img class="rila-sticker rila-s3" src="assets/gifs/rilakkuma_dancing.gif" alt="" />
+    <img class="rila-sticker rila-s4" src="assets/gifs/rilakkuma_wobble.gif" alt="" />
+    <img class="rila-sticker rila-s5" src="assets/gifs/korilakkuma_wobble.gif" alt="" />
+    <img class="rila-sticker rila-s6" src="assets/gifs/rilakkuma_wobble.gif" alt="" />
+    <img class="rila-sticker rila-s7" src="assets/gifs/hello_kitty_wobble.gif" alt="" />
+    <img class="rila-sticker rila-s8" src="assets/gifs/mamegoma_wobble.gif" alt="" />
+    <img class="rila-sticker rila-s9" src="assets/gifs/kiiroitori_wobble.gif" alt="" />
+    <img class="rila-sticker miku-s1" src="assets/gifs/miku_dance_2.gif" alt="" />
+  </div>
+
+  <div class="opening-overlay" id="openingOverlay" aria-hidden="false">
+    <div class="opening-simple" id="openingSimpleCard">
+      <p class="opening-kicker">
+        <span class="sr-only">hej ella!</span>
+        <svg class="apple-handwrite apple-handwrite--opening" data-handwrite-svg="immediate" viewBox="0 0 440 96" role="img" aria-label="hej ella!">
+          <text x="50%" y="58%" text-anchor="middle" dominant-baseline="middle">hej ella!</text>
+        </svg>
+      </p>
+      <button id="openingEnvelopeBtn" class="opening-envelope-btn" type="button" aria-expanded="false" aria-controls="openingEnvelopeMessage">
+        <span class="opening-envelope-icon" aria-hidden="true">💌</span>
+      </button>
+      <p class="opening-caption">you've got new emails</p>
+      <p id="openingEnvelopeMessage" class="opening-message">tap the envelope to open your mail.</p>
+    </div>
+  </div>
+
+  <div class="scroll-progress" aria-hidden="true">
+    <div id="scrollProgressFill"></div>
+  </div>
+
+  <header class="hero section story-panel reveal" id="intro" data-motion>
+    <div class="hero-content">
+      <p class="eyebrow">Happy Anniversary</p>
+      <h1 class="hero-handwrite-title">
+        <span class="sr-only">For Ella, with all my heart</span>
+        <svg class="apple-handwrite apple-handwrite--hero" data-handwrite-svg="scroll" viewBox="0 0 800 220" role="img" aria-label="For Ella, with all my heart">
+          <text x="10" y="96">For Ella,</text>
+          <text x="16" y="176">with all my heart</text>
+        </svg>
+      </h1>
+      <p class="hero-text">
+        This little corner of the internet is for us. Soft memories, future adventures,
+        and songs that feel like home.
+      </p>
+    </div>
+    <div class="hero-photo" aria-label="Placeholder for favorite polaroid photos">
+      <div class="polaroid-stack">
+        <!-- Replace these placeholders with your own images by setting background-image inline or via CSS. -->
+        <article class="polaroid polaroid-1">
+          <div class="photo-cutout hero-shot hero-shot-1">PHOTO 01</div>
+          <p>Our Softest Day</p>
+        </article>
+        <article class="polaroid polaroid-2">
+          <div class="photo-cutout hero-shot hero-shot-2">PHOTO 02</div>
+          <p>Cafe & Rain</p>
+        </article>
+        <article class="polaroid polaroid-3">
+          <div class="photo-cutout hero-shot hero-shot-3">PHOTO 03</div>
+          <p>You + Me</p>
+        </article>
+        <article class="polaroid polaroid-4">
+          <div class="photo-cutout hero-shot hero-shot-1">PHOTO 04</div>
+          <p>Night Walk</p>
+        </article>
+        <article class="polaroid polaroid-5">
+          <div class="photo-cutout hero-shot hero-shot-2">PHOTO 05</div>
+          <p>Little Laughs</p>
+        </article>
+        <article class="polaroid polaroid-6">
+          <div class="photo-cutout hero-shot hero-shot-3">PHOTO 06</div>
+          <p>Always Us</p>
+        </article>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section story-panel reveal" id="fandom" data-motion>
+      <div class="panel-pin">
+        <div class="section-heading">
+          <h2>League Duo Lobby</h2>
+          <p>A cleaner queue-lobby vibe with click interactions, ready check, and duo banter.</p>
+        </div>
+        <div class="queue-client motion-card" id="queueClient">
+          <div class="queue-header">
+            <p>RANKED DUO - LOBBY</p>
+            <span class="queue-state" id="queueState">Idle</span>
+          </div>
+
+          <div class="queue-main">
+            <aside class="party-panel">
+              <h3>Your Party</h3>
+              <article class="summoner-card">
+                <img src="assets/gifs/akali_splash.jpg" alt="Akali splash" data-role="gif-slot" />
+                <div>
+                  <h4>Ella</h4>
+                  <p id="ellaRole">Mid - Akali</p>
+                </div>
+              </article>
+              <article class="summoner-card">
+                <img src="assets/gifs/zac_splash.jpg" alt="Zac splash" data-role="gif-slot" />
+                <div>
+                  <h4>You</h4>
+                  <p id="youRole">Jungle - Zac</p>
+                </div>
+              </article>
+              <button id="swapRoleBtn" class="queue-mini-btn" type="button">Swap Roles For Fun</button>
+            </aside>
+
+            <section class="queue-center">
+              <div class="queue-ring" id="queueRing">
+                <span id="queueTimer">00:00</span>
+              </div>
+              <p id="queueHint">Not in queue. Press Find Match.</p>
+              <div class="queue-actions">
+                <button id="startQueueBtn" class="queue-btn queue-btn-primary" type="button">Find Match</button>
+                <button id="cancelQueueBtn" class="queue-btn" type="button" disabled>Cancel</button>
+              </div>
+              <div class="shock-reaction" id="queueShock" aria-hidden="true">
+                <img src="assets/gifs/rilakkuma_and_friends_shocked.gif" alt="Rilakkuma and friends shocked" data-role="gif-slot" />
+                <p>MATCH FOUND PANIC</p>
+              </div>
+            </section>
+
+            <aside class="banter-panel">
+              <h3>Duo Notes</h3>
+              <p id="duoBanterLine">"Queue up. We scale."</p>
+              <div class="banter-chips">
+                <button class="banter-chip" type="button" data-line="No tilt, only vibes.">No Tilt</button>
+                <button class="banter-chip" type="button" data-line="If Zac jumps first, we win.">Jump First</button>
+                <button class="banter-chip" type="button" data-line="Akali side-lane raid incoming.">Side Lane</button>
+              </div>
+            </aside>
+          </div>
+
+          <div class="ready-check" id="readyCheck" hidden>
+            <p class="ready-title">MATCH FOUND</p>
+            <p class="ready-count">Accept within <span id="readyCountdown">10</span>s</p>
+            <div class="ready-actions">
+              <button id="acceptReadyBtn" class="queue-btn queue-btn-primary" type="button">Accept</button>
+              <button id="declineReadyBtn" class="queue-btn" type="button">Decline</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section story-panel reveal" id="photos" data-motion>
+      <div class="panel-pin">
+        <div class="section-heading">
+          <h2>Headspace Memories</h2>
+          <p>Dreamy little fragments of us. Tap one to relive it.</p>
+        </div>
+
+        <div class="headspace-field">
+          <span class="headspace-float float-heart" aria-hidden="true">❤</span>
+          <span class="headspace-float float-star" aria-hidden="true">✦</span>
+          <span class="headspace-float float-note" aria-hidden="true">♪</span>
+          <span class="headspace-float float-heart-2" aria-hidden="true">♡</span>
+
+          <div class="photo-grid headspace-grid" id="headspaceGrid">
+            <button
+              class="memory-orb"
+              type="button"
+              data-memory-title="A Sunny Day With You"
+              data-memory-image="assets/images/omori.png"
+              data-memory-message="Sunlight, your laugh, and that one tiny moment I knew my heart was already yours."
+            >
+              <span class="memory-name">A Sunny Day With You</span>
+              <span class="memory-tag">A Memory I Never Want To Forget</span>
+            </button>
+
+            <button
+              class="memory-orb"
+              type="button"
+              data-memory-title="Rain Window Promise"
+              data-memory-image="assets/images/memory-02.jpg"
+              data-memory-message="We watched rain race down the window and talked about our future like it was already home."
+            >
+              <span class="memory-name">Rain Window Promise</span>
+              <span class="memory-tag">A Memory I Never Want To Forget</span>
+            </button>
+
+            <button
+              class="memory-orb"
+              type="button"
+              data-memory-title="Midnight Laugh Quest"
+              data-memory-image="assets/images/memory-03.jpg"
+              data-memory-message="It was late, we were tired, and somehow everything turned into the funniest conversation ever."
+            >
+              <span class="memory-name">Midnight Laugh Quest</span>
+              <span class="memory-tag">A Memory I Never Want To Forget</span>
+            </button>
+
+            <button
+              class="memory-orb"
+              type="button"
+              data-memory-title="Home Is You"
+              data-memory-image="assets/images/memory-04.jpg"
+              data-memory-message="No matter how far apart we are, every path in my headspace still leads back to you."
+            >
+              <span class="memory-name">Home Is You</span>
+              <span class="memory-tag">A Memory I Never Want To Forget</span>
+            </button>
+          </div>
+
+          <div class="memory-pop" id="memoryPop" hidden aria-hidden="true">
+            <button class="memory-close" id="memoryClose" type="button" aria-label="Close memory">×</button>
+            <article class="memory-sheet">
+              <p class="memory-kicker">Headspace Memory</p>
+              <h3 id="memoryPopTitle">A Sunny Day With You</h3>
+              <img id="memoryPopImage" src="assets/images/omori.png" alt="Memory photo" loading="lazy" />
+              <p id="memoryPopMessage">A memory opens here.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section story-panel reveal" id="music" data-motion>
+      <div class="panel-pin">
+        <div class="section-heading">
+          <h2>Our Music Room</h2>
+          <p>Spotify-style player vibes, with your private playlist and favorite tracks.</p>
+        </div>
+
+        <div class="music-shell">
+          <aside class="playlist-placeholder">
+            <p class="spotify-tag">Now in queue</p>
+            <h3>Private Playlist</h3>
+            <p>
+              This box can become your private playlist preview. Keep it private by linking
+              externally or embedding only when you are comfortable.
+            </p>
+            <a class="btn btn-secondary" href="#" target="_blank" rel="noopener noreferrer">
+              Open on Spotify
+            </a>
+            <!--
+              REPLACE THIS LINK:
+              - Put your private Spotify playlist URL in the anchor above.
+              - Example: https://open.spotify.com/playlist/xxxxxxxxxxxxxxxx
+
+              OPTIONAL EMBED (public or shared private access only):
+              - Replace this placeholder with Spotify iframe embed code.
+              - Keep in mind GitHub Pages allows iframe embeds from Spotify.
+            -->
+            <iframe
+              data-testid="embed-iframe"
+              style="border-radius:12px"
+              src="https://open.spotify.com/embed/playlist/3jgjLqx7XrxtmctHKsZyYD?utm_source=generator"
+              width="100%"
+              height="152"
+              frameborder="0"
+              allowfullscreen
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy"
+              title="Ella private playlist placeholder"
+            ></iframe>
+          </aside>
+
+          <div class="music-main">
+            <div class="player-card">
+              <div class="now-playing">
+                <div class="album-thumb" id="nowPlayingArt">ALBUM ART</div>
+                <div>
+                  <p class="now-label">Now Playing</p>
+                  <h3 id="nowPlayingTitle">Pick a track below</h3>
+                  <p id="nowPlayingArtist">Artist placeholder</p>
+                </div>
+              </div>
+
+              <div class="player-controls">
+                <button id="togglePlayBtn" class="icon-btn" aria-label="Play or pause track">Play</button>
+                <div class="progress-wrap">
+                  <label for="trackProgress" class="sr-only">Track progress</label>
+                  <input id="trackProgress" type="range" min="0" max="100" value="0" />
+                  <div class="time-row">
+                    <span id="currentTime">0:00</span>
+                    <span id="duration">0:00</span>
+                  </div>
+                </div>
+              </div>
+
+              <audio id="audioPlayer" preload="metadata">
+                <!--
+                  Add your local or hosted MP3 files here if you want a default source.
+                  Example:
+                  <source src="assets/audio/our-song.mp3" type="audio/mpeg" />
+                -->
+                Your browser does not support the audio element.
+              </audio>
+
+              <div class="visualizer" id="visualizer" aria-hidden="true">
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
+              <div class="music-notes" id="musicNotes" aria-hidden="true"></div>
+            </div>
+
+            <div class="track-grid" id="trackGrid">
+              <!--
+                Track cards:
+                - data-audio: path to your audio file (local file in repo or hosted URL)
+                - data-art: album image URL/path
+                - data-title / data-artist: shown in now playing panel
+                - data-spotify: optional Spotify track URL for external opening
+              -->
+              <article class="track-card motion-card" data-audio="assets/audio/track-01.mp3" data-art="assets/images/album-01.jpg" data-title="Blue Skies for Two" data-artist="Ella & You" data-spotify="https://open.spotify.com/">
+                <span class="track-index">01</span>
+                <div class="track-art">ALBUM 01</div>
+                <div class="track-meta">
+                  <h4>Blue Skies for Two</h4>
+                  <p>Ella & You</p>
+                </div>
+                <div class="track-actions">
+                  <button class="track-play-btn">Play</button>
+                  <a href="https://open.spotify.com/" target="_blank" rel="noopener noreferrer">Spotify</a>
+                </div>
+              </article>
+
+              <article class="track-card motion-card" data-audio="assets/audio/track-02.mp3" data-art="assets/images/album-02.jpg" data-title="Cafe Window Light" data-artist="Memory Tape" data-spotify="https://open.spotify.com/">
+                <span class="track-index">02</span>
+                <div class="track-art">ALBUM 02</div>
+                <div class="track-meta">
+                  <h4>Cafe Window Light</h4>
+                  <p>Memory Tape</p>
+                </div>
+                <div class="track-actions">
+                  <button class="track-play-btn">Play</button>
+                  <a href="https://open.spotify.com/" target="_blank" rel="noopener noreferrer">Spotify</a>
+                </div>
+              </article>
+
+              <article class="track-card motion-card" data-audio="assets/audio/track-03.mp3" data-art="assets/images/album-03.jpg" data-title="Midnight Soft Laugh" data-artist="Future Us" data-spotify="https://open.spotify.com/">
+                <span class="track-index">03</span>
+                <div class="track-art">ALBUM 03</div>
+                <div class="track-meta">
+                  <h4>Midnight Soft Laugh</h4>
+                  <p>Future Us</p>
+                </div>
+                <div class="track-actions">
+                  <button class="track-play-btn">Play</button>
+                  <a href="https://open.spotify.com/" target="_blank" rel="noopener noreferrer">Spotify</a>
+                </div>
+              </article>
+
+              <article class="track-card motion-card" data-audio="assets/audio/track-04.mp3" data-art="assets/images/album-04.jpg" data-title="Postcard to Tomorrow" data-artist="Tiny Orbit" data-spotify="https://open.spotify.com/">
+                <span class="track-index">04</span>
+                <div class="track-art">ALBUM 04</div>
+                <div class="track-meta">
+                  <h4>Postcard to Tomorrow</h4>
+                  <p>Tiny Orbit</p>
+                </div>
+                <div class="track-actions">
+                  <button class="track-play-btn">Play</button>
+                  <a href="https://open.spotify.com/" target="_blank" rel="noopener noreferrer">Spotify</a>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section story-panel reveal" id="timeline" data-motion>
+      <div class="panel-pin">
+        <div class="section-heading">
+          <h2>Timeline & Future Trips</h2>
+          <p>Memories behind us, adventures ahead.</p>
+        </div>
+        <div class="timeline">
+          <!-- Replace dates/details with your real milestones and trip ideas. -->
+          <article class="timeline-item motion-card">
+            <span>Then</span>
+            <h3>First Hello</h3>
+            <p>The day my world got warmer.</p>
+          </article>
+          <article class="timeline-item motion-card">
+            <span>Now</span>
+            <h3>Anniversary Day</h3>
+            <p>Still choosing each other, every day.</p>
+          </article>
+          <article class="timeline-item motion-card">
+            <span>Next</span>
+            <h3>Future Trip Placeholder</h3>
+            <p>Add your dream destination and date plan here.</p>
+          </article>
+        </div>
+
+        <div class="distance-grid">
+          <article class="flight-panel motion-card">
+            <div class="flight-head">
+              <h3>UK ↔ Sweden Flight Loop</h3>
+              <p>Until one of us lands at arrivals, this route is on repeat.</p>
+            </div>
+            <div class="flight-map-wrap" id="flightMapWrap">
+              <svg class="flight-map" viewBox="0 0 640 260" role="img" aria-label="Stylized flight path from UK to Sweden">
+                <rect x="1" y="1" width="638" height="258" rx="16" fill="url(#flightMapBg)" stroke="rgba(120,160,198,0.35)" />
+                <path d="M80 168 C 132 150, 198 154, 242 120 C 285 87, 334 82, 365 95 C 407 112, 451 114, 540 98" fill="none" stroke="rgba(116, 152, 184, 0.16)" stroke-width="24" stroke-linecap="round" />
+                <path id="flightRoute" d="M128 170 C 225 72, 381 58, 515 104" fill="none" stroke="rgba(88, 141, 188, 0.75)" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="10 10" />
+                <path id="flightRouteGlow" d="M128 170 C 225 72, 381 58, 515 104" fill="none" stroke="rgba(255, 255, 255, 0.75)" stroke-width="1.6" stroke-linecap="round" />
+                <circle cx="128" cy="170" r="6" fill="#f6c56a" />
+                <circle cx="515" cy="104" r="6" fill="#89c4ff" />
+                <defs>
+                  <linearGradient id="flightMapBg" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#f9f1de" />
+                    <stop offset="100%" stop-color="#dceeff" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="plane-token" id="planeToken" aria-hidden="true">✈</div>
+              <span class="city-label city-uk">UK</span>
+              <span class="city-label city-se">Sweden</span>
+            </div>
+          </article>
+
+          <article class="discord-call-panel motion-card">
+            <div class="discord-topbar">
+              <p># long-distance-home</p>
+              <span class="discord-live-pill"><i></i> LIVE</span>
+            </div>
+            <div class="discord-call-body">
+              <div class="discord-user-row">
+                <div class="discord-avatar-wrap">
+                  <img src="assets/gifs/rilakkuma_wobble.gif" alt="Your avatar" data-role="gif-slot" />
+                </div>
+                <div>
+                  <h4>You (UK)</h4>
+                  <p>Mic on • Camera off</p>
+                </div>
+              </div>
+
+              <div class="discord-user-row">
+                <div class="discord-avatar-wrap">
+                  <img src="assets/gifs/korilakkuma_wobble.gif" alt="Ella avatar" data-role="gif-slot" />
+                </div>
+                <div>
+                  <h4>Ella (Sweden)</h4>
+                  <p>Mic on • Cozy mode</p>
+                </div>
+              </div>
+
+              <div class="discord-call-footer">
+                <div>
+                  <p class="discord-muted">In call for</p>
+                  <p class="discord-timer" id="discordCallTimer">24:07:12</p>
+                </div>
+                <button type="button" class="discord-voice-btn" aria-label="Discord voice call panel placeholder">Voice Connected</button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section story-panel reveal" id="inferno-mail" data-motion>
+      <div class="panel-pin">
+        <div class="section-heading">
+          <h2>Singles Inferno Locker Exhibit</h2>
+          <p>A parody of the Singles Inferno mailbox mission. Start the drop, open a locker, and see who got notes.</p>
+        </div>
+
+        <article class="inferno-brand motion-card" aria-label="Singles Inferno inspired header">
+          <img
+            class="inferno-logo"
+            src="assets/gifs/singles_inferno_logo.gif"
+            alt="Singles Inferno 3 logo"
+            loading="lazy"
+          />
+          <p class="inferno-brand-note">Tonight's mission: the postbox reveal. If your locker gets notes, you might leave Inferno for Paradise.</p>
+          <div class="inferno-rules" aria-label="Mission rules">
+            <span>1. Start the night drop</span>
+            <span>2. Open one locker</span>
+            <span>3. Only lockers with notes get picked</span>
+          </div>
+        </article>
+
+        <article class="inferno-intro motion-card" id="infernoIntro">
+          <p class="inferno-kicker">Night 1 Mailbox Mission</p>
+          <h3>Start The Singles Inferno Drop</h3>
+          <p>All six lockers stay sealed until the host starts the round.</p>
+          <button id="infernoStartBtn" class="queue-btn queue-btn-primary" type="button">Start Night Drop</button>
+        </article>
+
+        <div class="mailbox-grid locked" id="mailboxGrid">
+          <button class="locker-door motion-card" data-name="Ella" data-has-letters="true" aria-label="Open Ella locker" disabled>
+            <span class="locker-number">01</span>
+            <span class="locker-nameplate">Ella</span>
+            <span class="locker-door-face" aria-hidden="true">
+              <span class="locker-vent vent-a"></span>
+              <span class="locker-vent vent-b"></span>
+              <span class="locker-mail-slot"></span>
+              <span class="locker-knob"></span>
+            </span>
+            <span class="locker-badge">Paradise candidate</span>
+            <span class="locker-inside" aria-hidden="true"></span>
+          </button>
+
+          <button class="locker-door motion-card" data-name="Yuna" data-has-letters="false" aria-label="Open Yuna locker" disabled>
+            <span class="locker-number">02</span>
+            <span class="locker-nameplate">Yuna</span>
+            <span class="locker-door-face" aria-hidden="true">
+              <span class="locker-vent vent-a"></span>
+              <span class="locker-vent vent-b"></span>
+              <span class="locker-mail-slot"></span>
+              <span class="locker-knob"></span>
+            </span>
+            <span class="locker-inside" aria-hidden="true"></span>
+          </button>
+
+          <button class="locker-door motion-card" data-name="Minji" data-has-letters="false" aria-label="Open Minji locker" disabled>
+            <span class="locker-number">03</span>
+            <span class="locker-nameplate">Minji</span>
+            <span class="locker-door-face" aria-hidden="true">
+              <span class="locker-vent vent-a"></span>
+              <span class="locker-vent vent-b"></span>
+              <span class="locker-mail-slot"></span>
+              <span class="locker-knob"></span>
+            </span>
+            <span class="locker-inside" aria-hidden="true"></span>
+          </button>
+
+          <button class="locker-door motion-card" data-name="Sora" data-has-letters="false" aria-label="Open Sora locker" disabled>
+            <span class="locker-number">04</span>
+            <span class="locker-nameplate">Sora</span>
+            <span class="locker-door-face" aria-hidden="true">
+              <span class="locker-vent vent-a"></span>
+              <span class="locker-vent vent-b"></span>
+              <span class="locker-mail-slot"></span>
+              <span class="locker-knob"></span>
+            </span>
+            <span class="locker-inside" aria-hidden="true"></span>
+          </button>
+
+          <button class="locker-door motion-card" data-name="Hana" data-has-letters="false" aria-label="Open Hana locker" disabled>
+            <span class="locker-number">05</span>
+            <span class="locker-nameplate">Hana</span>
+            <span class="locker-door-face" aria-hidden="true">
+              <span class="locker-vent vent-a"></span>
+              <span class="locker-vent vent-b"></span>
+              <span class="locker-mail-slot"></span>
+              <span class="locker-knob"></span>
+            </span>
+            <span class="locker-inside" aria-hidden="true"></span>
+          </button>
+
+          <button class="locker-door motion-card" data-name="Jia" data-has-letters="false" aria-label="Open Jia locker" disabled>
+            <span class="locker-number">06</span>
+            <span class="locker-nameplate">Jia</span>
+            <span class="locker-door-face" aria-hidden="true">
+              <span class="locker-vent vent-a"></span>
+              <span class="locker-vent vent-b"></span>
+              <span class="locker-mail-slot"></span>
+              <span class="locker-knob"></span>
+            </span>
+            <span class="locker-inside" aria-hidden="true"></span>
+          </button>
+        </div>
+        <article class="inferno-vault" id="mailReveal" aria-live="polite" data-state="idle">
+          <div class="inferno-vault-stage">
+            <div class="inferno-vault-canvas-wrap" aria-hidden="true">
+              <canvas id="infernoVaultCanvas"></canvas>
+              <p class="inferno-vault-hint">Locker result appears in this vault when a door opens.</p>
+            </div>
+
+            <div class="inferno-vault-copy">
+              <p class="mail-reveal-label">Night Mailbox Outcome</p>
+              <h3 id="mailRevealName">Start the night drop first</h3>
+              <p id="mailRevealText">Open a locker to inspect the mailbox result.</p>
+              <p id="mailRevealMeta" class="mail-reveal-meta">Singles Inferno rule tonight: Ella's locker contains 4 folded post-it notes.</p>
+            </div>
+          </div>
+
+          <div id="notePile" class="note-pile" hidden></div>
+          <article id="unfoldedNote" class="unfolded-note" hidden>
+            <p class="unfolded-note-label">Love Note</p>
+            <p id="unfoldedNoteText">Pick a folded note to unfold the message.</p>
+          </article>
+        </article>
+      </div>
+    </section>
+
+    <!-- ═══════ 3-D ENVELOPE LOVE LETTER ═══════ -->
+    <section class="section story-panel reveal" id="letter" data-motion>
+      <div class="panel-pin">
+        <div class="section-heading">
+          <h2>You've Got Mail 💌</h2>
+          <p>Click the envelope to open it.</p>
+        </div>
+
+        <!-- Three.js canvas sits underneath; letter pops out on top -->
+        <div class="envelope-scene-wrap">
+          <canvas id="envelopeCanvas" aria-hidden="true"></canvas>
+
+          <!-- Overlay letter that animates in after envelope opens -->
+          <div class="letter-popup" id="letterPopup" aria-hidden="true" hidden>
+            <div class="letter-paper" id="letterPaper">
+              <p class="letter-greeting">My love,</p>
+              <p>
+                <!--
+                  REPLACE THIS: write your personal message here.
+                  This is what pops out of the envelope when she clicks it.
+                -->
+                Thank you for being my safest place and my biggest adventure.
+                Every section of this little site points to one truth — I love you.
+              </p>
+              <p class="letter-sign">Forever yours. 🐻</p>
+            </div>
+          </div>
+
+          <!-- Click hint, hides after first open -->
+          <button class="envelope-click-hint" id="envelopeHint" aria-label="Open envelope">
+            tap to open
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ TRUTH SEQUENCE (FINAL) ═══════ -->
+    <section class="section story-panel reveal" id="truth-sequence" data-motion>
+      <div class="panel-pin">
+        <div class="truth-sequence-card motion-card">
+          <p class="truth-line truth-line-1">There are so many memories I love...</p>
+          <p class="truth-line truth-line-2">But my favorite one is still...</p>
+          <p class="truth-line truth-line-3">You.</p>
+
+          <figure class="truth-photo-wrap">
+            <img
+              class="truth-photo"
+              src="assets/images/final-photo.jpg"
+              alt="Final memory photo"
+              loading="lazy"
+            />
+            <figcaption>Final page. Still you.</figcaption>
+          </figure>
+
+          <p class="truth-note">If every moment had to fade out, I would still choose you at the end.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav id="guidedPager" class="guided-pager" aria-label="Story navigation" hidden>
+    <button id="guidedPrevBtn" class="guided-arrow-btn" type="button" aria-label="Previous section">
+      <span aria-hidden="true">‹</span>
+    </button>
+    <div id="guidedDots" class="guided-dots" aria-hidden="false"></div>
+    <button id="guidedNextBtn" class="guided-arrow-btn" type="button" aria-label="Next section">
+      <span aria-hidden="true">›</span>
+    </button>
+  </nav>
+
+  <footer class="footer">
+    <p>Made with love, warm tones, and soft blue for your favorite person.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/typeit@8.8.7/dist/index.umd.js"></script>
+  <script src="three-bouquet.js"></script>
+  <script src="script.js"></script>
+  <script src="envelope-scene.js"></script>
+
+</body>
+</html>
