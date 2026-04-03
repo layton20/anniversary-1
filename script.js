@@ -13,6 +13,7 @@ const notesContainer = document.getElementById('musicNotes');
 const openingOverlay = document.getElementById('openingOverlay');
 const openingEnvelopeBtn = document.getElementById('openingEnvelopeBtn');
 const openingEnvelopeMessage = document.getElementById('openingEnvelopeMessage');
+const openingSimpleCard = document.getElementById('openingSimpleCard');
 const scrollProgressFill = document.getElementById('scrollProgressFill');
 const motionSections = document.querySelectorAll('[data-motion]');
 const mailboxGrid = document.getElementById('mailboxGrid');
@@ -89,18 +90,56 @@ function isOpeningOverlayVisible() {
     && openingOverlay.getAttribute('aria-hidden') !== 'true';
 }
 
+function resetScrollToTop() {
+  window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+}
+
+function triggerOpeningSettle() {
+  document.body.classList.remove('opening-settle');
+  void document.body.offsetWidth;
+  document.body.classList.add('opening-settle');
+
+  if (openingSettleTimer) {
+    window.clearTimeout(openingSettleTimer);
+  }
+
+  openingSettleTimer = window.setTimeout(() => {
+    document.body.classList.remove('opening-settle');
+  }, 980);
+}
+
 function closeOpeningOverlay() {
   if (!openingOverlay || !isOpeningOverlayVisible()) return;
+
+  resetScrollToTop();
 
   openingOverlay.classList.add('hidden');
   openingOverlay.setAttribute('aria-hidden', 'true');
   document.body.classList.remove('opening-locked');
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'auto';
+  }
+
+  window.setTimeout(() => {
+    triggerOpeningSettle();
+  }, 520);
 
   window.dispatchEvent(new CustomEvent('openingOverlayClosed'));
 }
 
 if (isOpeningOverlayVisible()) {
   document.body.classList.add('opening-locked');
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+  window.requestAnimationFrame(() => {
+    resetScrollToTop();
+  });
+  window.setTimeout(() => {
+    resetScrollToTop();
+  }, 40);
 }
 
 function createUiSoundEngine() {
@@ -348,6 +387,8 @@ let queueSeconds = 0;
 let queueTimerHandle = null;
 let readyTimerHandle = null;
 let riotNoticeAcknowledged = false;
+let openingSettleTimer = null;
+let truthSequenceTimer = null;
 let queueStartPending = false;
 let activeStoryPanelIndex = 0;
 let infernoVaultRenderer = null;
@@ -2085,15 +2126,22 @@ function initAppleHandwriting() {
 }
 
 openingEnvelopeBtn?.addEventListener('click', () => {
+  if (openingEnvelopeBtn.disabled) return;
+
+  openingEnvelopeBtn.disabled = true;
   openingEnvelopeBtn.setAttribute('aria-expanded', 'true');
+  openingEnvelopeBtn.classList.add('is-opening');
   openingEnvelopeBtn.classList.add('opened');
+  openingSimpleCard?.classList.add('is-opening');
   if (openingEnvelopeMessage) {
     openingEnvelopeMessage.textContent = 'mail opened. loading your story...';
   }
 
+  resetScrollToTop();
+
   window.setTimeout(() => {
     closeOpeningOverlay();
-  }, 520);
+  }, 700);
 });
 
 function formatTime(seconds) {
@@ -2304,6 +2352,70 @@ function updateScrollProgress() {
   scrollProgressFill.style.width = `${Math.min(100, Math.max(0, progress))}%`;
 }
 
+function getRevealStyle(sectionId, item) {
+  if (item.classList.contains('section-heading')) return 'heading-rise';
+
+  if (sectionId === 'fandom') return 'from-left';
+  if (sectionId === 'photos') return 'soft-pop';
+  if (sectionId === 'music') return 'from-right';
+  if (sectionId === 'strawberry-booth') return 'desk-swing';
+  if (sectionId === 'peak') return 'tilt-up';
+  if (sectionId === 'timeline') {
+    if (item.matches('.timeline-item, .trip-card')) return 'float-up';
+    return 'from-left';
+  }
+  if (sectionId === 'resist-memory') return 'glow-lift';
+  if (sectionId === 'inferno-mail') {
+    if (item.matches('.locker-door')) return 'flip-door';
+    return 'from-right';
+  }
+  if (sectionId === 'letter') return 'paper-rise';
+  if (sectionId === 'truth-sequence') return 'cinema-rise';
+
+  return 'from-left';
+}
+
+function initScrollRevealStagger() {
+  const revealSelector = [
+    '.section-heading',
+    '.queue-client',
+    '.headspace-grid',
+    '.music-shell',
+    '.strawberry-desk',
+    '.peak-client',
+    '.timeline',
+    '.distance-grid',
+    '.resist-stage',
+    '.inferno-brand',
+    '.inferno-intro',
+    '.mailbox-grid',
+    '.inferno-vault',
+    '.letter-card',
+    '.vinyl-player-card',
+    '.truth-sequence-card',
+    '.motion-card'
+  ].join(', ');
+
+  motionSections.forEach((section) => {
+    const sectionId = section.id || '';
+    const uniqueItems = new Set();
+    section.querySelectorAll(revealSelector).forEach((item) => {
+      if (!item.closest('.story-panel')) return;
+      uniqueItems.add(item);
+    });
+
+    Array.from(uniqueItems).forEach((item, index) => {
+      const revealStyle = getRevealStyle(sectionId, item);
+      item.classList.add('scroll-reveal-item');
+      item.dataset.revealStyle = revealStyle;
+      item.style.setProperty('--reveal-delay', `${Math.min(index * 110, 760)}ms`);
+      item.style.setProperty('--reveal-shift', index % 2 === 0 ? '-24px' : '24px');
+      item.style.setProperty('--reveal-tilt', index % 2 === 0 ? '-0.8deg' : '0.8deg');
+      item.style.setProperty('--reveal-duration', `${960 + Math.min(index, 3) * 70}ms`);
+    });
+  });
+}
+
 function updateMotionSections() {
   motionSections.forEach((section) => {
     const rect = section.getBoundingClientRect();
@@ -2317,6 +2429,22 @@ function updateMotionSections() {
     section.classList.toggle('is-inview', inView);
     section.classList.toggle('is-focused', focused);
     section.style.setProperty('--parallax-y', `${(-normalized * 22).toFixed(2)}px`);
+
+    if (section.id === 'truth-sequence' && inView && !section.classList.contains('truth-sequence-complete')) {
+      section.classList.add('truth-sequence-playing');
+
+      if (!section.dataset.playedOnce) {
+        section.dataset.playedOnce = 'true';
+        if (truthSequenceTimer) {
+          window.clearTimeout(truthSequenceTimer);
+        }
+
+        truthSequenceTimer = window.setTimeout(() => {
+          section.classList.remove('truth-sequence-playing');
+          section.classList.add('truth-sequence-complete');
+        }, 4050);
+      }
+    }
   });
 }
 
@@ -2470,6 +2598,7 @@ const observer = new IntersectionObserver((entries) => {
 document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
 
 // Set initial values on first load.
+initScrollRevealStagger();
 updateScrollProgress();
 updateMotionSections();
 initGifSlots();
