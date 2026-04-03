@@ -1103,6 +1103,242 @@ function initDiscordCallTimer() {
   }, 1000);
 }
 
+function initDiscordCallTimer() {
+  if (!discordCallTimer) return;
+
+  discordCallTimer.textContent = formatCallDuration(callDurationSeconds);
+  window.setInterval(() => {
+    callDurationSeconds += 1;
+    discordCallTimer.textContent = formatCallDuration(callDurationSeconds);
+  }, 1000);
+}
+
+function initPeakGallery() {
+  const gallery = document.getElementById('peakGallery');
+  if (!gallery) return;
+
+  const slides = Array.from(gallery.querySelectorAll('.peak-slide'));
+  const dotsWrap = document.getElementById('peakDots');
+  let dots = [];
+  const prev   = document.getElementById('peakPrev');
+  const next   = document.getElementById('peakNext');
+  const lightbox = document.getElementById('peakLightbox');
+  const lightboxStage = document.getElementById('peakLightboxStage');
+  const lightboxImage = document.getElementById('peakLightboxImage');
+  const lightboxCaption = document.getElementById('peakLightboxCaption');
+  const lightboxClose = document.getElementById('peakLightboxClose');
+  const lightboxCloseCta = document.getElementById('peakLightboxCloseCta');
+  const slideImages = slides
+    .map((slide) => slide.querySelector('img'))
+    .filter((img) => Boolean(img));
+
+  let current = 0;
+  let lightboxOpen = false;
+  let zoomScale = 1;
+  let panX = 0;
+  let panY = 0;
+  let activePointerId = null;
+  let isPanning = false;
+  let lastPointerX = 0;
+  let lastPointerY = 0;
+
+  function buildDots() {
+    if (!dotsWrap) return;
+
+    dotsWrap.innerHTML = '';
+    dots = slides.map((_, idx) => {
+      const dot = document.createElement('button');
+      dot.className = 'peak-dot';
+      dot.setAttribute('role', 'tab');
+      dot.setAttribute('type', 'button');
+      dot.setAttribute('data-idx', `${idx}`);
+      dot.setAttribute('aria-selected', 'false');
+      dot.setAttribute('aria-label', `Screenshot ${idx + 1}`);
+      dot.addEventListener('click', () => goTo(idx));
+      dotsWrap.appendChild(dot);
+      return dot;
+    });
+  }
+
+  function applyLightboxTransform() {
+    if (!lightboxImage || !lightboxStage) return;
+    lightboxImage.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomScale})`;
+    lightboxStage.classList.toggle('is-zoomed', zoomScale > 1.01);
+  }
+
+  function setZoomScale(nextScale) {
+    const clamped = Math.max(1, Math.min(3, nextScale));
+    zoomScale = clamped;
+    if (zoomScale <= 1.01) {
+      panX = 0;
+      panY = 0;
+    }
+    applyLightboxTransform();
+  }
+
+  function resetLightboxView() {
+    zoomScale = 1;
+    panX = 0;
+    panY = 0;
+    isPanning = false;
+    activePointerId = null;
+    lightboxStage?.classList.remove('is-panning');
+    applyLightboxTransform();
+  }
+
+  function closeLightbox() {
+    if (!lightbox || !lightboxOpen) return;
+    lightbox.hidden = true;
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('peak-lightbox-open');
+    lightboxOpen = false;
+    resetLightboxView();
+  }
+
+  function openLightbox(idx) {
+    if (!lightbox || !lightboxImage || !lightboxCaption) return;
+    const slide = slides[idx];
+    const img = slide?.querySelector('img');
+    const caption = slide?.querySelector('figcaption');
+    if (!img) return;
+
+    lightboxImage.src = img.currentSrc || img.src;
+    lightboxImage.alt = img.alt || 'Expanded PEAK screenshot';
+    lightboxCaption.textContent = caption?.textContent?.trim() || 'Expanded PEAK screenshot';
+
+    lightbox.hidden = false;
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('peak-lightbox-open');
+    lightboxOpen = true;
+    resetLightboxView();
+  }
+
+  function goTo(idx) {
+    slides[current]?.classList.remove('peak-slide-active');
+    dots[current]?.classList.remove('peak-dot-active');
+    dots[current]?.setAttribute('aria-selected', 'false');
+
+    current = (idx + slides.length) % slides.length;
+
+    slides[current].classList.add('peak-slide-active');
+    dots[current]?.classList.add('peak-dot-active');
+    dots[current]?.setAttribute('aria-selected', 'true');
+  }
+
+  prev?.addEventListener('click', () => goTo(current - 1));
+  next?.addEventListener('click', () => goTo(current + 1));
+
+  slideImages.forEach((img, idx) => {
+    img.setAttribute('role', 'button');
+    img.setAttribute('tabindex', '0');
+    img.setAttribute('aria-label', `Open screenshot ${idx + 1} in expanded view`);
+
+    img.addEventListener('click', () => openLightbox(idx));
+    img.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openLightbox(idx);
+      }
+    });
+  });
+
+  // Keyboard navigation when gallery is focused
+  gallery.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft')  goTo(current - 1);
+    if (e.key === 'ArrowRight') goTo(current + 1);
+  });
+
+  lightboxClose?.addEventListener('click', closeLightbox);
+  lightboxCloseCta?.addEventListener('click', closeLightbox);
+
+  lightbox?.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    const closeTarget = target.closest('[data-peak-close="true"]');
+    if (closeTarget) {
+      closeLightbox();
+    }
+  });
+
+  lightboxImage?.addEventListener('click', () => {
+    if (!lightboxOpen) return;
+    if (zoomScale <= 1.01) closeLightbox();
+  });
+
+  lightboxStage?.addEventListener('dblclick', () => {
+    setZoomScale(zoomScale > 1.2 ? 1 : 2);
+  });
+
+  lightboxStage?.addEventListener('wheel', (event) => {
+    event.preventDefault();
+    const delta = event.deltaY < 0 ? 0.2 : -0.2;
+    setZoomScale(zoomScale + delta);
+  }, { passive: false });
+
+  lightboxStage?.addEventListener('pointerdown', (event) => {
+    if (zoomScale <= 1.01) return;
+    activePointerId = event.pointerId;
+    isPanning = true;
+    lastPointerX = event.clientX;
+    lastPointerY = event.clientY;
+    lightboxStage.setPointerCapture(event.pointerId);
+    lightboxStage.classList.add('is-panning');
+  });
+
+  lightboxStage?.addEventListener('pointermove', (event) => {
+    if (!isPanning || activePointerId !== event.pointerId) return;
+
+    const dx = event.clientX - lastPointerX;
+    const dy = event.clientY - lastPointerY;
+    lastPointerX = event.clientX;
+    lastPointerY = event.clientY;
+    panX += dx;
+    panY += dy;
+    applyLightboxTransform();
+  });
+
+  function endPan(event) {
+    if (!isPanning || activePointerId !== event.pointerId) return;
+    isPanning = false;
+    activePointerId = null;
+    lightboxStage?.classList.remove('is-panning');
+  }
+
+  lightboxStage?.addEventListener('pointerup', endPan);
+  lightboxStage?.addEventListener('pointercancel', endPan);
+  lightboxStage?.addEventListener('pointerleave', endPan);
+
+  window.addEventListener('keydown', (event) => {
+    if (!lightboxOpen) return;
+
+    if (event.key === 'Escape') {
+      closeLightbox();
+      return;
+    }
+
+    if (event.key === '+' || event.key === '=') {
+      event.preventDefault();
+      setZoomScale(zoomScale + 0.2);
+      return;
+    }
+
+    if (event.key === '-' || event.key === '_') {
+      event.preventDefault();
+      setZoomScale(zoomScale - 0.2);
+      return;
+    }
+
+    if (event.key === '0') {
+      event.preventDefault();
+      setZoomScale(1);
+    }
+  });
+
+  if (!slides.length) return;
+  buildDots();
+  goTo(0);
+}
+
 function initFlightRouteAnimation() {
   if (!flightRoute || !planeToken) return;
 
@@ -1492,12 +1728,34 @@ function initStrawberryDesktop() {
     });
   });
 
-  const photoSegments = Array.from(strawberryDesk.querySelectorAll('.photos-segment'));
-  const photoThumbs = Array.from(strawberryDesk.querySelectorAll('.photos-thumb'));
+  const albumList = strawberryDesk.querySelector('#photosAlbumList');
+  const photosGrid = strawberryDesk.querySelector('#photosGrid');
+  const albumSummary = strawberryDesk.querySelector('#photosAlbumSummary');
+  const activeAlbumTitle = strawberryDesk.querySelector('#photosActiveAlbumTitle');
+  const activeAlbumMeta = strawberryDesk.querySelector('#photosActiveAlbumMeta');
   const previewImage = strawberryDesk.querySelector('#photosPreviewImage');
   const previewTitle = strawberryDesk.querySelector('#photosPreviewTitle');
   const previewDate = strawberryDesk.querySelector('#photosPreviewDate');
   const previewPlace = strawberryDesk.querySelector('#photosPreviewPlace');
+  let photoThumbs = [];
+
+  const albumOrder = ['all', 'ella', 'games', 'johnny', 'us'];
+  const albumFolders = albumOrder.filter((key) => key !== 'all');
+  const fallbackPhotoAlbums = {
+    ella: [],
+    games: [
+      { src: 'assets/images/photos/games/20250418233217_1.jpg', title: '20250418233217_1' },
+      { src: 'assets/images/photos/games/20250830143034_1.jpg', title: '20250830143034_1' },
+      { src: 'assets/images/photos/games/20250830145235_1.jpg', title: '20250830145235_1' },
+      { src: 'assets/images/photos/games/20251208234947_1.jpg', title: '20251208234947_1' }
+    ],
+    johnny: [
+      { src: 'assets/images/photos/johnny/johnny_avatar.jpg', title: 'johnny_avatar' }
+    ],
+    us: []
+  };
+  let photoAlbums = { ...fallbackPhotoAlbums, all: [] };
+  let activeAlbum = 'all';
 
   const selectPhotoThumb = (thumb) => {
     if (!thumb) return;
@@ -1506,50 +1764,167 @@ function initStrawberryDesktop() {
 
     const src = thumb.getAttribute('data-photo-src') || '';
     const title = thumb.getAttribute('data-photo-title') || 'Memory';
-    const date = thumb.getAttribute('data-photo-date') || 'Unknown date';
-    const place = thumb.getAttribute('data-photo-place') || 'Unknown place';
+    const album = thumb.getAttribute('data-photo-album') || 'Album';
+    const index = thumb.getAttribute('data-photo-index') || '1';
     if (previewImage && src) previewImage.src = src;
     if (previewImage) previewImage.alt = title;
     if (previewTitle) previewTitle.textContent = title;
-    if (previewDate) previewDate.textContent = date;
-    if (previewPlace) previewPlace.textContent = place;
+    if (previewDate) previewDate.textContent = album;
+    if (previewPlace) previewPlace.textContent = `Photo ${index}`;
   };
 
-  const applyPhotoView = (viewName) => {
-    const normalizedView = viewName || 'all';
-    photoSegments.forEach((segmentBtn) => {
-      const segmentView = segmentBtn.getAttribute('data-photos-view') || 'all';
-      segmentBtn.classList.toggle('is-active', segmentView === normalizedView);
-    });
+  const toAlbumLabel = (key) => {
+    if (key === 'all') return 'All Photos';
+    return key.charAt(0).toUpperCase() + key.slice(1);
+  };
 
-    photoThumbs.forEach((thumb) => {
-      const group = thumb.getAttribute('data-photo-group') || 'all';
-      thumb.hidden = normalizedView !== 'all' && group !== normalizedView;
-    });
+  const isImageFile = (filename) => /\.(png|jpe?g|webp|gif|avif)$/i.test(filename || '');
 
-    const activeThumb = photoThumbs.find((thumb) => thumb.classList.contains('is-active') && !thumb.hidden);
-    if (activeThumb) {
-      selectPhotoThumb(activeThumb);
+  const toPhotoTitle = (filename) => {
+    const base = (filename || '').replace(/\.[^.]+$/, '');
+    return base.replace(/[_-]+/g, ' ');
+  };
+
+  const buildAllAlbum = (albums) => {
+    return albumFolders.flatMap((folder) => {
+      const items = albums[folder] || [];
+      return items.map((item) => ({
+        src: item.src,
+        title: `${folder} / ${item.title || 'photo'}`
+      }));
+    });
+  };
+
+  const updateAlbumSummary = () => {
+    if (!albumSummary) return;
+    albumSummary.textContent = `${albumFolders.length} albums • ${(photoAlbums.all || []).length} photos`;
+  };
+
+  const renderAlbums = () => {
+    if (!albumList) return;
+    albumList.innerHTML = '';
+
+    albumOrder.forEach((albumKey) => {
+      const count = photoAlbums[albumKey]?.length || 0;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'photos-album-btn';
+      btn.setAttribute('data-album', albumKey);
+      btn.innerHTML = `<span>${toAlbumLabel(albumKey)}</span><strong>${count}</strong>`;
+      btn.addEventListener('click', () => {
+        activeAlbum = albumKey;
+        renderAlbums();
+        renderGrid();
+      });
+      btn.classList.toggle('is-active', albumKey === activeAlbum);
+      albumList.appendChild(btn);
+    });
+  };
+
+  const renderGrid = () => {
+    if (!photosGrid) return;
+    photosGrid.innerHTML = '';
+
+    const albumItems = photoAlbums[activeAlbum] || [];
+    if (activeAlbumTitle) activeAlbumTitle.textContent = toAlbumLabel(activeAlbum);
+    if (activeAlbumMeta) activeAlbumMeta.textContent = `${albumItems.length} photo${albumItems.length === 1 ? '' : 's'}`;
+
+    if (!albumItems.length) {
+      const empty = document.createElement('p');
+      empty.className = 'photos-empty';
+      empty.textContent = 'No photos in this album yet.';
+      photosGrid.appendChild(empty);
+
+      if (previewImage) previewImage.src = 'assets/images/hero-placeholder.jpg';
+      if (previewImage) previewImage.alt = 'No photo selected';
+      if (previewTitle) previewTitle.textContent = 'No photos yet';
+      if (previewDate) previewDate.textContent = toAlbumLabel(activeAlbum);
+      if (previewPlace) previewPlace.textContent = 'Waiting for uploads';
+      photoThumbs = [];
       return;
     }
 
-    const firstVisible = photoThumbs.find((thumb) => !thumb.hidden);
-    if (firstVisible) selectPhotoThumb(firstVisible);
+    albumItems.forEach((item, idx) => {
+      const thumb = document.createElement('button');
+      thumb.type = 'button';
+      thumb.className = 'photos-thumb';
+      thumb.setAttribute('data-photo-src', item.src);
+      thumb.setAttribute('data-photo-title', item.title || `Photo ${idx + 1}`);
+      thumb.setAttribute('data-photo-album', toAlbumLabel(activeAlbum));
+      thumb.setAttribute('data-photo-index', `${idx + 1}`);
+
+      const img = document.createElement('img');
+      img.src = item.src;
+      img.alt = item.title || `Photo ${idx + 1}`;
+      img.loading = 'lazy';
+      thumb.appendChild(img);
+
+      thumb.addEventListener('click', () => selectPhotoThumb(thumb));
+      photosGrid.appendChild(thumb);
+    });
+
+    photoThumbs = Array.from(photosGrid.querySelectorAll('.photos-thumb'));
+    if (photoThumbs.length) {
+      photoThumbs[0].classList.add('is-active');
+      selectPhotoThumb(photoThumbs[0]);
+    }
   };
 
-  photoThumbs.forEach((thumb) => {
-    thumb.addEventListener('click', () => {
-      if (thumb.hidden) return;
-      selectPhotoThumb(thumb);
-    });
-  });
+  const tryLoadAlbumsFromFolders = async () => {
+    const discovered = {};
 
-  photoSegments.forEach((segmentBtn) => {
-    segmentBtn.addEventListener('click', () => {
-      const viewName = segmentBtn.getAttribute('data-photos-view') || 'all';
-      applyPhotoView(viewName);
-    });
-  });
+    await Promise.all(albumFolders.map(async (folder) => {
+      try {
+        const response = await fetch(`assets/images/photos/${folder}/`, { cache: 'no-store' });
+        if (!response.ok) throw new Error('album listing not available');
+
+        const html = await response.text();
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const links = Array.from(doc.querySelectorAll('a[href]'));
+        const fileSet = new Set();
+
+        links.forEach((anchor) => {
+          const href = anchor.getAttribute('href') || '';
+          if (!href || href.startsWith('?') || href.startsWith('#')) return;
+
+          const clean = href.split('?')[0].split('#')[0];
+          const decoded = decodeURIComponent(clean);
+          if (decoded.endsWith('/')) return;
+
+          const filename = decoded.split('/').pop() || '';
+          if (!filename || !isImageFile(filename)) return;
+          fileSet.add(filename);
+        });
+
+        const sortedFiles = Array.from(fileSet).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+        discovered[folder] = sortedFiles.map((filename) => ({
+          src: `assets/images/photos/${folder}/${encodeURIComponent(filename)}`,
+          title: toPhotoTitle(filename)
+        }));
+      } catch (error) {
+        discovered[folder] = fallbackPhotoAlbums[folder] || [];
+      }
+    }));
+
+    photoAlbums = {
+      ...discovered,
+      all: buildAllAlbum(discovered)
+    };
+
+    if (!(photoAlbums[activeAlbum] || []).length) {
+      activeAlbum = 'all';
+    }
+
+    updateAlbumSummary();
+    renderAlbums();
+    renderGrid();
+  };
+
+  photoAlbums.all = buildAllAlbum(photoAlbums);
+  updateAlbumSummary();
+  renderAlbums();
+  renderGrid();
+  void tryLoadAlbumsFromFolders();
 
   const discordChannels = Array.from(strawberryDesk.querySelectorAll('.discord-channel'));
   const discordMessages = Array.from(strawberryDesk.querySelectorAll('.discord-message'));
@@ -1572,8 +1947,6 @@ function initStrawberryDesktop() {
   if (discordChannelTitle) discordChannelTitle.textContent = `# ${initialDiscordChannel}`;
   if (discordComposerChannel) discordComposerChannel.textContent = initialDiscordChannel;
 
-  const initialPhotoView = photoSegments.find((btn) => btn.classList.contains('is-active'))?.getAttribute('data-photos-view') || 'all';
-  applyPhotoView(initialPhotoView);
   setActiveApp(strawberryDesk.getAttribute('data-active-app') || 'spotify');
 }
 
@@ -2101,6 +2474,7 @@ updateScrollProgress();
 updateMotionSections();
 initGifSlots();
 initDiscordCallTimer();
+initPeakGallery();
 initFlightRouteAnimation();
 initQueueLobby();
 initOpenLetter();

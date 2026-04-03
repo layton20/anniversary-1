@@ -1874,45 +1874,103 @@ body.guided-mode .story-panel.guided-animate-up {
   color: #365b87;
 }
 
-.photos-segments {
-  display: inline-flex;
-  border: 1px solid rgba(128, 162, 198, 0.45);
-  border-radius: 999px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.72);
-}
-
-.photos-segment {
-  border: none;
-  background: transparent;
-  color: #55779d;
-  font-size: 0.68rem;
+.photos-toolbar-meta {
+  margin: 0;
+  color: #6b8dae;
+  font-size: 0.72rem;
   font-weight: 700;
-  padding: 0.3rem 0.55rem;
-  cursor: pointer;
-}
-
-.photos-segment.is-active {
-  background: #6f95c3;
-  color: #ffffff;
 }
 
 .photos-content {
   display: grid;
-  grid-template-columns: 1.1fr 1fr;
+  grid-template-columns: 160px 1.25fr 1fr;
   gap: 0.65rem;
   padding: 0.65rem;
 }
 
+.photos-albums {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 0.4rem;
+  min-height: 0;
+}
+
+.photos-albums h4 {
+  margin: 0;
+  color: #5b7fa3;
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+}
+
+.photos-album-list {
+  display: grid;
+  gap: 0.32rem;
+  max-height: 252px;
+  overflow-y: auto;
+  padding-right: 0.18rem;
+}
+
+.photos-album-btn {
+  border: 1px solid rgba(128, 162, 198, 0.45);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.74);
+  color: #486b8d;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.45rem;
+  font-size: 0.69rem;
+  font-weight: 700;
+  padding: 0.36rem 0.5rem;
+  cursor: pointer;
+}
+
+.photos-album-btn strong {
+  font-size: 0.64rem;
+  color: #7897b7;
+}
+
+.photos-album-btn.is-active {
+  background: #6f95c3;
+  border-color: #5f84b0;
+  color: #ffffff;
+}
+
+.photos-album-btn.is-active strong {
+  color: rgba(255, 255, 255, 0.84);
+}
+
+.photos-library {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.photos-library-head h4 {
+  margin: 0;
+  color: #4d7399;
+}
+
+.photos-library-head p {
+  margin: 0.1rem 0 0;
+  color: #7a97b4;
+  font-size: 0.68rem;
+}
+
 .photos-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.45rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.36rem;
+  max-height: 252px;
+  overflow-y: auto;
+  align-content: start;
+  padding-right: 0.18rem;
 }
 
 .photos-thumb {
   border: 1px solid rgba(123, 156, 194, 0.4);
-  border-radius: 9px;
+  border-radius: 8px;
   overflow: hidden;
   padding: 0;
   cursor: pointer;
@@ -1922,7 +1980,7 @@ body.guided-mode .story-panel.guided-animate-up {
 .photos-thumb img {
   width: 100%;
   height: 100%;
-  min-height: 68px;
+  min-height: 52px;
   object-fit: cover;
   display: block;
 }
@@ -1933,6 +1991,13 @@ body.guided-mode .story-panel.guided-animate-up {
 
 .photos-thumb[hidden] {
   display: none;
+}
+
+.photos-empty {
+  margin: 0;
+  grid-column: 1 / -1;
+  color: #6f8ca9;
+  font-size: 0.72rem;
 }
 
 .photos-preview {
@@ -1946,8 +2011,8 @@ body.guided-mode .story-panel.guided-animate-up {
   width: 100%;
   border-radius: 9px;
   border: 1px solid rgba(136, 167, 200, 0.52);
-  min-height: 160px;
-  max-height: 220px;
+  min-height: 172px;
+  max-height: 252px;
   object-fit: cover;
 }
 
@@ -3765,6 +3830,578 @@ body.guided-mode .story-panel.guided-animate-up {
 
   .envelope-scene-wrap {
     min-height: 298px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   PEAK — Steam gaming section
+═══════════════════════════════════════════════════ */
+
+.peak-client {
+  position: relative;
+  font-family: "Rajdhani", "Trebuchet MS", sans-serif;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(210, 170, 80, 0.4);
+  box-shadow: 0 22px 48px rgba(5, 3, 1, 0.64);
+}
+
+/* Atmospheric summit-art underlay */
+.peak-client::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 75% 0%, rgba(255, 233, 170, 0.08), transparent 54%);
+  opacity: 1;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Keep all direct children above the bg art */
+.peak-topbar,
+.peak-body,
+.peak-hud-bar {
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Topbar (banner art strip) ──────── */
+.peak-topbar {
+  position: relative;
+  height: 62px;
+  overflow: hidden;
+}
+
+.peak-banner-strip {
+  width: 100%;
+  height: 62px;
+  object-fit: cover;
+  object-position: center 38%;
+  display: block;
+  filter: brightness(0.48) saturate(1.1);
+}
+
+.peak-topbar-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  background: linear-gradient(90deg, rgba(12, 8, 3, 0.72), transparent 40%, rgba(12, 8, 3, 0.72));
+}
+
+.peak-version {
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  color: rgba(245, 238, 208, 0.48);
+  font-family: monospace;
+}
+
+.peak-title-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0;
+}
+
+.peak-title-badge > span:first-child {
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #f5eed0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
+  line-height: 1;
+}
+
+.peak-title-sub {
+  font-size: 0.56rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(232, 192, 104, 0.65);
+}
+
+/* ─── Body: discord sidebar + gallery ── */
+.peak-body {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  background: linear-gradient(180deg, rgba(18, 12, 4, 0.98), rgba(12, 8, 3, 0.99));
+}
+
+/* ─── Discord voice overlay sidebar ──── */
+.peak-discord-overlay {
+  background: #1e2124;
+  border-right: 1px solid #202225;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.peak-discord-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 0.75rem;
+  background: #2f3136;
+  border-bottom: 1px solid #202225;
+  flex-shrink: 0;
+}
+
+.peak-discord-logo {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  opacity: 0.62;
+  flex-shrink: 0;
+}
+
+.peak-discord-header span {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #dcddde;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.peak-discord-voices {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  flex: 1;
+}
+
+.peak-voice-user {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.22rem 0.5rem;
+  margin: 0 0.35rem;
+  border-radius: 6px;
+  transition: background 0.12s;
+}
+
+.peak-voice-user:hover {
+  background: rgba(255,255,255,0.06);
+}
+
+.peak-voice-active {
+  background: rgba(59, 165, 92, 0.1);
+}
+
+.peak-voice-screensharing {
+  background: rgba(88, 101, 242, 0.12);
+}
+
+.peak-voice-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--av-color, #7289da);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+  letter-spacing: 0;
+  user-select: none;
+}
+
+.peak-voice-active .peak-voice-avatar {
+  box-shadow: 0 0 0 2px #43b581;
+  animation: peakVoicePulse 2.6s ease-in-out infinite;
+}
+
+@keyframes peakVoicePulse {
+  0%, 100% { box-shadow: 0 0 0 2px rgba(67, 181, 129, 0.9); }
+  50%       { box-shadow: 0 0 0 4px rgba(67, 181, 129, 0.2); }
+}
+
+.peak-voice-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  min-width: 0;
+}
+
+.peak-voice-name {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #dcddde;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.peak-voice-status {
+  font-size: 0.62rem;
+  color: #72767d;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.peak-voice-active .peak-voice-status {
+  color: #3ba55c;
+}
+
+/* ─── Screenshot gallery ─────────────── */
+.peak-gallery {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.peak-slides {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  min-height: 360px;
+  max-height: 620px;
+  flex-shrink: 0;
+}
+
+.peak-slide {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.42s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.peak-slide.peak-slide-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.peak-slide img {
+  width: 100%;
+  height: calc(100% - 36px);
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  flex-shrink: 0;
+  cursor: zoom-in;
+}
+
+body.peak-lightbox-open {
+  overflow: hidden;
+}
+
+.peak-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.peak-lightbox[hidden] {
+  display: none;
+}
+
+.peak-lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(12, 14, 19, 0.78);
+  backdrop-filter: blur(3px);
+}
+
+.peak-lightbox-panel {
+  position: relative;
+  width: min(980px, calc(100vw - 1.4rem));
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #202225;
+  background: #2f3136;
+  box-shadow: 0 24px 54px rgba(0, 0, 0, 0.62);
+}
+
+.peak-lightbox-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.58rem 0.72rem;
+  background: #202225;
+  border-bottom: 1px solid #1a1c1f;
+}
+
+.peak-lightbox-header p {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: #b9bbbe;
+}
+
+.peak-lightbox-close-hint {
+  margin-left: auto;
+  margin-right: 0.5rem;
+  font-size: 0.63rem;
+  letter-spacing: 0.02em;
+  color: #8e9297;
+  white-space: nowrap;
+}
+
+.peak-lightbox-close {
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  background: #ed4245;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.peak-lightbox-close:hover {
+  background: #ff5b5f;
+}
+
+.peak-lightbox-stage {
+  position: relative;
+  background: #1e2124;
+  height: min(70vh, 760px);
+  overflow: hidden;
+  cursor: zoom-in;
+}
+
+.peak-lightbox-stage.is-zoomed {
+  cursor: grab;
+}
+
+.peak-lightbox-stage.is-panning {
+  cursor: grabbing;
+}
+
+.peak-lightbox-stage img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  transform-origin: center center;
+  transition: transform 120ms ease;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.peak-lightbox-footer {
+  display: grid;
+  gap: 0.28rem;
+  padding: 0.64rem 0.82rem 0.72rem;
+  background: #2f3136;
+  border-top: 1px solid #202225;
+}
+
+.peak-lightbox-footer p {
+  margin: 0;
+}
+
+#peakLightboxCaption {
+  font-size: 0.92rem;
+  line-height: 1.3;
+  color: #dcddde;
+}
+
+.peak-lightbox-hint {
+  font-size: 0.78rem;
+  line-height: 1.3;
+  color: #b9bbbe;
+}
+
+.peak-lightbox-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.2rem;
+}
+
+.peak-lightbox-close-cta {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  background: #5865f2;
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 0.38rem 0.62rem;
+  cursor: pointer;
+}
+
+.peak-lightbox-close-cta:hover {
+  background: #6b76f7;
+}
+
+.peak-slide figcaption {
+  flex: 1;
+  background: rgba(12, 8, 3, 0.9);
+  color: rgba(245, 238, 208, 0.86);
+  font-size: 0.9rem;
+  line-height: 1.3;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  padding: 0.52rem 0.86rem;
+  border-top: 1px solid rgba(210, 170, 80, 0.18);
+  display: flex;
+  align-items: center;
+}
+
+/* Controls: prev / dots / next */
+.peak-gallery-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0.42rem 0.5rem;
+  background: rgba(12, 8, 3, 0.92);
+  border-top: 1px solid rgba(210, 170, 80, 0.14);
+}
+
+.peak-nav {
+  background: none;
+  border: none;
+  color: rgba(245, 238, 208, 0.42);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 0.25rem;
+  transition: color 0.18s;
+  font-family: inherit;
+}
+
+.peak-nav:hover {
+  color: #e8c068;
+}
+
+.peak-dots {
+  display: flex;
+  gap: 0.38rem;
+}
+
+.peak-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(245, 238, 208, 0.2);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.peak-dot.peak-dot-active {
+  background: #e8c068;
+  transform: scale(1.3);
+}
+
+/* ─── HUD bar ─────────────────────────── */
+.peak-hud-bar {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.52rem 1rem;
+  background: linear-gradient(180deg, rgba(18, 12, 4, 0.96), rgba(12, 8, 3, 0.99));
+  border-top: 1px solid rgba(210, 170, 80, 0.2);
+}
+
+.peak-hud-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.peak-bar {
+  width: 88px;
+  height: 7px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.45);
+}
+
+.peak-bar-hp .peak-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3e9e32, #5dca4e);
+  border-radius: 4px;
+}
+
+.peak-bar-sp .peak-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #c0a820, #e2d03d);
+  border-radius: 4px;
+}
+
+.peak-hud-quote {
+  flex: 1;
+  font-size: 0.84rem;
+  color: rgba(245, 238, 208, 0.74);
+  font-style: italic;
+  letter-spacing: 0.02em;
+  text-align: center;
+  margin: 0;
+}
+
+/* ─── Responsive ─────────────────────── */
+@media (max-width: 720px) {
+  .peak-body {
+    grid-template-columns: 1fr;
+  }
+
+  .peak-discord-overlay {
+    border-right: none;
+    border-bottom: 1px solid rgba(210, 170, 80, 0.18);
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.75rem;
+  }
+
+  .peak-discord-header {
+    width: 100%;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .peak-discord-voices {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+
+  .peak-voice-info { display: none; }
+
+  .peak-slides { aspect-ratio: 16 / 9; min-height: 240px; max-height: 420px; }
+  .peak-slide img { height: calc(100% - 36px); }
+  .peak-lightbox-stage { height: min(64vh, 520px); }
+  .peak-lightbox-close-hint { display: none; }
+}
+
+@media (max-width: 480px) {
+  .peak-hud-bar {
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .peak-hud-quote {
+    order: -1;
+    width: 100%;
+    text-align: left;
+    font-size: 0.62rem;
   }
 }
 

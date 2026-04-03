@@ -40,7 +40,7 @@
       <button id="openingEnvelopeBtn" class="opening-envelope-btn" type="button" aria-expanded="false" aria-controls="openingEnvelopeMessage">
         <span class="opening-envelope-icon" aria-hidden="true">💌</span>
       </button>
-      <p class="opening-caption">you've got new emails</p>
+      <p class="opening-caption">you've got a new email</p>
       <p id="openingEnvelopeMessage" class="opening-message">🎧 best experienced with sound</p>
     </div>
   </div>
@@ -453,7 +453,7 @@
     <section class="section story-panel reveal" id="strawberry-booth" data-motion>
       <div class="panel-pin">
         <div class="section-heading">
-          <h2>Shared Browser Nights</h2>
+          <h2>Late nights and sleep calls</h2>
           <p>From screen-share tabs to camera reels of Ella. This is where we kept hanging out.</p>
         </div>
 
@@ -573,25 +573,27 @@
                   <article class="photos-window">
                     <header class="photos-toolbar">
                       <h3>Photos</h3>
-                      <div class="photos-segments" role="tablist" aria-label="Photos views">
-                        <button class="photos-segment" type="button" data-photos-view="years">Years</button>
-                        <button class="photos-segment" type="button" data-photos-view="months">Months</button>
-                        <button class="photos-segment" type="button" data-photos-view="days">Days</button>
-                        <button class="photos-segment is-active" type="button" data-photos-view="all">All Photos</button>
-                      </div>
+                      <p class="photos-toolbar-meta" id="photosAlbumSummary">Album library</p>
                     </header>
 
                     <div class="photos-content">
-                      <div class="photos-grid" id="photosGrid">
-                        <button class="photos-thumb is-active" type="button" data-photo-group="years" data-photo-src="assets/images/johnny_avatar.jpg" data-photo-title="Avatar Day" data-photo-date="Apr 2025" data-photo-place="Discord"><img src="assets/images/johnny_avatar.jpg" alt="Avatar memory" loading="lazy" /></button>
-                        <button class="photos-thumb" type="button" data-photo-group="months" data-photo-src="assets/images/matcha.png" data-photo-title="Matcha Date" data-photo-date="May 2025" data-photo-place="Cafe"><img src="assets/images/matcha.png" alt="Matcha date" loading="lazy" /></button>
-                        <button class="photos-thumb" type="button" data-photo-group="days" data-photo-src="assets/images/sushi.png" data-photo-title="Sushi Night" data-photo-date="Jul 2025" data-photo-place="Sushi Bar"><img src="assets/images/sushi.png" alt="Sushi night" loading="lazy" /></button>
-                        <button class="photos-thumb" type="button" data-photo-group="days" data-photo-src="assets/images/hero-placeholder.jpg" data-photo-title="Beach Day" data-photo-date="Aug 2025" data-photo-place="Coast"><img src="assets/images/hero-placeholder.jpg" alt="Beach memory" loading="lazy" /></button>
-                      </div>
+                      <aside class="photos-albums" aria-label="Photo albums">
+                        <h4>Albums</h4>
+                        <div class="photos-album-list" id="photosAlbumList"></div>
+                      </aside>
+
+                      <section class="photos-library" aria-label="Album photos">
+                        <header class="photos-library-head">
+                          <h4 id="photosActiveAlbumTitle">All Photos</h4>
+                          <p id="photosActiveAlbumMeta">0 photos</p>
+                        </header>
+                        <div class="photos-grid" id="photosGrid"></div>
+                      </section>
+
                       <figure class="photos-preview">
                         <img id="photosPreviewImage" src="assets/images/johnny_avatar.jpg" alt="Selected photo preview" loading="lazy" />
-                        <figcaption id="photosPreviewTitle">Avatar Day</figcaption>
-                        <p class="photos-meta"><span id="photosPreviewDate">Apr 2025</span> · <span id="photosPreviewPlace">Discord</span></p>
+                        <figcaption id="photosPreviewTitle">Select a photo</figcaption>
+                        <p class="photos-meta"><span id="photosPreviewDate">Album</span> · <span id="photosPreviewPlace">Ready</span></p>
                       </figure>
                     </div>
 
@@ -684,6 +686,145 @@
         </div>
       </div>
     </section>
+
+    <!-- ══════════ PEAK SECTION ══════════ -->
+    <section class="section story-panel reveal" id="peak" data-motion>
+      <div class="panel-pin">
+        <div class="section-heading">
+          <h2>The PEAK Crew 🏔️</h2>
+          <p>Me, emyan, Kenny and VinZei. Four players. Zero survival instincts. Absolute chaos.</p>
+        </div>
+
+        <div class="peak-client motion-card">
+
+          <!-- Topbar: banner art + version badge -->
+          <div class="peak-topbar">
+            <img class="peak-banner-strip" src="assets/images/peak_banner.jpg" alt="" aria-hidden="true" />
+            <div class="peak-topbar-overlay">
+              <span class="peak-version">v1.5a</span>
+              <div class="peak-title-badge">
+                <span>PEAK</span>
+                <span class="peak-title-sub">Steam Session</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Body: Discord overlay + screenshot gallery -->
+          <div class="peak-body">
+
+            <!-- Discord in-game voice overlay (top-left pinned style) -->
+            <aside class="peak-discord-overlay" aria-label="Discord voice call">
+              <div class="peak-discord-header">
+                <img src="assets/images/discord_logo.png" class="peak-discord-logo" alt="Discord" />
+                <span># gaming-with-the-crew</span>
+              </div>
+              <ul class="peak-discord-voices">
+                <li class="peak-voice-user peak-voice-screensharing">
+                  <span class="peak-voice-avatar" style="--av-color:#7289da">JV</span>
+                  <div class="peak-voice-info">
+                    <span class="peak-voice-name">You</span>
+                    <span class="peak-voice-status">🖥 Screen Share</span>
+                  </div>
+                </li>
+                <li class="peak-voice-user">
+                  <span class="peak-voice-avatar" style="--av-color:#f47fff">E</span>
+                  <div class="peak-voice-info">
+                    <span class="peak-voice-name">emyan</span>
+                    <span class="peak-voice-status">🔇 Muted</span>
+                  </div>
+                </li>
+                <li class="peak-voice-user peak-voice-active">
+                  <span class="peak-voice-avatar" style="--av-color:#43b581">K</span>
+                  <div class="peak-voice-info">
+                    <span class="peak-voice-name">Kenny</span>
+                    <span class="peak-voice-status">Speaking</span>
+                  </div>
+                </li>
+                <li class="peak-voice-user">
+                  <span class="peak-voice-avatar" style="--av-color:#f96854">V</span>
+                  <div class="peak-voice-info">
+                    <span class="peak-voice-name">VinZei</span>
+                    <span class="peak-voice-status">🔇 Muted</span>
+                  </div>
+                </li>
+              </ul>
+            </aside>
+
+            <!-- Screenshot carousel -->
+            <div class="peak-gallery" id="peakGallery">
+              <div class="peak-slides" id="peakSlides">
+                <figure class="peak-slide peak-slide-active">
+                  <img src="assets/images/steam/20250626225039_1.jpg" alt="PEAK – volcano scene, spectating Kenny" loading="lazy" />
+                  <figcaption>waiting on Ella and her minions. Turns out, this was going to be a humbling experience. Kenny is singing songs!</figcaption>
+                </figure>
+                <figure class="peak-slide">
+                  <img src="assets/images/steam/20250627010446_1.jpg" alt="PEAK – snow mountain, someone snowboarding" loading="lazy" />
+                  <figcaption>i turn away for 1 second and turn back to see this. what the hell are these two doing?!</figcaption>
+                </figure>
+                <figure class="peak-slide">
+                  <img src="assets/images/steam/20250802025652_1.jpg" alt="PEAK – two climbers in snow" loading="lazy" />
+                  <figcaption>achievement was to see a capybara. ella decides to emote on one.</figcaption>
+                </figure>
+                <figure class="peak-slide">
+                  <img src="assets/images/steam/20250802025655_1.jpg" alt="PEAK – snowy summit ridge" loading="lazy" />
+                  <figcaption></figcaption>
+                </figure>
+                <figure class="peak-slide">
+                  <img src="assets/images/peak_summit.jpg" alt="PEAK summit key art" loading="lazy" />
+                  <figcaption>we all eventually made it to the top! kenny is cheering</figcaption>
+                </figure>
+              </div>
+
+              <div class="peak-gallery-controls">
+                <button class="peak-nav" id="peakPrev" type="button" aria-label="Previous screenshot">‹</button>
+                <div class="peak-dots" id="peakDots" role="tablist" aria-label="Select screenshot"></div>
+                <button class="peak-nav" id="peakNext" type="button" aria-label="Next screenshot">›</button>
+              </div>
+
+              <div class="peak-lightbox" id="peakLightbox" hidden aria-hidden="true">
+                <div class="peak-lightbox-backdrop" data-peak-close="true"></div>
+                <section class="peak-lightbox-panel" role="dialog" aria-modal="true" aria-label="Expanded PEAK screenshot">
+                  <header class="peak-lightbox-header">
+                    <p># full-screenshot-view</p>
+                    <p class="peak-lightbox-close-hint">Tap X or press Esc to close</p>
+                    <button class="peak-lightbox-close" id="peakLightboxClose" type="button" data-peak-close="true" aria-label="Close expanded screenshot">✕</button>
+                  </header>
+                  <div class="peak-lightbox-stage" id="peakLightboxStage">
+                    <img id="peakLightboxImage" src="" alt="Expanded PEAK screenshot" loading="lazy" />
+                  </div>
+                  <footer class="peak-lightbox-footer">
+                    <p id="peakLightboxCaption">Click image to expand fully.</p>
+                    <p class="peak-lightbox-hint">Double-click to zoom. Drag to pan while zoomed. Esc closes.</p>
+                    <div class="peak-lightbox-actions">
+                      <button
+                        class="peak-lightbox-close-cta"
+                        id="peakLightboxCloseCta"
+                        type="button"
+                        data-peak-close="true"
+                      >
+                        Close Expanded View
+                      </button>
+                    </div>
+                  </footer>
+                </section>
+              </div>
+            </div>
+
+          </div><!-- /.peak-body -->
+
+          <!-- HUD bar (PEAK-style health / stamina bars) -->
+          <div class="peak-hud-bar">
+            <div class="peak-hud-bars" aria-hidden="true">
+              <div class="peak-bar peak-bar-hp"><div class="peak-bar-fill" style="width:78%"></div></div>
+              <div class="peak-bar peak-bar-sp"><div class="peak-bar-fill" style="width:65%"></div></div>
+            </div>
+            <p class="peak-hud-quote">wish we can all play again</p>
+          </div>
+
+        </div><!-- /.peak-client -->
+      </div>
+    </section>
+    <!-- ══════════ /PEAK SECTION ══════════ -->
 
     <section class="section story-panel reveal" id="timeline" data-motion>
       <div class="panel-pin">
