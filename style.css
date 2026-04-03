@@ -224,10 +224,13 @@ a {
   scroll-snap-stop: always;
   display: block;
   position: relative;
+  content-visibility: auto;
+  contain-intrinsic-size: 100svh;
 }
 
 #intro.story-panel {
   min-height: 100svh;
+  content-visibility: visible;
 }
 
 .panel-pin {
@@ -6667,6 +6670,29 @@ body:not(.guided-mode) .story-panel:not(.is-inview) .scroll-reveal-item[data-rev
 @media (max-width: 640px) {
   .rila-scatter {
     display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .story-panel .panel-pin,
+  body:not(.guided-mode) .story-panel,
+  body:not(.guided-mode) .story-panel .panel-pin,
+  .hero-digicam-trigger,
+  .rila-sticker {
+    transform: none !important;
+    filter: none !important;
   }
 }
 

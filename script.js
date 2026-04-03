@@ -398,6 +398,7 @@ let infernoVaultLidPivot = null;
 let infernoVaultCore = null;
 let infernoVaultAura = null;
 let infernoVaultRaf = null;
+let infernoVaultVisible = true;
 let infernoVaultTargetOpen = 0;
 let infernoVaultCurrentOpen = 0;
 let infernoVaultTargetEnergy = 0.25;
@@ -444,7 +445,7 @@ function initResistParticles() {
 
 function animateResistCanvas() {
   if (!resistCtx || !resistCanvas) return;
-  if (!resistVisible) {
+  if (!resistVisible || document.hidden) {
     resistRaf = null;
     return;
   }
@@ -870,6 +871,10 @@ function setInfernoVaultState(hasLetters) {
 
 function animateInfernoVaultScene() {
   if (!infernoVaultRenderer || !infernoVaultScene || !infernoVaultCamera || !infernoVaultClock) return;
+  if (!infernoVaultVisible || document.hidden) {
+    infernoVaultRaf = null;
+    return;
+  }
 
   const elapsed = infernoVaultClock.getElapsedTime();
   infernoVaultCurrentOpen += (infernoVaultTargetOpen - infernoVaultCurrentOpen) * 0.12;
@@ -985,6 +990,18 @@ function initInfernoVaultScene() {
 
   resizeInfernoVaultScene();
   window.addEventListener('resize', resizeInfernoVaultScene);
+
+  const vaultObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      infernoVaultVisible = entry.isIntersecting;
+      if (infernoVaultVisible && !infernoVaultRaf) {
+        infernoVaultRaf = window.requestAnimationFrame(animateInfernoVaultScene);
+      }
+    });
+  }, { threshold: 0.18 });
+
+  vaultObserver.observe(mailReveal || infernoVaultCanvas);
+
   setInfernoVaultState(false);
   if (!infernoVaultRaf) {
     infernoVaultRaf = window.requestAnimationFrame(animateInfernoVaultScene);
@@ -1132,16 +1149,6 @@ function formatCallDuration(totalSeconds) {
   const minutes = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
   const seconds = Math.floor(totalSeconds % 60).toString().padStart(2, '0');
   return `${hours}:${minutes}:${seconds}`;
-}
-
-function initDiscordCallTimer() {
-  if (!discordCallTimer) return;
-
-  discordCallTimer.textContent = formatCallDuration(callDurationSeconds);
-  window.setInterval(() => {
-    callDurationSeconds += 1;
-    discordCallTimer.textContent = formatCallDuration(callDurationSeconds);
-  }, 1000);
 }
 
 function initDiscordCallTimer() {
@@ -1626,8 +1633,6 @@ function initQueueLobby() {
   });
 }
 
-function initOpenLetter() { /* replaced by envelope-scene.js */ }
-
 function openMemory(card) {
   if (!memoryPop || !memoryPopTitle || !memoryPopImage || !memoryPopMessage) return;
 
@@ -1991,28 +1996,6 @@ function initStrawberryDesktop() {
   setActiveApp(strawberryDesk.getAttribute('data-active-app') || 'spotify');
 }
 
-function initHandwriteText() {
-  const handwriteEls = document.querySelectorAll('[data-handwrite]');
-  if (!handwriteEls.length) return;
-
-  handwriteEls.forEach((el, index) => {
-    const text = el.getAttribute('data-handwrite') || el.textContent || '';
-    el.textContent = '';
-
-    if (window.TypeIt) {
-      new window.TypeIt(el, {
-        speed: 64,
-        lifeLike: true,
-        waitUntilVisible: true,
-        startDelay: 420 + (index * 260),
-        cursorChar: '|'
-      }).type(text).go();
-    } else {
-      el.textContent = text;
-    }
-  });
-}
-
 function initAppleHandwriting() {
   const svgs = document.querySelectorAll('[data-handwrite-svg]');
   if (!svgs.length || !window.gsap) return;
@@ -2324,7 +2307,7 @@ function makeNote() {
 
   const note = document.createElement('span');
   note.className = 'note';
-  note.textContent = Math.random() > 0.5 ? 'â™ª' : 'â™«';
+  note.textContent = Math.random() > 0.5 ? '\u266A' : '\u266B';
   note.style.left = `${Math.random() * 90 + 5}%`;
   note.style.fontSize = `${0.8 + Math.random() * 0.6}rem`;
   notesContainer.appendChild(note);
@@ -2461,6 +2444,27 @@ function onScrollAnimate() {
 
 window.addEventListener('resize', onScrollAnimate);
 window.addEventListener('scroll', onScrollAnimate, { passive: true });
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    if (resistRaf) {
+      window.cancelAnimationFrame(resistRaf);
+      resistRaf = null;
+    }
+    if (infernoVaultRaf) {
+      window.cancelAnimationFrame(infernoVaultRaf);
+      infernoVaultRaf = null;
+    }
+    return;
+  }
+
+  if (resistVisible && !resistRaf) {
+    resistRaf = window.requestAnimationFrame(animateResistCanvas);
+  }
+  if (infernoVaultVisible && !infernoVaultRaf) {
+    infernoVaultRaf = window.requestAnimationFrame(animateInfernoVaultScene);
+  }
+});
 
 mailboxGrid?.addEventListener('click', (event) => {
   const card = event.target.closest('.locker-door');
@@ -2606,10 +2610,8 @@ initDiscordCallTimer();
 initPeakGallery();
 initFlightRouteAnimation();
 initQueueLobby();
-initOpenLetter();
 initHeadspaceMemories();
 initStrawberryDesktop();
-initHandwriteText();
 initAppleHandwriting();
 initInfernoVaultScene();
 initResistSection();
