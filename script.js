@@ -25,8 +25,6 @@ const mailRevealMeta = document.getElementById('mailRevealMeta');
 const notePile = document.getElementById('notePile');
 const unfoldedNote = document.getElementById('unfoldedNote');
 const unfoldedNoteText = document.getElementById('unfoldedNoteText');
-const infernoStartBtn = document.getElementById('infernoStartBtn');
-const infernoIntro = document.getElementById('infernoIntro');
 const gifSlots = document.querySelectorAll('[data-role="gif-slot"]');
 const flightRoute = document.getElementById('flightRoute');
 const flightRouteGlow = document.getElementById('flightRouteGlow');
@@ -80,6 +78,43 @@ const heroDigicamTrigger = document.getElementById('heroDigicamTrigger');
 const heroPolaroidStack = document.getElementById('heroPolaroidStack');
 const heroHeartBurst = document.getElementById('heroHeartBurst');
 const heroPolaroidReset = document.getElementById('heroPolaroidReset');
+const phoneScreenSection = document.getElementById('phone-screen-love');
+const phoneLoveStage = document.getElementById('phoneLoveStage');
+const phoneLoveTrack = document.getElementById('phoneLoveTrack');
+const phoneLeft = document.getElementById('phoneLeft');
+const phoneRight = document.getElementById('phoneRight');
+// Sakura canvas state
+let phoneSakuraCanvas = null;
+let phoneSakuraCtx = null;
+let phoneSakuraRaf = null;
+let phoneSakuraVisible = false;
+let phoneSakuraPetals = [];
+const SAKURA_LOOP_COUNT = 28;
+const SAKURA_PETAL_COLORS = [
+  ['rgba(255,200,218,0.95)', 'rgba(255,148,184,0.7)'],
+  ['rgba(255,220,233,0.90)', 'rgba(245,168,200,0.65)'],
+  ['rgba(255,241,248,0.88)', 'rgba(238,185,212,0.60)'],
+];
+const prefersReducedPhoneMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+let phoneMotionRaf = null;
+let phoneMotionVisible = false;
+let phoneMotionObserver = null;
+const phoneMotionState = {
+  targetProgress: 0,
+  currentProgress: 0,
+  targetLeftX: -220,
+  currentLeftX: -220,
+  targetRightX: 220,
+  currentRightX: 220,
+  targetTilt: 10,
+  currentTilt: 10,
+  targetLift: 18,
+  currentLift: 18,
+  pointerX: 0,
+  pointerY: 0,
+  pointerXSmoothed: 0,
+  pointerYSmoothed: 0,
+};
 const storyPanels = Array.from(document.querySelectorAll('.story-panel'));
 // envelope-scene.js handles the love letter section now
 
@@ -366,7 +401,7 @@ document.addEventListener('click', (event) => {
     return;
   }
 
-  if (target.matches('.memory-close, .locker-door, .folded-note, #infernoStartBtn') || target === openingEnvelopeBtn) {
+  if (target.matches('.memory-close, .locker-door') || target === openingEnvelopeBtn) {
     uiSounds.playPaper();
     return;
   }
@@ -823,6 +858,275 @@ function initHeroPolaroidBlast() {
   });
 
   heroPolaroidReset?.addEventListener('click', resetPolaroids);
+}
+
+function clampValue(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function lerpValue(current, target, amount) {
+  return current + ((target - current) * amount);
+}
+
+function setPhoneMotionTargets() {
+  if (!phoneScreenSection || !phoneLoveTrack || !phoneLeft || !phoneRight) return;
+
+  const rect = phoneScreenSection.getBoundingClientRect();
+  const vh = window.innerHeight || 1;
+  const travel = vh * 0.95;
+  const progressRaw = (vh * 0.9 - rect.top) / travel;
+  const progress = clampValue(progressRaw, 0, 1);
+
+  const trackWidth = Math.max(1, phoneLoveTrack.clientWidth);
+  const leftWidth = phoneLeft.offsetWidth || Math.max(220, trackWidth * 0.3);
+  const rightWidth = phoneRight.offsetWidth || leftWidth;
+  const centerGap = Math.max(14, Math.min(38, trackWidth * 0.026));
+
+  const leftStartX = -Math.round(leftWidth * 0.64);
+  const rightStartX = Math.round(rightWidth * 0.64);
+
+  const leftTargetX = Math.round((trackWidth * 0.5) - leftWidth - (centerGap * 0.5));
+  const rightTargetX = Math.round((rightWidth - (trackWidth * 0.5)) + (centerGap * 0.5));
+
+  phoneMotionState.targetProgress = progress;
+  phoneMotionState.targetLeftX = leftStartX + ((leftTargetX - leftStartX) * progress);
+  phoneMotionState.targetRightX = rightStartX + ((rightTargetX - rightStartX) * progress);
+  phoneMotionState.targetTilt = 11 * (1 - progress);
+  phoneMotionState.targetLift = 20 * (1 - progress);
+}
+
+function applyPhoneMotionFrame(timeMs) {
+  if (!phoneScreenSection) {
+    phoneMotionRaf = null;
+    return;
+  }
+
+  const t = (timeMs || performance.now()) * 0.001;
+  const reducedMotion = prefersReducedPhoneMotion.matches;
+
+  const easing = reducedMotion ? 0.45 : 0.11;
+  const pointerEase = reducedMotion ? 0.35 : 0.055;
+
+  phoneMotionState.currentProgress = lerpValue(phoneMotionState.currentProgress, phoneMotionState.targetProgress, easing);
+  phoneMotionState.currentLeftX = lerpValue(phoneMotionState.currentLeftX, phoneMotionState.targetLeftX, easing);
+  phoneMotionState.currentRightX = lerpValue(phoneMotionState.currentRightX, phoneMotionState.targetRightX, easing);
+  phoneMotionState.currentTilt = lerpValue(phoneMotionState.currentTilt, phoneMotionState.targetTilt, easing);
+  phoneMotionState.currentLift = lerpValue(phoneMotionState.currentLift, phoneMotionState.targetLift, easing);
+  phoneMotionState.pointerXSmoothed = lerpValue(phoneMotionState.pointerXSmoothed, phoneMotionState.pointerX, pointerEase);
+  phoneMotionState.pointerYSmoothed = lerpValue(phoneMotionState.pointerYSmoothed, phoneMotionState.pointerY, pointerEase);
+
+  let leftX = phoneMotionState.currentLeftX;
+  let rightX = phoneMotionState.currentRightX;
+  let leftBobY = 0;
+  let rightBobY = 0;
+  let leftRoll = 0;
+  let rightRoll = 0;
+  let leftScale = 1;
+  let rightScale = 1;
+
+  if (!reducedMotion) {
+    const alive = 1 - (phoneMotionState.currentProgress * 0.44);
+    const pointerInfluence = 1 - (phoneMotionState.currentProgress * 0.26);
+    const px = phoneMotionState.pointerXSmoothed * pointerInfluence;
+    const py = phoneMotionState.pointerYSmoothed * pointerInfluence;
+
+    const idleSway = Math.sin(t * 0.76) * (3.4 * alive);
+    leftX += (idleSway * 0.18) + (px * 6.2);
+    rightX -= (idleSway * 0.18) + (px * 6.2);
+
+    leftBobY = (Math.sin(t * 1.46) * (1.1 + (1.5 * alive))) + (Math.sin((t * 2.25) + 0.6) * (0.34 + (0.45 * alive))) - (py * 1.65);
+    rightBobY = (Math.sin((t * 1.34) + 1.04) * (1.05 + (1.35 * alive))) + (Math.sin((t * 2.1) + 1.5) * (0.32 + (0.42 * alive))) - (py * 1.35);
+
+    leftRoll = (Math.sin((t * 1.06) + 0.5) * (0.24 + (0.5 * alive))) + (px * 1.2);
+    rightRoll = (Math.sin((t * 1.14) + 2.1) * (-0.22 - (0.46 * alive))) + (px * 1.0);
+
+    leftScale = 1 + (Math.sin((t * 0.95) + 0.9) * (0.0012 + (alive * 0.0024)));
+    rightScale = 1 + (Math.sin((t * 0.92) + 2.2) * (0.0012 + (alive * 0.0022)));
+  }
+
+  phoneScreenSection.style.setProperty('--phone-progress', phoneMotionState.currentProgress.toFixed(3));
+  phoneScreenSection.style.setProperty('--phone-left-x', `${leftX.toFixed(2)}px`);
+  phoneScreenSection.style.setProperty('--phone-right-x', `${rightX.toFixed(2)}px`);
+  phoneScreenSection.style.setProperty('--phone-tilt', `${phoneMotionState.currentTilt.toFixed(2)}deg`);
+  phoneScreenSection.style.setProperty('--phone-lift', `${phoneMotionState.currentLift.toFixed(2)}px`);
+  phoneScreenSection.style.setProperty('--phone-left-bob-y', `${leftBobY.toFixed(2)}px`);
+  phoneScreenSection.style.setProperty('--phone-right-bob-y', `${rightBobY.toFixed(2)}px`);
+  phoneScreenSection.style.setProperty('--phone-left-roll', `${leftRoll.toFixed(2)}deg`);
+  phoneScreenSection.style.setProperty('--phone-right-roll', `${rightRoll.toFixed(2)}deg`);
+  phoneScreenSection.style.setProperty('--phone-left-scale', leftScale.toFixed(4));
+  phoneScreenSection.style.setProperty('--phone-right-scale', rightScale.toFixed(4));
+
+  const stillSettling =
+    Math.abs(phoneMotionState.targetProgress - phoneMotionState.currentProgress) > 0.001
+    || Math.abs(phoneMotionState.targetLeftX - phoneMotionState.currentLeftX) > 0.06
+    || Math.abs(phoneMotionState.targetRightX - phoneMotionState.currentRightX) > 0.06
+    || Math.abs(phoneMotionState.pointerXSmoothed) > 0.002
+    || Math.abs(phoneMotionState.pointerYSmoothed) > 0.002;
+
+  if (phoneMotionVisible || stillSettling) {
+    phoneMotionRaf = window.requestAnimationFrame(applyPhoneMotionFrame);
+  } else {
+    phoneMotionRaf = null;
+  }
+}
+
+function updatePhoneScreenMotion() {
+  if (!phoneScreenSection || !phoneLoveTrack || !phoneLeft || !phoneRight) return;
+  setPhoneMotionTargets();
+  if (!phoneMotionRaf) {
+    phoneMotionRaf = window.requestAnimationFrame(applyPhoneMotionFrame);
+  }
+}
+
+function createSakuraPetal(w, h, fromBurst, bx, by) {
+  return {
+    x: fromBurst ? bx : Math.random() * w,
+    y: fromBurst ? by : -20 - Math.random() * 60,
+    vx: fromBurst ? (Math.random() - 0.5) * 7 : (Math.random() - 0.5) * 1.2,
+    vy: fromBurst ? -(2.5 + Math.random() * 4) : (0.7 + Math.random() * 1.5),
+    angle: Math.random() * Math.PI * 2,
+    angularV: (Math.random() - 0.5) * 0.055,
+    size: fromBurst ? (7 + Math.random() * 9) : (5 + Math.random() * 9),
+    opacity: fromBurst ? 0.92 : (0.5 + Math.random() * 0.4),
+    sway: Math.random() * Math.PI * 2,
+    swaySpeed: 0.012 + Math.random() * 0.018,
+    swayAmp: 0.5 + Math.random() * 0.9,
+    burst: fromBurst,
+    life: fromBurst ? 1.0 : -1,
+    colorIdx: Math.floor(Math.random() * SAKURA_PETAL_COLORS.length),
+  };
+}
+
+function drawSakuraPetal(ctx, p) {
+  ctx.save();
+  ctx.translate(p.x, p.y);
+  ctx.rotate(p.angle);
+  const alpha = p.burst ? p.opacity * Math.min(1, p.life * 3) : p.opacity;
+  ctx.globalAlpha = Math.max(0, alpha);
+  const s = p.size;
+  const colors = SAKURA_PETAL_COLORS[p.colorIdx];
+
+  ctx.beginPath();
+  ctx.moveTo(0, -s);
+  ctx.bezierCurveTo(s * 0.55, -s * 0.55, s * 0.55, s * 0.55, 0, s);
+  ctx.bezierCurveTo(-s * 0.55, s * 0.55, -s * 0.55, -s * 0.55, 0, -s);
+
+  const grd = ctx.createRadialGradient(0, -s * 0.2, 0, 0, 0, s * 1.1);
+  grd.addColorStop(0, colors[0]);
+  grd.addColorStop(1, colors[1]);
+  ctx.fillStyle = grd;
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.moveTo(0, -s * 0.82);
+  ctx.lineTo(0, s * 0.82);
+  ctx.strokeStyle = 'rgba(210, 110, 155, 0.18)';
+  ctx.lineWidth = 0.6;
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+function animateSakura() {
+  if (!phoneSakuraCanvas || !phoneSakuraCtx || !phoneSakuraVisible) {
+    phoneSakuraRaf = null;
+    return;
+  }
+  const ctx = phoneSakuraCtx;
+  const w = phoneSakuraCanvas.width;
+  const h = phoneSakuraCanvas.height;
+
+  ctx.clearRect(0, 0, w, h);
+
+  const loopCount = phoneSakuraPetals.filter(p => !p.burst).length;
+  for (let i = loopCount; i < SAKURA_LOOP_COUNT; i++) {
+    phoneSakuraPetals.push(createSakuraPetal(w, h, false));
+  }
+
+  phoneSakuraPetals = phoneSakuraPetals.filter(p => {
+    p.sway += p.swaySpeed;
+    p.vx += Math.sin(p.sway) * p.swayAmp * 0.02;
+    p.vx *= 0.98;
+    p.x += p.vx;
+    p.y += p.vy;
+    p.angle += p.angularV;
+
+    if (p.burst) {
+      p.vy += 0.13;
+      p.life -= 0.017;
+      if (p.life <= 0) return false;
+    } else {
+      if (p.y > h + 20 || p.x < -30 || p.x > w + 30) return false;
+    }
+    drawSakuraPetal(ctx, p);
+    return true;
+  });
+
+  phoneSakuraRaf = requestAnimationFrame(animateSakura);
+}
+
+function initPhoneSakura() {
+  phoneSakuraCanvas = document.getElementById('phoneSakuraCanvas');
+  if (!phoneSakuraCanvas) return;
+  phoneSakuraCtx = phoneSakuraCanvas.getContext('2d');
+
+  const sizeCanvas = () => {
+    const parent = phoneSakuraCanvas.parentElement;
+    if (!parent) return;
+    phoneSakuraCanvas.width = parent.offsetWidth || 800;
+    phoneSakuraCanvas.height = parent.offsetHeight || 500;
+  };
+  sizeCanvas();
+  window.addEventListener('resize', sizeCanvas);
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      phoneSakuraVisible = e.isIntersecting;
+      if (phoneSakuraVisible && !phoneSakuraRaf) {
+        phoneSakuraRaf = requestAnimationFrame(animateSakura);
+      }
+    });
+  }, { threshold: 0.05 });
+  if (phoneLoveStage) obs.observe(phoneLoveStage);
+}
+
+function initPhoneScreenSection() {
+  if (!phoneLoveStage || !phoneLoveTrack) return;
+
+  if (!phoneMotionObserver && phoneScreenSection) {
+    phoneMotionObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        phoneMotionVisible = entry.isIntersecting;
+        if (phoneMotionVisible) {
+          updatePhoneScreenMotion();
+        }
+      });
+    }, { threshold: 0.08 });
+    phoneMotionObserver.observe(phoneScreenSection);
+  }
+
+  phoneLoveTrack.addEventListener('pointermove', (event) => {
+    const rect = phoneLoveTrack.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    const nx = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    const ny = ((event.clientY - rect.top) / rect.height) * 2 - 1;
+    phoneMotionState.pointerX = clampValue(nx, -1, 1) * 0.62;
+    phoneMotionState.pointerY = clampValue(ny, -1, 1) * 0.46;
+    if (!phoneMotionRaf) {
+      phoneMotionRaf = window.requestAnimationFrame(applyPhoneMotionFrame);
+    }
+  });
+
+  phoneLoveTrack.addEventListener('pointerleave', () => {
+    phoneMotionState.pointerX = 0;
+    phoneMotionState.pointerY = 0;
+    if (!phoneMotionRaf) {
+      phoneMotionRaf = window.requestAnimationFrame(applyPhoneMotionFrame);
+    }
+  });
+
+  initPhoneSakura();
+  updatePhoneScreenMotion();
 }
 
 function initResistSection() {
@@ -1993,6 +2297,471 @@ function initStrawberryDesktop() {
   if (discordChannelTitle) discordChannelTitle.textContent = `# ${initialDiscordChannel}`;
   if (discordComposerChannel) discordComposerChannel.textContent = initialDiscordChannel;
 
+  // Browser chrome tabs (camera, stats.fm, keep, in my room, ellamori)
+  const browserPane = strawberryDesk.querySelector('.pane-browser');
+  if (browserPane) {
+    const browserTabBtns = Array.from(browserPane.querySelectorAll('[data-browser-tab]'));
+    const browserContents = Array.from(browserPane.querySelectorAll('[data-browser-content]'));
+    const browserAddress = browserPane.querySelector('.browser-address-text');
+
+    const roomContent = browserPane.querySelector('.room-content');
+    const roomWalletPhotoWrap = roomContent?.querySelector('.room-wallet-photo-wrap');
+    const roomExpandBtns = Array.from(browserPane.querySelectorAll('[data-room-expand]'));
+    const roomLightbox = browserPane.querySelector('#roomLightbox');
+    const roomLightboxImage = browserPane.querySelector('#roomLightboxImage');
+    const roomCloseBtns = Array.from(browserPane.querySelectorAll('[data-room-close]'));
+
+    const ellamoriContent = browserPane.querySelector('.ellamori-content');
+    const ellamoriStage = browserPane.querySelector('#ellamoriStage');
+    const ellamoriRoom = browserPane.querySelector('#ellamoriRoom');
+    const ellamoriPlayer = browserPane.querySelector('#ellamoriPlayer');
+    const ellamoriPrompt = browserPane.querySelector('#ellamoriPrompt');
+    const ellamoriFade = browserPane.querySelector('#ellamoriFade');
+    const ellamoriDialog = browserPane.querySelector('#ellamoriDialog');
+    const ellamoriDialogText = browserPane.querySelector('#ellamoriDialogText');
+    const ellamoriDialogHint = browserPane.querySelector('#ellamoriDialogHint');
+    const ellamoriDialogItem = browserPane.querySelector('#ellamoriDialogItem');
+    const ellamoriDialogSpeaker = browserPane.querySelector('#ellamoriDialogSpeaker');
+    const ellamoriDialogNext = browserPane.querySelector('#ellamoriDialogNext');
+    const ellamoriObjects = Array.from(browserPane.querySelectorAll('[data-ellamori-object]'));
+
+    const ellamoriObjectLabels = {
+      phone: "johnny's phone",
+      digicam: 'digicam',
+      cake: 'strawberry cake'
+    };
+
+    const ellamoriObjectTitles = {
+      phone: "JOHNNY'S PHONE",
+      digicam: 'DIGICAM',
+      cake: 'STRAWBERRY CAKE'
+    };
+
+    const ellamoriLines = {
+      phone: [
+        "wait, he's not here. let me check his phone",
+        "what the hell, why does he have 300 photos of me?!"
+      ],
+      digicam: [
+        "oh, it's the camera i gave to him.",
+        "omg. he took even more pictures of me"
+      ],
+      cake: [
+        "he made another one?! why is it growing mold.",
+        "eww. he seriously cannot bake"
+      ],
+      ending: [
+        "...",
+        "ok fine. maybe it's kind of sweet.",
+        "i miss him."
+      ]
+    };
+
+    const ellamoriState = {
+      active: false,
+      x: 120,
+      y: 120,
+      speed: 128,
+      keysDown: new Set(),
+      nearbyObject: '',
+      dialogObject: '',
+      dialogIndex: 0,
+      dialogOpen: false,
+      lastTime: 0,
+      started: false,
+      discovered: new Set(),
+      endingShown: false,
+      prevNearest: '',
+      facingLeft: false,
+      typewriterTimer: null,
+      isTyping: false
+    };
+
+    // Web Audio blip (no file needed)
+    let ellamoriAudioCtx = null;
+    const playEllamoriBlip = () => {
+      try {
+        if (!ellamoriAudioCtx) ellamoriAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ellamoriAudioCtx.createOscillator();
+        const gain = ellamoriAudioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(ellamoriAudioCtx.destination);
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(520, ellamoriAudioCtx.currentTime);
+        gain.gain.setValueAtTime(0.06, ellamoriAudioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ellamoriAudioCtx.currentTime + 0.045);
+        osc.start();
+        osc.stop(ellamoriAudioCtx.currentTime + 0.045);
+      } catch (_) {}
+    };
+
+    const tabUrls = {
+      camera: 'https://strawberry.love/lens',
+      statsfm: 'https://stats.fm/',
+      keep: 'https://keep.google.com/',
+      room: 'about:blank',
+      ellamori: 'about:ellamori'
+    };
+
+    const isMoveKey = (key) => ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'a', 's', 'd'].includes(key);
+
+    // Typewriter engine
+    const typewriterWrite = (text, onDone) => {
+      if (!ellamoriDialogText) return;
+      if (ellamoriState.typewriterTimer) clearInterval(ellamoriState.typewriterTimer);
+      ellamoriState.isTyping = true;
+      ellamoriDialogText.classList.add('is-typing');
+      let i = 0;
+      ellamoriDialogText.textContent = '';
+      ellamoriState.typewriterTimer = setInterval(() => {
+        i += 1;
+        ellamoriDialogText.textContent = text.slice(0, i);
+        playEllamoriBlip();
+        if (i >= text.length) {
+          clearInterval(ellamoriState.typewriterTimer);
+          ellamoriState.typewriterTimer = null;
+          ellamoriState.isTyping = false;
+          ellamoriDialogText.classList.remove('is-typing');
+          if (onDone) onDone();
+        }
+      }, 34);
+    };
+
+    const typewriterSkip = () => {
+      if (!ellamoriState.isTyping || !ellamoriDialogText) return false;
+      if (ellamoriState.typewriterTimer) clearInterval(ellamoriState.typewriterTimer);
+      ellamoriState.typewriterTimer = null;
+      ellamoriState.isTyping = false;
+      ellamoriDialogText.classList.remove('is-typing');
+      const lines = ellamoriLines[ellamoriState.dialogObject] || [];
+      ellamoriDialogText.textContent = lines[ellamoriState.dialogIndex] || '';
+      return true;
+    };
+
+    // Fade helpers
+    const ellamoriFadeIn = (cb) => {
+      if (!ellamoriFade) { if (cb) cb(); return; }
+      ellamoriFade.classList.add('is-opaque');
+      setTimeout(() => { if (cb) cb(); }, 640);
+    };
+    const ellamoriFadeOut = (cb) => {
+      if (!ellamoriFade) { if (cb) cb(); return; }
+      ellamoriFade.classList.remove('is-opaque');
+      if (cb) setTimeout(cb, 640);
+    };
+
+    const closeEllamoriDialog = () => {
+      if (!ellamoriDialog || ellamoriDialog.hidden) return;
+      if (ellamoriState.typewriterTimer) clearInterval(ellamoriState.typewriterTimer);
+      ellamoriState.typewriterTimer = null;
+      ellamoriState.isTyping = false;
+      ellamoriDialog.hidden = true;
+      ellamoriState.dialogOpen = false;
+      ellamoriState.dialogObject = '';
+      ellamoriState.dialogIndex = 0;
+    };
+
+    const setEllamoriPrompt = (nextObject) => {
+      if (!ellamoriPrompt) return;
+      if (!nextObject || !ellamoriState.active || ellamoriState.dialogOpen) {
+        ellamoriPrompt.hidden = true;
+        ellamoriPrompt.textContent = 'press E';
+        return;
+      }
+      const objectLabel = ellamoriObjectLabels[nextObject] || nextObject;
+      ellamoriPrompt.textContent = `press E · ${objectLabel}`;
+      ellamoriPrompt.hidden = false;
+    };
+
+    const updateEllamoriNearbyClass = (nearestKey) => {
+      ellamoriObjects.forEach((obj) => {
+        const key = obj.getAttribute('data-ellamori-object') || '';
+        obj.classList.toggle('is-nearby', key === nearestKey && Boolean(nearestKey));
+      });
+    };
+
+    const updateEllamoriDialogHint = () => {
+      if (!ellamoriDialogHint || !ellamoriState.dialogObject) return;
+      const lines = ellamoriLines[ellamoriState.dialogObject] || [];
+      const currentLine = ellamoriState.dialogIndex + 1;
+      const totalLines = lines.length || 1;
+      const isLast = currentLine >= totalLines;
+      ellamoriDialogHint.textContent = isLast ? 'E or Enter to close' : `${currentLine}/${totalLines} · continue`;
+    };
+
+    const getNearestEllamoriObject = () => {
+      if (!ellamoriRoom || !ellamoriPlayer || !ellamoriObjects.length) return '';
+
+      const roomRect = ellamoriRoom.getBoundingClientRect();
+      const playerX = ellamoriState.x + ellamoriPlayer.offsetWidth / 2;
+      const playerY = ellamoriState.y + ellamoriPlayer.offsetHeight / 2;
+      let nearestKey = '';
+      let nearestDistance = Number.POSITIVE_INFINITY;
+
+      ellamoriObjects.forEach((obj) => {
+        const rect = obj.getBoundingClientRect();
+        const objectX = rect.left - roomRect.left + rect.width / 2;
+        const objectY = rect.top - roomRect.top + rect.height / 2;
+        const dx = objectX - playerX;
+        const dy = objectY - playerY;
+        const distance = Math.hypot(dx, dy);
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearestKey = obj.getAttribute('data-ellamori-object') || '';
+        }
+      });
+
+      return nearestDistance <= 38 ? nearestKey : '';
+    };
+
+    const showEllamoriLine = (objectKey, index) => {
+      const lines = ellamoriLines[objectKey] || [];
+      const text = lines[index] || '';
+      if (ellamoriDialogItem) {
+        ellamoriDialogItem.textContent = (index === 0 && objectKey !== 'ending')
+          ? (ellamoriObjectTitles[objectKey] || '')
+          : '';
+      }
+      typewriterWrite(text, () => updateEllamoriDialogHint());
+      updateEllamoriDialogHint();
+    };
+
+    const openEllamoriDialogue = (objectKey) => {
+      if (!ellamoriDialog || !ellamoriDialogText || !objectKey) return;
+      const lines = ellamoriLines[objectKey];
+      if (!Array.isArray(lines) || !lines.length) return;
+
+      ellamoriState.dialogObject = objectKey;
+      ellamoriState.dialogIndex = 0;
+      ellamoriState.dialogOpen = true;
+      ellamoriDialog.hidden = false;
+      if (ellamoriDialogSpeaker) ellamoriDialogSpeaker.textContent = 'ELLA';
+      showEllamoriLine(objectKey, 0);
+      setEllamoriPrompt('');
+    };
+
+    const advanceEllamoriDialogue = () => {
+      if (!ellamoriDialogText || !ellamoriState.dialogObject) return;
+      // If still typing, skip to end first
+      if (typewriterSkip()) return;
+
+      const lines = ellamoriLines[ellamoriState.dialogObject] || [];
+      if (ellamoriState.dialogIndex >= lines.length - 1) {
+        const finishedKey = ellamoriState.dialogObject;
+        closeEllamoriDialog();
+        if (finishedKey !== 'ending') {
+          ellamoriState.discovered.add(finishedKey);
+          if (!ellamoriState.endingShown && ellamoriState.discovered.size >= 3) {
+            ellamoriState.endingShown = true;
+            ellamoriFadeIn(() => {
+              setTimeout(() => {
+                ellamoriFadeOut(() => openEllamoriDialogue('ending'));
+              }, 400);
+            });
+          }
+        } else {
+          // Ending finished — final fade to black
+          setTimeout(() => ellamoriFadeIn(), 400);
+        }
+        return;
+      }
+
+      ellamoriState.dialogIndex += 1;
+      showEllamoriLine(ellamoriState.dialogObject, ellamoriState.dialogIndex);
+    };
+
+    const drawEllamoriPlayer = (horizontal) => {
+      if (!ellamoriPlayer || !ellamoriRoom) return;
+      const maxX = Math.max(0, ellamoriRoom.clientWidth - ellamoriPlayer.offsetWidth);
+      const maxY = Math.max(0, ellamoriRoom.clientHeight - ellamoriPlayer.offsetHeight);
+      ellamoriState.x = clampValue(ellamoriState.x, 0, maxX);
+      ellamoriState.y = clampValue(ellamoriState.y, 0, maxY);
+      ellamoriPlayer.style.left = `${ellamoriState.x}px`;
+      ellamoriPlayer.style.top = `${ellamoriState.y}px`;
+      // Flip sprite based on horizontal direction
+      if (horizontal < 0 && !ellamoriState.facingLeft) {
+        ellamoriState.facingLeft = true;
+        ellamoriPlayer.style.transform = 'scaleX(-1)';
+      } else if (horizontal > 0 && ellamoriState.facingLeft) {
+        ellamoriState.facingLeft = false;
+        ellamoriPlayer.style.transform = 'scaleX(1)';
+      }
+    };
+
+    const updateEllamori = (timeMs) => {
+      if (!ellamoriState.started || !ellamoriRoom || !ellamoriPlayer) return;
+
+      if (!ellamoriState.lastTime) {
+        ellamoriState.lastTime = timeMs;
+      }
+
+      const delta = Math.min(0.05, (timeMs - ellamoriState.lastTime) / 1000);
+      ellamoriState.lastTime = timeMs;
+
+      if (ellamoriState.active && !ellamoriState.dialogOpen) {
+        const horizontal = (ellamoriState.keysDown.has('ArrowRight') || ellamoriState.keysDown.has('d') ? 1 : 0)
+          - (ellamoriState.keysDown.has('ArrowLeft') || ellamoriState.keysDown.has('a') ? 1 : 0);
+        const vertical = (ellamoriState.keysDown.has('ArrowDown') || ellamoriState.keysDown.has('s') ? 1 : 0)
+          - (ellamoriState.keysDown.has('ArrowUp') || ellamoriState.keysDown.has('w') ? 1 : 0);
+
+        const isMoving = Boolean(horizontal || vertical);
+        ellamoriPlayer.classList.toggle('is-walking', isMoving);
+
+        if (isMoving) {
+          const length = Math.hypot(horizontal, vertical) || 1;
+          ellamoriState.x += (horizontal / length) * ellamoriState.speed * delta;
+          ellamoriState.y += (vertical / length) * ellamoriState.speed * delta;
+          drawEllamoriPlayer(horizontal);
+        }
+
+        const nearest = getNearestEllamoriObject();
+        if (nearest !== ellamoriState.prevNearest) {
+          ellamoriState.prevNearest = nearest;
+          updateEllamoriNearbyClass(nearest);
+        }
+        ellamoriState.nearbyObject = nearest;
+        setEllamoriPrompt(nearest);
+      }
+
+      window.requestAnimationFrame(updateEllamori);
+    };
+
+    const setEllamoriActive = (isActive) => {
+      ellamoriState.active = Boolean(isActive && ellamoriContent && ellamoriStage && ellamoriRoom && ellamoriPlayer);
+      if (!ellamoriState.active) {
+        ellamoriState.keysDown.clear();
+        ellamoriState.nearbyObject = '';
+        setEllamoriPrompt('');
+        closeEllamoriDialog();
+        return;
+      }
+
+      if (!ellamoriState.started) {
+        ellamoriState.started = true;
+        ellamoriState.x = Math.max(14, (ellamoriRoom.clientWidth * 0.5) - 12);
+        ellamoriState.y = Math.max(14, (ellamoriRoom.clientHeight * 0.56) - 16);
+        drawEllamoriPlayer(0);
+        window.requestAnimationFrame(updateEllamori);
+      }
+
+      // Fade in from black each time the tab is entered
+      if (ellamoriFade) ellamoriFade.classList.add('is-opaque');
+      setTimeout(() => {
+        if (ellamoriFade) ellamoriFade.classList.remove('is-opaque');
+      }, 50);
+
+      const nearest = getNearestEllamoriObject();
+      ellamoriState.nearbyObject = nearest;
+      setEllamoriPrompt(nearest);
+      ellamoriStage.focus({ preventScroll: true });
+    };
+
+    const closeRoomLightbox = () => {
+      if (!roomLightbox || roomLightbox.hidden) return;
+      roomLightbox.hidden = true;
+      roomLightbox.setAttribute('aria-hidden', 'true');
+      if (roomLightboxImage) {
+        roomLightboxImage.removeAttribute('src');
+      }
+    };
+
+    const openRoomLightbox = (src, altText) => {
+      if (!roomLightbox || !roomLightboxImage || !src) return;
+      roomLightboxImage.src = src;
+      roomLightboxImage.alt = altText || 'Expanded room photo';
+      roomLightbox.hidden = false;
+      roomLightbox.setAttribute('aria-hidden', 'false');
+    };
+
+    roomExpandBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        openRoomLightbox(btn.getAttribute('data-room-src') || '', btn.getAttribute('data-room-alt') || 'Expanded room photo');
+      });
+    });
+
+    roomCloseBtns.forEach((btn) => {
+      btn.addEventListener('click', closeRoomLightbox);
+    });
+
+    ellamoriObjects.forEach((obj) => {
+      obj.addEventListener('click', () => {
+        if (!ellamoriState.active || ellamoriState.dialogOpen) return;
+        const objectKey = obj.getAttribute('data-ellamori-object') || '';
+        if (objectKey) openEllamoriDialogue(objectKey);
+      });
+    });
+
+    if (ellamoriDialogNext) {
+      ellamoriDialogNext.addEventListener('click', advanceEllamoriDialogue);
+    }
+
+    if (ellamoriDialog) {
+      ellamoriDialog.addEventListener('click', (event) => {
+        if (!ellamoriState.active || !ellamoriState.dialogOpen) return;
+        if (event.target === ellamoriDialogNext) return;
+        advanceEllamoriDialogue();
+      });
+    }
+
+    window.addEventListener('keydown', (event) => {
+      const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+
+      if (ellamoriState.active && isMoveKey(key)) {
+        ellamoriState.keysDown.add(key);
+        event.preventDefault();
+      }
+
+      if (ellamoriState.active && (key === 'e' || key === 'Enter' || key === ' ')) {
+        if (ellamoriState.dialogOpen) {
+          advanceEllamoriDialogue();
+        } else if (ellamoriState.nearbyObject) {
+          openEllamoriDialogue(ellamoriState.nearbyObject);
+        }
+        event.preventDefault();
+      }
+
+      if (event.key === 'Escape') {
+        closeRoomLightbox();
+        closeEllamoriDialog();
+      }
+    });
+
+    window.addEventListener('keyup', (event) => {
+      const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+      if (isMoveKey(key)) {
+        ellamoriState.keysDown.delete(key);
+      }
+    });
+
+    const setActiveBrowserTab = (tabName) => {
+      browserTabBtns.forEach((btn) => {
+        const active = btn.getAttribute('data-browser-tab') === tabName;
+        btn.classList.toggle('is-active', active);
+        btn.setAttribute('aria-selected', String(active));
+      });
+      browserContents.forEach((panel) => {
+        panel.hidden = panel.getAttribute('data-browser-content') !== tabName;
+      });
+      if (browserAddress) browserAddress.textContent = tabUrls[tabName] || '';
+
+      if (tabName !== 'room') {
+        closeRoomLightbox();
+      } else if (roomWalletPhotoWrap) {
+        roomWalletPhotoWrap.classList.remove('is-revealed');
+        void roomWalletPhotoWrap.offsetWidth;
+        roomWalletPhotoWrap.classList.add('is-revealed');
+      }
+
+      setEllamoriActive(tabName === 'ellamori');
+    };
+
+    browserTabBtns.forEach((btn) => {
+      btn.addEventListener('click', () => setActiveBrowserTab(btn.getAttribute('data-browser-tab') || 'camera'));
+    });
+
+    setActiveBrowserTab('camera');
+  }
+
   setActiveApp(strawberryDesk.getAttribute('data-active-app') || 'spotify');
 }
 
@@ -2339,6 +3108,7 @@ function getRevealStyle(sectionId, item) {
   if (item.classList.contains('section-heading')) return 'heading-rise';
 
   if (sectionId === 'fandom') return 'from-left';
+  if (sectionId === 'phone-screen-love') return 'soft-pop';
   if (sectionId === 'photos') return 'soft-pop';
   if (sectionId === 'music') return 'from-right';
   if (sectionId === 'strawberry-booth') return 'desk-swing';
@@ -2362,6 +3132,7 @@ function initScrollRevealStagger() {
   const revealSelector = [
     '.section-heading',
     '.queue-client',
+    '.phone-love-stage',
     '.headspace-grid',
     '.music-shell',
     '.strawberry-desk',
@@ -2436,6 +3207,7 @@ function onScrollAnimate() {
     window.requestAnimationFrame(() => {
       updateScrollProgress();
       updateMotionSections();
+      updatePhoneScreenMotion();
       ticking = false;
     });
     ticking = true;
@@ -2475,29 +3247,33 @@ mailboxGrid?.addEventListener('click', (event) => {
   const foldedNotes = [
     {
       title: 'Folded Note 1',
-      preview: 'open me first',
+      preview: 'first one',
+      sender: 'from paradise pick',
       note: 'You are still my favorite hello and my safest place.'
     },
     {
       title: 'Folded Note 2',
       preview: 'little secret',
+      sender: 'from long distance',
       note: 'From UK to Sweden, I would cross every timezone for you.',
       tone: 'note-alt'
     },
     {
       title: 'Folded Note 3',
       preview: 'you win',
+      sender: 'from tonight',
       note: 'Every version of my future looks better with you in it.',
       tone: 'note-soft'
     },
     {
       title: 'Folded Note 4',
       preview: 'final one',
+      sender: 'from me',
       note: 'I love you, and I still choose you every single day.'
     }
   ];
 
-  document.querySelectorAll('.locker-door').forEach((locker) => locker.classList.remove('opened'));
+  document.querySelectorAll('.locker-door').forEach((locker) => locker.classList.remove('opened', 'is-selected'));
   card.classList.remove('opening');
   void card.offsetWidth;
   card.classList.add('opening');
@@ -2506,19 +3282,25 @@ mailboxGrid?.addEventListener('click', (event) => {
     card.classList.remove('opening');
     card.classList.add('opened');
   }, 540);
+  card.classList.add('is-selected');
 
   mailRevealName.textContent = `${name}'s locker`;
   setInfernoVaultState(hasLetters);
+  if (mailReveal) {
+    mailReveal.dataset.state = hasLetters ? 'hit' : 'miss';
+  }
+
   if (hasLetters) {
     if (notePile) {
       notePile.hidden = false;
       notePile.innerHTML = '';
+      notePile.classList.remove('has-lifted');
 
       foldedNotes.forEach((note) => {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = `folded-note ${note.tone || ''}`.trim();
-        btn.innerHTML = `<strong>${note.title}</strong><span>${note.preview}</span>`;
+        btn.innerHTML = `<strong>${note.title}</strong><span>${note.preview}</span><em>${note.sender}</em>`;
         btn.setAttribute('data-note', note.note);
         notePile.appendChild(btn);
       });
@@ -2529,26 +3311,27 @@ mailboxGrid?.addEventListener('click', (event) => {
       unfoldedNote.classList.remove('show');
     }
     if (unfoldedNoteText) {
-      unfoldedNoteText.textContent = 'Pick one folded note to unfold her message.';
+      unfoldedNoteText.textContent = 'Pick one folded note, then click it again to unfold.';
     }
 
-    mailRevealText.textContent = 'Locker opened. Singles Inferno result: this contestant received notes. Click one to unfold.';
+    mailRevealText.textContent = 'This locker received notes tonight. Pick one folded post-it to unfold.';
   } else {
     if (notePile) {
       notePile.hidden = true;
       notePile.innerHTML = '';
+      notePile.classList.remove('has-lifted');
     }
     if (unfoldedNote) {
       unfoldedNote.hidden = true;
       unfoldedNote.classList.remove('show');
     }
-    mailRevealText.textContent = 'Empty locker tonight. Singles Inferno result: no notes this round.';
+    mailRevealText.textContent = 'No note tonight for this locker. Pick another contestant.';
   }
 
   if (mailRevealMeta) {
     mailRevealMeta.textContent = hasLetters
-      ? `Mailbox mission update: Ella has 4 folded post-it notes waiting.`
-      : `Mailbox mission update: only Ella received notes this round.`;
+      ? 'Mailbox update: Ella has 4 folded post-it notes waiting.'
+      : 'Mailbox update: only Ella received notes this round.';
   }
 
   mailReveal.classList.remove('flash');
@@ -2560,8 +3343,19 @@ notePile?.addEventListener('click', (event) => {
   const noteCard = event.target.closest('.folded-note');
   if (!noteCard) return;
 
+  const isLifted = noteCard.classList.contains('lifted');
+
+  if (!isLifted) {
+    notePile.querySelectorAll('.folded-note').forEach((btn) => btn.classList.remove('lifted', 'active'));
+    noteCard.classList.add('lifted');
+    notePile.classList.add('has-lifted');
+    mailRevealText.textContent = 'Selected. Click the same folded note again to unfold it.';
+    return;
+  }
+
   notePile.querySelectorAll('.folded-note').forEach((btn) => btn.classList.remove('active'));
   noteCard.classList.add('active');
+  uiSounds.playPaper();
 
   const note = noteCard.getAttribute('data-note') || 'A note appears here.';
   if (unfoldedNote && unfoldedNoteText) {
@@ -2571,26 +3365,7 @@ notePile?.addEventListener('click', (event) => {
     void unfoldedNote.offsetWidth;
     unfoldedNote.classList.add('show');
   }
-  mailRevealText.textContent = 'Unfolded. You can open another folded note too.';
-});
-
-infernoStartBtn?.addEventListener('click', () => {
-  mailboxGrid?.classList.remove('locked');
-  mailboxGrid?.querySelectorAll('.locker-door').forEach((locker) => {
-    locker.removeAttribute('disabled');
-  });
-
-  setInfernoVaultState(false);
-  if (mailReveal) {
-    mailReveal.dataset.state = 'idle';
-  }
-
-  if (mailRevealName) mailRevealName.textContent = 'Choose a locker door';
-  if (mailRevealText) mailRevealText.textContent = 'Round started. Open one locker to reveal tonight\'s Singles Inferno notes.';
-  if (mailRevealMeta) mailRevealMeta.textContent = 'Host note: one contestant received notes this night.';
-  if (infernoIntro) {
-    infernoIntro.style.display = 'none';
-  }
+  mailRevealText.textContent = 'Message unfolded. You can still open the other folded notes.';
 });
 
 const observer = new IntersectionObserver((entries) => {
@@ -2618,3 +3393,4 @@ initResistSection();
 initGuidedMode();
 initDigicam();
 initHeroPolaroidBlast();
+initPhoneScreenSection();

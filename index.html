@@ -7,7 +7,7 @@
   <title>For Ella - Our Cozy Anniversary</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Rajdhani:wght@400;500;600;700&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Rajdhani:wght@400;500;600;700&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&family=Press+Start+2P&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -241,6 +241,40 @@
       </div>
     </section>
 
+    <section class="section story-panel reveal" id="phone-screen-love" data-motion>
+      <div class="panel-pin">
+        <div class="section-heading">
+          <h2>She Became My Phone Screen</h2>
+          <p>And then you became my girl</p>
+        </div>
+
+        <article class="phone-love-stage motion-card" id="phoneLoveStage" aria-label="Two lock screens coming together">
+          <div class="phone-love-track" id="phoneLoveTrack">
+            <canvas id="phoneSakuraCanvas" class="phone-sakura-canvas" aria-hidden="true"></canvas>
+            <div class="phone-device phone-device-left" id="phoneLeft" role="img" aria-label="Ella on my lock screen">
+              <div class="phone-screen-fill phone-screen-johnny"></div>
+              <div class="phone-island" aria-hidden="true"></div>
+              <div class="phone-home-indicator" aria-hidden="true"></div>
+            </div>
+
+            <div class="phone-device phone-device-right" id="phoneRight" role="img" aria-label="Me on Ella lock screen">
+              <div class="phone-screen-fill phone-screen-ella"></div>
+              <div class="phone-island" aria-hidden="true"></div>
+              <div class="phone-home-indicator" aria-hidden="true"></div>
+            </div>
+
+            <img class="phone-sticker phone-sticker-flowers" src="assets/images/flowers.png" alt="" aria-hidden="true" loading="lazy" />
+            <img class="phone-sticker phone-sticker-miffy" src="assets/images/miffy_teddy_1.png" alt="" aria-hidden="true" loading="lazy" />
+            <img class="phone-sticker phone-sticker-tea" src="assets/images/milk_tea.png" alt="" aria-hidden="true" loading="lazy" />
+            <img class="phone-sticker phone-sticker-milk" src="assets/images/strawberry_milk.png" alt="" aria-hidden="true" loading="lazy" />
+            <img class="phone-sticker phone-sticker-mochi" src="assets/images/strawberry_mochi.png" alt="" aria-hidden="true" loading="lazy" />
+            <img class="phone-sticker phone-sticker-sushi" src="assets/images/sushi.png" alt="" aria-hidden="true" loading="lazy" />
+            <img class="phone-sticker phone-sticker-clip" src="assets/images/korilakkuma_clip.png" alt="" aria-hidden="true" loading="lazy" />
+          </div>
+        </article>
+      </div>
+    </section>
+
     <section class="section story-panel reveal" id="photos" data-motion>
       <div class="panel-pin">
         <div class="section-heading">
@@ -353,8 +387,8 @@
                 <div class="album-thumb" id="nowPlayingArt">ALBUM ART</div>
                 <div>
                   <p class="now-label">Now Playing</p>
-                  <h3 id="nowPlayingTitle">Pick a track below</h3>
-                  <p id="nowPlayingArtist">Artist placeholder</p>
+                  <h3 id="nowPlayingTitle">Pick a Tiffany Day track</h3>
+                  <p id="nowPlayingArtist">Tiffany Day</p>
                 </div>
               </div>
 
@@ -393,55 +427,42 @@
                 - data-title / data-artist: shown in now playing panel
                 - data-spotify: optional Spotify track URL for external opening
               -->
-              <article class="track-card motion-card" data-audio="assets/audio/track-01.mp3" data-art="assets/images/album-01.jpg" data-title="Blue Skies for Two" data-artist="Ella & You" data-spotify="https://open.spotify.com/">
+              <article class="track-card motion-card" data-audio="assets/audio/track-01.mp3" data-art="assets/images/tiffany_day_album_Cover.png" data-title="IT'S NOT LIKE THAT ANYMORE" data-artist="Tiffany Day" data-spotify="https://open.spotify.com/track/5FzY8uPr7G9U3cKq37DOd1?si=e123d1ab61e34e2a">
                 <span class="track-index">01</span>
-                <div class="track-art">ALBUM 01</div>
+                <div class="track-art" style="background-image: linear-gradient(140deg, rgba(196, 225, 255, 0.45), rgba(169, 208, 245, 0.45)), url('assets/images/tiffany_day_album_Cover.png'); background-size: cover; background-position: center;" aria-label="Tiffany Day album art"></div>
                 <div class="track-meta">
-                  <h4>Blue Skies for Two</h4>
-                  <p>Ella & You</p>
+                  <h4>IT'S NOT LIKE THAT ANYMORE</h4>
+                  <p>Tiffany Day</p>
                 </div>
                 <div class="track-actions">
                   <button class="track-play-btn">Play</button>
-                  <a href="https://open.spotify.com/" target="_blank" rel="noopener noreferrer">Spotify</a>
+                  <a href="https://open.spotify.com/track/5FzY8uPr7G9U3cKq37DOd1?si=e123d1ab61e34e2a" target="_blank" rel="noopener noreferrer">Spotify</a>
                 </div>
               </article>
 
-              <article class="track-card motion-card" data-audio="assets/audio/track-02.mp3" data-art="assets/images/album-02.jpg" data-title="Cafe Window Light" data-artist="Memory Tape" data-spotify="https://open.spotify.com/">
+              <article class="track-card motion-card" data-audio="assets/audio/track-02.mp3" data-art="assets/images/tiffany_day_album_Cover.png" data-title="NO LUCK" data-artist="Tiffany Day" data-spotify="https://open.spotify.com/track/7xSm07mkWui2K3XkwUTgFi?si=784ec825828f46fd">
                 <span class="track-index">02</span>
-                <div class="track-art">ALBUM 02</div>
+                <div class="track-art" style="background-image: linear-gradient(140deg, rgba(196, 225, 255, 0.45), rgba(169, 208, 245, 0.45)), url('assets/images/tiffany_day_album_Cover.png'); background-size: cover; background-position: center;" aria-label="Tiffany Day album art"></div>
                 <div class="track-meta">
-                  <h4>Cafe Window Light</h4>
-                  <p>Memory Tape</p>
+                  <h4>NO LUCK</h4>
+                  <p>Tiffany Day</p>
                 </div>
                 <div class="track-actions">
                   <button class="track-play-btn">Play</button>
-                  <a href="https://open.spotify.com/" target="_blank" rel="noopener noreferrer">Spotify</a>
+                  <a href="https://open.spotify.com/track/7xSm07mkWui2K3XkwUTgFi?si=784ec825828f46fd" target="_blank" rel="noopener noreferrer">Spotify</a>
                 </div>
               </article>
 
-              <article class="track-card motion-card" data-audio="assets/audio/track-03.mp3" data-art="assets/images/album-03.jpg" data-title="Midnight Soft Laugh" data-artist="Future Us" data-spotify="https://open.spotify.com/">
+              <article class="track-card motion-card" data-audio="assets/audio/track-03.mp3" data-art="assets/images/tiffany_day_album_Cover.png" data-title="LOOK UP" data-artist="Tiffany Day" data-spotify="https://open.spotify.com/track/2wuDmnNqQeFKBHg7H4rY9f?si=5cc8ebfaaf4e46db">
                 <span class="track-index">03</span>
-                <div class="track-art">ALBUM 03</div>
+                <div class="track-art" style="background-image: linear-gradient(140deg, rgba(196, 225, 255, 0.45), rgba(169, 208, 245, 0.45)), url('assets/images/tiffany_day_album_Cover.png'); background-size: cover; background-position: center;" aria-label="Tiffany Day album art"></div>
                 <div class="track-meta">
-                  <h4>Midnight Soft Laugh</h4>
-                  <p>Future Us</p>
+                  <h4>LOOK UP</h4>
+                  <p>Tiffany Day</p>
                 </div>
                 <div class="track-actions">
                   <button class="track-play-btn">Play</button>
-                  <a href="https://open.spotify.com/" target="_blank" rel="noopener noreferrer">Spotify</a>
-                </div>
-              </article>
-
-              <article class="track-card motion-card" data-audio="assets/audio/track-04.mp3" data-art="assets/images/album-04.jpg" data-title="Postcard to Tomorrow" data-artist="Tiny Orbit" data-spotify="https://open.spotify.com/">
-                <span class="track-index">04</span>
-                <div class="track-art">ALBUM 04</div>
-                <div class="track-meta">
-                  <h4>Postcard to Tomorrow</h4>
-                  <p>Tiny Orbit</p>
-                </div>
-                <div class="track-actions">
-                  <button class="track-play-btn">Play</button>
-                  <a href="https://open.spotify.com/" target="_blank" rel="noopener noreferrer">Spotify</a>
+                  <a href="https://open.spotify.com/track/2wuDmnNqQeFKBHg7H4rY9f?si=5cc8ebfaaf4e46db" target="_blank" rel="noopener noreferrer">Spotify</a>
                 </div>
               </article>
             </div>
@@ -499,15 +520,15 @@
             <div class="macbook-screen">
               <aside class="desktop-icons" aria-label="Desktop apps">
                 <button class="desktop-icon is-active" type="button" data-desktop-app="spotify" aria-pressed="true">
-                  <img src="assets/images/spotify_logo.png" alt="Spotify app" loading="lazy" />
+                  <img src="assets/images/logos/spotify_logo.png" alt="Spotify app" loading="lazy" />
                   <span>Spotify</span>
                 </button>
                 <button class="desktop-icon" type="button" data-desktop-app="photos" aria-pressed="false">
-                  <img src="assets/images/photos_logo.png" alt="Photos app" loading="lazy" />
+                  <img src="assets/images/logos/photos_logo.png" alt="Photos app" loading="lazy" />
                   <span>Photos</span>
                 </button>
                 <button class="desktop-icon" type="button" data-desktop-app="discord" aria-pressed="false">
-                  <img src="assets/images/discord_logo.png" alt="Discord app" loading="lazy" />
+                  <img src="assets/images/logos/discord_logo.png" alt="Discord app" loading="lazy" />
                   <span>Discord</span>
                 </button>
                 <button class="desktop-icon" type="button" data-desktop-app="browser" aria-pressed="false">
@@ -635,17 +656,40 @@
                   </article>
                 </section>
 
-                <section class="desktop-pane pane-browser" data-pane="browser" aria-label="browser camera window" hidden>
+                <section class="desktop-pane pane-browser" data-pane="browser" aria-label="browser window" hidden>
                   <article class="browser-window">
                     <header class="browser-topbar">
                       <div class="browser-dots" aria-hidden="true"><span></span><span></span><span></span></div>
-                      <p class="browser-tab-title">johnny's camera reel</p>
+                      <nav class="browser-tabs" role="tablist" aria-label="Browser tabs">
+                        <button class="browser-tab is-active" type="button" role="tab" data-browser-tab="camera" aria-selected="true">
+                          <span class="browser-tab-favicon-glyph" aria-hidden="true">📷</span>
+                          <span class="browser-tab-label">johnny's camera reel</span>
+                        </button>
+                        <button class="browser-tab" type="button" role="tab" data-browser-tab="statsfm" aria-selected="false">
+                          <img src="assets/images/logos/statsfm_logo.png" class="browser-tab-favicon-img" alt="" loading="lazy" />
+                          <span class="browser-tab-label">stats.fm</span>
+                        </button>
+                        <button class="browser-tab" type="button" role="tab" data-browser-tab="keep" aria-selected="false">
+                          <span class="browser-tab-favicon-glyph" aria-hidden="true">📝</span>
+                          <span class="browser-tab-label">notes about her</span>
+                        </button>
+                        <button class="browser-tab" type="button" role="tab" data-browser-tab="room" aria-selected="false">
+                          <span class="browser-tab-favicon-glyph" aria-hidden="true">🛏</span>
+                          <span class="browser-tab-label">in my room</span>
+                        </button>
+                        <button class="browser-tab" type="button" role="tab" data-browser-tab="ellamori" aria-selected="false">
+                          <span class="browser-tab-favicon-glyph" aria-hidden="true">◼</span>
+                          <span class="browser-tab-label">ellamori</span>
+                        </button>
+                      </nav>
                     </header>
                     <div class="browser-address-row">
                       <span class="browser-lock" aria-hidden="true">🔒</span>
-                      <p>https://strawberry.love/lens</p>
+                      <p class="browser-address-text">https://strawberry.love/lens</p>
                     </div>
-                    <div class="browser-content">
+
+                    <!-- Tab: camera reel -->
+                    <div class="browser-content" data-browser-content="camera">
                       <p class="browser-kicker">in-app browser simulation</p>
                       <h4>Currently viewing images of Ella</h4>
                       <div class="digicam-wrapper digicam-wrapper-mini" role="button" tabindex="0" aria-label="Click to view next portrait of Ella in browser app">
@@ -670,6 +714,195 @@
                         <input id="digicamPanY" type="range" min="15" max="75" step="1" value="40" />
                       </div>
                       <p class="browser-footnote">tap the camera to flip through</p>
+                    </div>
+
+                    <!-- Tab: stats.fm -->
+                    <div class="browser-content statsfm-content" data-browser-content="statsfm" hidden>
+                      <div class="statsfm-header">
+                        <img src="assets/images/logos/statsfm_logo.png" alt="stats.fm" class="statsfm-logo" loading="lazy" />
+                        <div>
+                          <h4>stats.fm</h4>
+                          <p class="browser-kicker">our music, tracked</p>
+                        </div>
+                      </div>
+                      <div class="statsfm-shared-artists">
+                        <p class="statsfm-section-label">Artists we both stream</p>
+                        <div class="statsfm-artist-row">
+                          <span class="statsfm-artist-chip">keshi</span>
+                          <span class="statsfm-artist-chip">eaJ</span>
+                          <span class="statsfm-artist-chip">PRYVT</span>
+                          <span class="statsfm-artist-chip">bamsem</span>
+                        </div>
+                      </div>
+                      <div class="statsfm-profiles">
+                        <p class="statsfm-section-label">Our profiles</p>
+                        <div class="statsfm-profile-links">
+                          <a class="statsfm-profile-btn" href="https://stats.fm/1128908369" target="_blank" rel="noopener noreferrer">
+                            <span class="statsfm-profile-name">johnny</span>
+                            <span class="statsfm-profile-arrow">↗</span>
+                          </a>
+                          <a class="statsfm-profile-btn" href="https://stats.fm/user/emyan" target="_blank" rel="noopener noreferrer">
+                            <span class="statsfm-profile-name">emyan</span>
+                            <span class="statsfm-profile-arrow">↗</span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Tab: notes about her (Google Keep inspired) -->
+                    <div class="browser-content keep-content" data-browser-content="keep" hidden>
+                      <div class="keep-header">
+                        <p class="browser-kicker">google keep inspired</p>
+                        <h4>notes about her</h4>
+                      </div>
+
+                      <div class="keep-note-grid">
+                        <article class="keep-note">
+                          <h5>what she likes</h5>
+                          <div class="keep-scribble" aria-hidden="true">
+                            <span style="width: 91%"></span>
+                            <span style="width: 74%"></span>
+                            <span style="width: 86%"></span>
+                            <span style="width: 63%"></span>
+                          </div>
+                        </article>
+
+                        <article class="keep-note">
+                          <h5>things to save up and get her</h5>
+                          <div class="keep-scribble" aria-hidden="true">
+                            <span style="width: 84%"></span>
+                            <span style="width: 67%"></span>
+                            <span style="width: 78%"></span>
+                            <span style="width: 56%"></span>
+                          </div>
+                        </article>
+
+                        <article class="keep-note">
+                          <h5>things she dislikes</h5>
+                          <div class="keep-scribble" aria-hidden="true">
+                            <span style="width: 87%"></span>
+                            <span style="width: 58%"></span>
+                            <span style="width: 72%"></span>
+                            <span style="width: 64%"></span>
+                          </div>
+                        </article>
+
+                        <article class="keep-note">
+                          <h5>how to be a better boyfriend</h5>
+                          <div class="keep-scribble" aria-hidden="true">
+                            <span style="width: 82%"></span>
+                            <span style="width: 70%"></span>
+                            <span style="width: 76%"></span>
+                            <span style="width: 61%"></span>
+                          </div>
+                        </article>
+                      </div>
+                    </div>
+
+                    <!-- Tab: in my room -->
+                    <div class="browser-content room-content" data-browser-content="room" hidden>
+                      <div class="room-grid" aria-label="My room keepsakes">
+                        <article class="room-item room-item-frame" aria-label="Picture frame with Ella photo">
+                          <h5>in my photos</h5>
+                          <div class="room-frame-stage" aria-hidden="true">
+                            <img class="room-frame-photo" src="assets/images/photos/ella/ella_3.jpg" alt="" loading="lazy" />
+                            <img class="room-frame-overlay" src="assets/images/browser/inMyRoom/frame.png" alt="" loading="lazy" />
+                          </div>
+                        </article>
+
+                        <article class="room-item room-item-fridge" aria-label="Fridge with photo magnets">
+                          <h5>on my fridge</h5>
+                          <div class="room-fridge-stage" aria-hidden="true">
+                            <img class="room-fridge-base" src="assets/images/browser/inMyRoom/fridge.png" alt="" loading="lazy" />
+
+                            <button
+                              class="room-fridge-photo room-fridge-photo-a"
+                              type="button"
+                              data-room-expand
+                              data-room-src="assets/images/photos/ella/ella_2.jpg"
+                              data-room-alt="Ella photo 2"
+                              aria-label="Open Ella photo 2"
+                            >
+                              <img src="assets/images/photos/ella/ella_2.jpg" alt="" loading="lazy" />
+                            </button>
+
+                            <button
+                              class="room-fridge-photo room-fridge-photo-b"
+                              type="button"
+                              data-room-expand
+                              data-room-src="assets/images/photos/ella/ella_4.jpg"
+                              data-room-alt="Ella photo 4"
+                              aria-label="Open Ella photo 4"
+                            >
+                              <img src="assets/images/photos/ella/ella_4.jpg" alt="" loading="lazy" />
+                            </button>
+                          </div>
+                        </article>
+
+                        <article class="room-item room-item-wallet" aria-label="Wallet with Ella photo inside">
+                          <h5>in my wallet</h5>
+                          <div class="room-wallet-stage" aria-hidden="true">
+                            <div class="room-wallet-photo-wrap">
+                              <img class="room-wallet-photo" src="assets/images/photos/ella/ella_1.jpg" alt="" loading="lazy" />
+                            </div>
+                            <img class="room-wallet-base" src="assets/images/browser/inMyRoom/margiela_wallet.jpg" alt="" loading="lazy" />
+                          </div>
+                        </article>
+                      </div>
+
+                      <div class="room-lightbox" id="roomLightbox" hidden aria-hidden="true">
+                        <button class="room-lightbox-backdrop" type="button" data-room-close aria-label="Close expanded photo"></button>
+                        <section class="room-lightbox-panel" role="dialog" aria-modal="true" aria-label="Expanded fridge photo">
+                          <header class="room-lightbox-header">
+                            <p>fridge photo</p>
+                            <button class="room-lightbox-close" id="roomLightboxClose" type="button" data-room-close aria-label="Close expanded photo">✕</button>
+                          </header>
+                          <div class="room-lightbox-image-wrap">
+                            <img id="roomLightboxImage" src="" alt="Expanded room photo" loading="lazy" />
+                          </div>
+                        </section>
+                      </div>
+                    </div>
+
+                    <!-- Tab: ellamori -->
+                    <div class="browser-content ellamori-content" data-browser-content="ellamori" hidden>
+                      <p class="ellamori-kicker">johnny's bedroom</p>
+                      <div class="ellamori-stage" id="ellamoriStage" tabindex="0" aria-label="Simple room exploration">
+                        <div class="ellamori-fade" id="ellamoriFade" aria-hidden="true"></div>
+                        <div class="ellamori-room" id="ellamoriRoom">
+                          <div class="ellamori-prop ellamori-prop-window" aria-hidden="true"></div>
+                          <div class="ellamori-prop ellamori-prop-bed" aria-hidden="true"></div>
+                          <div class="ellamori-prop ellamori-prop-desk" aria-hidden="true"></div>
+                          <div class="ellamori-prop ellamori-prop-lamp" aria-hidden="true"></div>
+                          <div class="ellamori-prop ellamori-prop-rug" aria-hidden="true"></div>
+
+                          <button class="ellamori-object ellamori-object-phone" type="button" data-ellamori-object="phone" aria-label="Johnny's phone">
+                            <span>phone</span>
+                          </button>
+                          <button class="ellamori-object ellamori-object-digicam" type="button" data-ellamori-object="digicam" aria-label="Digicam">
+                            <span>digicam</span>
+                          </button>
+                          <button class="ellamori-object ellamori-object-cake" type="button" data-ellamori-object="cake" aria-label="Strawberry cake">
+                            <span>cake</span>
+                          </button>
+                          <img class="ellamori-player" id="ellamoriPlayer" src="assets/images/browser/omori/aubrey.jpg" alt="Ella character sprite" loading="lazy" />
+                        </div>
+                        <p class="ellamori-prompt" id="ellamoriPrompt" hidden>press E</p>
+                      </div>
+                      <p class="ellamori-controls">move: arrow keys or WASD · interact/next line: E or Enter</p>
+
+                      <section class="ellamori-dialog" id="ellamoriDialog" hidden aria-live="polite">
+                        <div class="ellamori-dialog-main">
+                          <div class="ellamori-dialog-speaker" id="ellamoriDialogSpeaker">ELLA</div>
+                          <p class="ellamori-dialog-item" id="ellamoriDialogItem"></p>
+                          <p class="ellamori-dialog-text" id="ellamoriDialogText"></p>
+                          <p class="ellamori-dialog-hint" id="ellamoriDialogHint">E or Enter to continue</p>
+                          <button class="ellamori-dialog-next" id="ellamoriDialogNext" type="button" aria-label="Next line">▶</button>
+                        </div>
+                        <div class="ellamori-dialog-portrait" aria-hidden="true">
+                          <img src="assets/images/browser/omori/DW_Aubrey_Neutral_29.gif" alt="" />
+                        </div>
+                      </section>
                     </div>
                   </article>
                 </section>
@@ -715,7 +948,7 @@
             <!-- Discord in-game voice overlay (top-left pinned style) -->
             <aside class="peak-discord-overlay" aria-label="Discord voice call">
               <div class="peak-discord-header">
-                <img src="assets/images/discord_logo.png" class="peak-discord-logo" alt="Discord" />
+                <img src="assets/images/logos/discord_logo.png" class="peak-discord-logo" alt="Discord" />
                 <span># gaming-with-the-crew</span>
               </div>
               <ul class="peak-discord-voices">
@@ -771,7 +1004,7 @@
                 </figure>
                 <figure class="peak-slide">
                   <img src="assets/images/peak_summit.jpg" alt="PEAK summit key art" loading="lazy" />
-                  <figcaption>we all eventually made it to the top! kenny is cheering</figcaption>
+                  <figcaption>we made it to the top! this fuckass game</figcaption>
                 </figure>
               </div>
 
@@ -918,10 +1151,24 @@
         <div class="future-trips-grid" aria-label="Upcoming trips together">
           <article class="trip-card motion-card trip-card-japan">
             <img class="trip-visual" src="assets/images/japan_tourism.jpg" alt="Japan street at dusk with cherry blossoms" loading="lazy" />
+            <div class="trip-ticket-stack" aria-label="August concert boarding passes">
+              <article class="concert-ticket concert-ticket-mirai" aria-label="Magical Mirai ticket">
+                <p class="concert-ticket-brand">BOARDING PASS</p>
+                <p class="concert-ticket-line">AUG 2026 · TOKYO</p>
+                <img class="concert-ticket-logo" src="assets/images/logos/magical_mirai_logo.png" alt="Magical Mirai 2026 logo" loading="lazy" />
+                <p class="concert-ticket-note">HATSUNE MIKU · FOR TWO</p>
+              </article>
+              <article class="concert-ticket concert-ticket-sonic" aria-label="Summer Sonic ticket">
+                <p class="concert-ticket-brand">BOARDING PASS</p>
+                <p class="concert-ticket-line">AUG 2026 · TOKYO</p>
+                <img class="concert-ticket-logo" src="assets/images/logos/summer_sonic_logo.png" alt="Summer Sonic logo" loading="lazy" />
+                <p class="concert-ticket-note">KESHI · FOR TWO</p>
+              </article>
+            </div>
             <div class="trip-meta">
-              <p class="trip-kicker">August</p>
+              <p class="trip-kicker">August 2026</p>
               <h3>Japan</h3>
-              <p>Our next big adventure. The trip that turns all the talking and planning into real memories.</p>
+              <p>Two concerts for two: Magical Mirai for Hatsune Miku, and Summer Sonic for keshi.</p>
             </div>
           </article>
 
@@ -952,12 +1199,13 @@
             </div>
           </article>
 
-          <article class="trip-card motion-card">
+          <article class="trip-card motion-card trip-card-mystery">
             <img class="trip-visual" src="assets/images/venice_tourism.jpg" alt="Venice canal at sunset" loading="lazy" />
+            <span class="trip-mystery-mark" aria-hidden="true">?</span>
             <div class="trip-meta">
-              <p class="trip-kicker">Wherever next</p>
-              <h3>And Then More</h3>
-              <p>Wherever we go after that, I just want it to keep being us, choosing each other in new places.</p>
+              <p class="trip-kicker">Unwritten</p>
+              <h3>Where To Next?</h3>
+              <p>No final stamp yet. Just us, one more pin waiting on the map.</p>
             </div>
           </article>
         </div>
@@ -1007,23 +1255,23 @@
           />
           <p class="inferno-brand-note">Tonight's mission: the postbox reveal. If your locker gets notes, you might leave Inferno for Paradise.</p>
           <div class="inferno-rules" aria-label="Mission rules">
-            <span>1. Start the night drop</span>
-            <span>2. Open one locker</span>
-            <span>3. Only lockers with notes get picked</span>
+            <span>1. Pick one locker</span>
+            <span>2. Open folded notes if any</span>
+            <span>3. Read one message at a time</span>
           </div>
         </article>
 
         <article class="inferno-intro motion-card" id="infernoIntro">
           <p class="inferno-kicker">Night 1 Mailbox Mission</p>
-          <h3>Start The Singles Inferno Drop</h3>
-          <p>All six lockers stay sealed until the host starts the round.</p>
-          <button id="infernoStartBtn" class="queue-btn queue-btn-primary" type="button">Start Night Drop</button>
+          <h3>Pick A Locker</h3>
+          <p>Choose any contestant locker. If they received notes tonight, folded post-its will appear below.</p>
         </article>
 
-        <div class="mailbox-grid locked" id="mailboxGrid">
-          <button class="locker-door motion-card" data-name="Ella" data-has-letters="true" aria-label="Open Ella locker" disabled>
+        <div class="mailbox-grid" id="mailboxGrid">
+          <button class="locker-door motion-card" data-name="Ella" data-has-letters="true" aria-label="Open Ella locker">
             <span class="locker-number">01</span>
             <span class="locker-nameplate">Ella</span>
+            <span class="locker-note-count" aria-label="4 notes">4 NOTES</span>
             <span class="locker-door-face" aria-hidden="true">
               <span class="locker-vent vent-a"></span>
               <span class="locker-vent vent-b"></span>
@@ -1034,9 +1282,10 @@
             <span class="locker-inside" aria-hidden="true"></span>
           </button>
 
-          <button class="locker-door motion-card" data-name="Yuna" data-has-letters="false" aria-label="Open Yuna locker" disabled>
+          <button class="locker-door motion-card" data-name="Younha" data-has-letters="false" aria-label="Open Younha locker">
             <span class="locker-number">02</span>
-            <span class="locker-nameplate">Yuna</span>
+            <span class="locker-nameplate">Younha</span>
+            <span class="locker-note-count is-empty" aria-label="0 notes">0 NOTES</span>
             <span class="locker-door-face" aria-hidden="true">
               <span class="locker-vent vent-a"></span>
               <span class="locker-vent vent-b"></span>
@@ -1046,9 +1295,10 @@
             <span class="locker-inside" aria-hidden="true"></span>
           </button>
 
-          <button class="locker-door motion-card" data-name="Minji" data-has-letters="false" aria-label="Open Minji locker" disabled>
+          <button class="locker-door motion-card" data-name="Minji" data-has-letters="false" aria-label="Open Minji locker">
             <span class="locker-number">03</span>
             <span class="locker-nameplate">Minji</span>
+            <span class="locker-note-count is-empty" aria-label="0 notes">0 NOTES</span>
             <span class="locker-door-face" aria-hidden="true">
               <span class="locker-vent vent-a"></span>
               <span class="locker-vent vent-b"></span>
@@ -1058,9 +1308,10 @@
             <span class="locker-inside" aria-hidden="true"></span>
           </button>
 
-          <button class="locker-door motion-card" data-name="Sora" data-has-letters="false" aria-label="Open Sora locker" disabled>
+          <button class="locker-door motion-card" data-name="Sora" data-has-letters="false" aria-label="Open Sora locker">
             <span class="locker-number">04</span>
             <span class="locker-nameplate">Sora</span>
+            <span class="locker-note-count is-empty" aria-label="0 notes">0 NOTES</span>
             <span class="locker-door-face" aria-hidden="true">
               <span class="locker-vent vent-a"></span>
               <span class="locker-vent vent-b"></span>
@@ -1070,9 +1321,10 @@
             <span class="locker-inside" aria-hidden="true"></span>
           </button>
 
-          <button class="locker-door motion-card" data-name="Hana" data-has-letters="false" aria-label="Open Hana locker" disabled>
+          <button class="locker-door motion-card" data-name="Hana" data-has-letters="false" aria-label="Open Hana locker">
             <span class="locker-number">05</span>
             <span class="locker-nameplate">Hana</span>
+            <span class="locker-note-count is-empty" aria-label="0 notes">0 NOTES</span>
             <span class="locker-door-face" aria-hidden="true">
               <span class="locker-vent vent-a"></span>
               <span class="locker-vent vent-b"></span>
@@ -1082,9 +1334,10 @@
             <span class="locker-inside" aria-hidden="true"></span>
           </button>
 
-          <button class="locker-door motion-card" data-name="Jia" data-has-letters="false" aria-label="Open Jia locker" disabled>
+          <button class="locker-door motion-card" data-name="Jia" data-has-letters="false" aria-label="Open Jia locker">
             <span class="locker-number">06</span>
             <span class="locker-nameplate">Jia</span>
+            <span class="locker-note-count is-empty" aria-label="0 notes">0 NOTES</span>
             <span class="locker-door-face" aria-hidden="true">
               <span class="locker-vent vent-a"></span>
               <span class="locker-vent vent-b"></span>
@@ -1103,9 +1356,9 @@
 
             <div class="inferno-vault-copy">
               <p class="mail-reveal-label">Night Mailbox Outcome</p>
-              <h3 id="mailRevealName">Start the night drop first</h3>
-              <p id="mailRevealText">Open a locker to inspect the mailbox result.</p>
-              <p id="mailRevealMeta" class="mail-reveal-meta">Singles Inferno rule tonight: Ella's locker contains 4 folded post-it notes.</p>
+              <h3 id="mailRevealName">Pick a locker to begin</h3>
+              <p id="mailRevealText">Open one contestant locker to reveal tonight's mailbox result.</p>
+              <p id="mailRevealMeta" class="mail-reveal-meta">Tonight's result: Ella received 4 folded post-it notes.</p>
             </div>
           </div>
 
@@ -1215,7 +1468,8 @@
   </main>
 
   <footer class="footer">
-    <p>Can I borrow you for another year?</p>
+    <p>There's no one else I'd rather share my life with than with you. Will you be by my side for another year at least?</p>
+    <p>Forever and always, Johnny</p>
   </footer>
 
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.min.js"></script>
