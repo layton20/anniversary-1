@@ -23,7 +23,245 @@ const guidedPrevBtn = document.getElementById('guidedPrevBtn');
 const guidedNextBtn = document.getElementById('guidedNextBtn');
 const guidedDots = document.getElementById('guidedDots');
 const storyPanels = Array.from(document.querySelectorAll('.story-panel'));
+const heroIntroParagraphs = Array.from(document.querySelectorAll('#intro .hero-content p'))
+  .filter((paragraph) => !paragraph.classList.contains('eyebrow'));
+const tripMediaModal = document.getElementById('tripMediaModal');
+const tripMediaTitle = document.getElementById('tripMediaTitle');
+const tripMediaClose = document.getElementById('tripMediaClose');
+const tripMediaYoutube = document.getElementById('tripMediaYoutube');
+const tripMediaTiktok = document.getElementById('tripMediaTiktok');
 // envelope-scene.js handles the love letter section now
+
+let tiktokEmbedScriptPromise = null;
+let heroTypewriterTimer = null;
+let heroTypewriterStarted = false;
+
+const HERO_TYPEWRITER_BASE_DELAY = 44;
+const HERO_TYPEWRITER_EMPHASIS_ENTRY_PAUSE = 1500;
+const HERO_TYPEWRITER_EMPHASIS_PHRASES = [
+  "i don't want to",
+  'i love you <3'
+];
+
+function collectPhraseRanges(text, phrases) {
+  const lowerText = text.toLowerCase();
+  const ranges = [];
+
+  phrases.forEach((phrase) => {
+    const lowerPhrase = phrase.toLowerCase();
+    let start = lowerText.indexOf(lowerPhrase);
+
+    while (start !== -1) {
+      ranges.push({ start, end: start + lowerPhrase.length });
+      start = lowerText.indexOf(lowerPhrase, start + lowerPhrase.length);
+    }
+  });
+
+  return ranges;
+}
+
+function getHeroTypeDelay(text, charIndex, baseDelay, emphasisRanges) {
+  let delay = baseDelay;
+  const char = text[charIndex] || '';
+  const nextCharIndex = charIndex + 1;
+
+  if (emphasisRanges.some((range) => charIndex >= range.start && charIndex < range.end)) {
+    delay = baseDelay * 2.2;
+  }
+
+  if (emphasisRanges.some((range) => nextCharIndex === range.start)) {
+    delay += HERO_TYPEWRITER_EMPHASIS_ENTRY_PAUSE;
+  }
+
+  if (char === ',' || char === ';' || char === ':') {
+    delay += baseDelay * 2;
+  } else if (char === '.' || char === '!' || char === '?') {
+    delay += baseDelay * 4;
+  }
+
+  return Math.round(delay);
+}
+
+function typewriteElement(element, speed = HERO_TYPEWRITER_BASE_DELAY) {
+  return new Promise((resolve) => {
+    if (!element) {
+      resolve();
+      return;
+    }
+
+    const fullText = (element.dataset.fullText || element.textContent || '').trim();
+    if (!fullText) {
+      resolve();
+      return;
+    }
+
+    element.dataset.fullText = fullText;
+    element.textContent = '';
+    element.classList.add('hero-type-line', 'is-typing');
+
+    const emphasisRanges = collectPhraseRanges(fullText, HERO_TYPEWRITER_EMPHASIS_PHRASES);
+
+    let cursor = 0;
+    if (heroTypewriterTimer) {
+      window.clearTimeout(heroTypewriterTimer);
+    }
+
+    const tick = () => {
+      cursor += 1;
+      element.textContent = fullText.slice(0, cursor);
+
+      if (cursor >= fullText.length) {
+        heroTypewriterTimer = null;
+        element.classList.remove('is-typing');
+        resolve();
+        return;
+      }
+
+      const nextDelay = getHeroTypeDelay(fullText, cursor - 1, speed, emphasisRanges);
+      heroTypewriterTimer = window.setTimeout(tick, nextDelay);
+    };
+
+    heroTypewriterTimer = window.setTimeout(tick, speed);
+  });
+}
+
+function startHeroIntroTypewriter() {
+  if (!heroIntroParagraphs.length || heroTypewriterStarted) return;
+
+  heroTypewriterStarted = true;
+
+  heroIntroParagraphs.forEach((paragraph) => {
+    const fullText = (paragraph.dataset.fullText || paragraph.textContent || '').trim();
+    paragraph.dataset.fullText = fullText;
+    paragraph.textContent = '';
+  });
+
+  void (async () => {
+    for (const paragraph of heroIntroParagraphs) {
+      await typewriteElement(paragraph, HERO_TYPEWRITER_BASE_DELAY);
+      await new Promise((resolve) => window.setTimeout(resolve, 280));
+    }
+  })();
+}
+
+function ensureTiktokEmbedScript() {
+  if (window.tiktokEmbedLoad) {
+    return Promise.resolve();
+  }
+
+  if (tiktokEmbedScriptPromise) {
+    return tiktokEmbedScriptPromise;
+  }
+
+  tiktokEmbedScriptPromise = new Promise((resolve) => {
+    const existing = document.querySelector('script[src="https://www.tiktok.com/embed.js"]');
+    if (existing) {
+      existing.addEventListener('load', () => resolve(), { once: true });
+      // Resolve anyway in case the script already finished loading.
+      window.setTimeout(resolve, 80);
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = 'https://www.tiktok.com/embed.js';
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => resolve();
+    document.body.appendChild(script);
+  });
+
+  return tiktokEmbedScriptPromise;
+}
+
+function closeTripMediaModal() {
+  if (!tripMediaModal || tripMediaModal.hidden) return;
+
+  tripMediaModal.hidden = true;
+  tripMediaModal.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('trip-media-open');
+
+  if (tripMediaYoutube) {
+    tripMediaYoutube.hidden = true;
+    tripMediaYoutube.removeAttribute('src');
+  }
+
+  if (tripMediaTiktok) {
+    tripMediaTiktok.hidden = true;
+    tripMediaTiktok.innerHTML = '';
+  }
+}
+
+function openTripMediaModalFromLink(link) {
+  if (!tripMediaModal || !tripMediaTitle || !tripMediaYoutube || !tripMediaTiktok) return;
+
+  const mediaType = link.getAttribute('data-trip-media') || '';
+  const country = link.getAttribute('data-country') || 'Trip clip';
+
+  tripMediaTitle.textContent = `${country} clip`;
+  tripMediaModal.hidden = false;
+  tripMediaModal.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('trip-media-open');
+
+  if (mediaType === 'youtube') {
+    const embedSrc = link.getAttribute('data-embed-src') || '';
+    tripMediaTiktok.hidden = true;
+    tripMediaTiktok.innerHTML = '';
+
+    tripMediaYoutube.hidden = false;
+    if (embedSrc) {
+      tripMediaYoutube.src = embedSrc;
+    }
+    return;
+  }
+
+  if (mediaType === 'tiktok') {
+    const cite = link.getAttribute('data-tiktok-cite') || '';
+    const videoId = link.getAttribute('data-tiktok-id') || '';
+    const author = link.getAttribute('data-tiktok-author') || 'creator';
+
+    tripMediaYoutube.hidden = true;
+    tripMediaYoutube.removeAttribute('src');
+
+    tripMediaTiktok.hidden = false;
+    if (videoId === '7189808715334274331') {
+      tripMediaTiktok.innerHTML = `
+        <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@kenichaaann/video/7189808715334274331" data-video-id="7189808715334274331" style="max-width: 605px;min-width: 325px;">
+          <section>
+            <a target="_blank" title="@kenichaaann" href="https://www.tiktok.com/@kenichaaann?refer=embed">@kenichaaann</a>
+            Replying to @chelskysh FAKE SITUATION
+            <a title="chinese" target="_blank" href="https://www.tiktok.com/tag/chinese?refer=embed">#chinese</a>
+            <a title="chinesegirl" target="_blank" href="https://www.tiktok.com/tag/chinesegirl?refer=embed">#chinesegirl</a>
+            <a title="chef" target="_blank" href="https://www.tiktok.com/tag/chef?refer=embed">#chef</a>
+            <a title="fakesituation" target="_blank" href="https://www.tiktok.com/tag/fakesituation?refer=embed">#fakesituation</a>
+            <a title="stantwitter" target="_blank" href="https://www.tiktok.com/tag/stantwitter?refer=embed">#stantwitter</a>
+            <a title="crop" target="_blank" href="https://www.tiktok.com/tag/crop?refer=embed">#crop</a>
+            <a title="cropvideo" target="_blank" href="https://www.tiktok.com/tag/cropvideo?refer=embed">#cropvideo</a>
+            <a title="fyp" target="_blank" href="https://www.tiktok.com/tag/fyp?refer=embed">#fyp</a>
+            <a title="meme" target="_blank" href="https://www.tiktok.com/tag/meme?refer=embed">#meme</a>
+            <a title="floptok" target="_blank" href="https://www.tiktok.com/tag/floptok?refer=embed">#floptok</a>
+            <a title="foryou" target="_blank" href="https://www.tiktok.com/tag/foryou?refer=embed">#foryou</a>
+            <a title="foryoupage" target="_blank" href="https://www.tiktok.com/tag/foryoupage?refer=embed">#foryoupage</a>
+            <a target="_blank" title="music" href="https://www.tiktok.com/music/%E5%BD%92%E5%9B%AD%E7%94%B0%E5%B1%85-%E5%8F%A4%E9%A3%8E%E5%8E%9F%E5%88%9B-6854962156685756424?refer=embed">audio</a>
+          </section>
+        </blockquote>
+      `;
+    } else {
+      tripMediaTiktok.innerHTML = `
+        <blockquote class="tiktok-embed" cite="${cite}" data-video-id="${videoId}" style="max-width: 605px;min-width: 325px;">
+          <section>
+            <a target="_blank" title="${author}" href="https://www.tiktok.com/${author}?refer=embed">${author}</a>
+          </section>
+        </blockquote>
+      `;
+    }
+
+    ensureTiktokEmbedScript().then(() => {
+      if (typeof window.tiktokEmbedLoad === 'function') {
+        window.tiktokEmbedLoad();
+      }
+    });
+  }
+}
 
 function isOpeningOverlayVisible() {
   if (!openingOverlay) return false;
@@ -82,6 +320,14 @@ if (isOpeningOverlayVisible()) {
   window.setTimeout(() => {
     resetScrollToTop();
   }, 40);
+
+  window.addEventListener('openingOverlayClosed', () => {
+    startHeroIntroTypewriter();
+  }, { once: true });
+} else {
+  window.setTimeout(() => {
+    startHeroIntroTypewriter();
+  }, 220);
 }
 
 function createUiSoundEngine() {
@@ -298,9 +544,15 @@ function createUiSoundEngine() {
 const uiSounds = createUiSoundEngine();
 window.uiSounds = uiSounds;
 
+const click1Audio = new Audio('assets/audio/click_1.mp3');
+click1Audio.preload = 'auto';
+click1Audio.volume = 0.55;
+
 document.addEventListener('click', (event) => {
   const target = event.target.closest('button, [role="button"]');
   if (!target || target.disabled) return;
+
+  if (target.closest('.strawberry-desk')) return;
 
   if (target === heroDigicamTrigger) return;
 
@@ -319,7 +571,32 @@ document.addEventListener('click', (event) => {
     return;
   }
 
-  uiSounds.playClick();
+  try {
+    click1Audio.currentTime = 0;
+    const _p = click1Audio.play();
+    if (_p && typeof _p.catch === 'function') _p.catch(() => {});
+  } catch (_) {}
+});
+
+document.addEventListener('click', (event) => {
+  const tripLink = event.target.closest('.trip-country-link[data-trip-media]');
+  if (tripLink instanceof HTMLAnchorElement) {
+    event.preventDefault();
+    openTripMediaModalFromLink(tripLink);
+    return;
+  }
+
+  if (!(event.target instanceof HTMLElement)) return;
+
+  if (event.target.closest('[data-trip-media-close]') || event.target === tripMediaClose) {
+    closeTripMediaModal();
+  }
+});
+
+window.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') {
+    closeTripMediaModal();
+  }
 });
 
 let ticking = false;

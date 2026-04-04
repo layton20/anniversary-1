@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="A cozy anniversary website with photos, music, memories, and love notes." />
-  <title>For Ella - Our Cozy Anniversary</title>
+  <title>520</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Rajdhani:wght@400;500;600;700&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&family=Press+Start+2P&display=swap" rel="stylesheet" />
@@ -60,10 +60,10 @@
         </svg>
       </h1>
       <p class="hero-text">
-        I've never done this before for anyone. I never will for anyone but you.
+        I can't believe today has been exactly one year since I met you. I can't imagine my life without you, I don't want to
       </p>
       <p>
-        I hope this website makes you smile even if it is a bit cringe and embarrassing. I love you <3
+        I hope this website makes you smile even if it's a little cringe and embarrassing. I love you <3
       </p>
     </div>
     <div class="hero-photo" aria-label="Placeholder for favorite polaroid photos">
@@ -270,7 +270,19 @@
             </div>
 
             <div class="phone-device phone-device-right" id="phoneRight" role="img" aria-label="Me on Ella lock screen">
-              <div class="phone-screen-fill phone-screen-ella"></div>
+              <div class="phone-screen-fill phone-screen-ella">
+                <div class="phone-discord-notification" id="phoneDiscordNotification" aria-live="polite" aria-atomic="true" aria-hidden="true">
+                  <img class="phone-discord-notification-icon" src="assets/images/logos/discord_logo.png" alt="Discord" loading="lazy" />
+                  <div class="phone-discord-notification-body">
+                    <div class="phone-discord-notification-app-row">
+                      <p class="phone-discord-notification-app">DISCORD</p>
+                      <p class="phone-discord-notification-time">now</p>
+                    </div>
+                    <p class="phone-discord-notification-sender">leee</p>
+                    <p class="phone-discord-notification-text">uh... i think i crashed my car again...</p>
+                  </div>
+                </div>
+              </div>
               <div class="phone-island" aria-hidden="true"></div>
               <div class="phone-home-indicator" aria-hidden="true"></div>
             </div>
@@ -909,7 +921,6 @@
                           <p class="ellamori-dialog-item" id="ellamoriDialogItem"></p>
                           <p class="ellamori-dialog-text" id="ellamoriDialogText"></p>
                           <p class="ellamori-dialog-hint" id="ellamoriDialogHint">E or Enter to continue</p>
-                          <button class="ellamori-dialog-next" id="ellamoriDialogNext" type="button" aria-label="Next line">▶</button>
                         </div>
                         <div class="ellamori-dialog-portrait" aria-hidden="true">
                           <img src="assets/images/browser/omori/DW_Aubrey_Neutral_29.gif" alt="" />
@@ -1179,7 +1190,7 @@
             </div>
             <div class="trip-meta">
               <p class="trip-kicker">August 2026</p>
-              <h3>Japan</h3>
+              <h3><a class="trip-country-link" href="https://www.youtube.com/watch?v=jhl5afLEKdo" target="_blank" rel="noopener noreferrer" data-trip-media="youtube" data-country="Japan" data-embed-src="https://www.youtube-nocookie.com/embed/jhl5afLEKdo">Japan</a></h3>
               <p>Two concerts for two: Magical Mirai for Hatsune Miku, and Summer Sonic for keshi.</p>
             </div>
           </article>
@@ -1188,7 +1199,7 @@
             <img class="trip-visual" src="assets/images/paris_tourism.jpg" alt="Paris city view" loading="lazy" />
             <div class="trip-meta">
               <p class="trip-kicker">After Japan</p>
-              <h3>Paris</h3>
+              <h3><a class="trip-country-link" href="https://www.tiktok.com/@lck079/video/7489869123162213654?q=french%20underground%20funny&t=1775316060762" target="_blank" rel="noopener noreferrer" data-trip-media="tiktok" data-country="France" data-tiktok-cite="https://www.tiktok.com/@lck079/video/7489869123162213654" data-tiktok-id="7489869123162213654" data-tiktok-author="@lck079">France</a></h3>
               <p>Soft lights, long walks, and the kind of city that feels made for us to wander through together.</p>
             </div>
           </article>
@@ -1197,7 +1208,7 @@
             <img class="trip-visual" src="assets/images/shanghai_travel.jpeg" alt="Shanghai skyline" loading="lazy" />
             <div class="trip-meta">
               <p class="trip-kicker">Probably next</p>
-              <h3>Shanghai</h3>
+              <h3><a class="trip-country-link" href="https://www.tiktok.com/@kenichaaann/video/7189808715334274331?q=chinese%20memes&t=1775316247259" target="_blank" rel="noopener noreferrer" data-trip-media="tiktok" data-country="Shanghai" data-tiktok-cite="https://www.tiktok.com/@kenichaaann/video/7189808715334274331" data-tiktok-id="7189808715334274331" data-tiktok-author="@kenichaaann">Shanghai</a></h3>
               <p>Another stop on our map, another place that gets to hold a little piece of us.</p>
             </div>
           </article>
@@ -1206,7 +1217,7 @@
             <img class="trip-visual" src="assets/images/korea_travel.jpg" alt="Korea street view" loading="lazy" />
             <div class="trip-meta">
               <p class="trip-kicker">Then</p>
-              <h3>Korea</h3>
+              <h3><a class="trip-country-link" href="https://www.youtube.com/watch?v=sNgk2VIU8K4" target="_blank" rel="noopener noreferrer" data-trip-media="youtube" data-country="Korea" data-embed-src="https://www.youtube-nocookie.com/embed/sNgk2VIU8K4">Korea</a></h3>
               <p>Pretty streets, good food, and one more country added to the list we are building together.</p>
             </div>
           </article>
@@ -1223,6 +1234,30 @@
         </div>
       </div>
     </section>
+
+    <div class="trip-media-modal" id="tripMediaModal" hidden aria-hidden="true">
+      <div class="trip-media-backdrop" data-trip-media-close></div>
+      <div class="trip-media-dialog" role="dialog" aria-modal="true" aria-labelledby="tripMediaTitle">
+        <div class="trip-media-header">
+          <p class="trip-media-title" id="tripMediaTitle">Trip clip</p>
+          <button class="trip-media-close" id="tripMediaClose" type="button" aria-label="Close trip media viewer">Close</button>
+        </div>
+
+        <div class="trip-media-body">
+          <iframe
+            id="tripMediaYoutube"
+            title="Trip media video"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+            hidden
+          ></iframe>
+
+          <div class="trip-media-tiktok" id="tripMediaTiktok" hidden></div>
+        </div>
+      </div>
+    </div>
 
     <section class="section story-panel reveal" id="resist-memory" data-motion>
       <div class="panel-pin">

@@ -4,6 +4,11 @@
   const phoneLoveTrack = document.getElementById('phoneLoveTrack');
   const phoneLeft = document.getElementById('phoneLeft');
   const phoneRight = document.getElementById('phoneRight');
+  const phoneDiscordNotification = document.getElementById('phoneDiscordNotification');
+
+  const phoneNotificationAudio = new Audio('assets/audio/iphone_notification.mp3');
+  phoneNotificationAudio.preload = 'auto';
+  phoneNotificationAudio.volume = 0.62;
 
   let phoneSakuraCanvas = null;
   let phoneSakuraCtx = null;
@@ -22,6 +27,9 @@
   let phoneMotionRaf = null;
   let phoneMotionVisible = false;
   let phoneMotionObserver = null;
+  let phoneNotificationTriggered = false;
+  let phoneNotificationRevealTimer = null;
+  let phoneNotificationHideTimer = null;
   const phoneMotionState = {
     targetProgress: 0,
     currentProgress: 0,
@@ -38,6 +46,60 @@
     pointerXSmoothed: 0,
     pointerYSmoothed: 0,
   };
+
+  function clearPhoneNotificationTimers() {
+    if (phoneNotificationRevealTimer) {
+      window.clearTimeout(phoneNotificationRevealTimer);
+      phoneNotificationRevealTimer = null;
+    }
+    if (phoneNotificationHideTimer) {
+      window.clearTimeout(phoneNotificationHideTimer);
+      phoneNotificationHideTimer = null;
+    }
+  }
+
+  function hidePhoneNotification() {
+    if (!phoneDiscordNotification) return;
+    phoneDiscordNotification.classList.remove('is-visible');
+    phoneDiscordNotification.setAttribute('aria-hidden', 'true');
+  }
+
+  function resetPhoneNotification() {
+    clearPhoneNotificationTimers();
+    phoneNotificationTriggered = false;
+    hidePhoneNotification();
+  }
+
+  function playPhoneNotificationAudio() {
+    if (!phoneNotificationAudio) return;
+    try {
+      phoneNotificationAudio.currentTime = 0;
+      const playPromise = phoneNotificationAudio.play();
+      if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch(() => {
+          // Fail silently when autoplay is blocked.
+        });
+      }
+    } catch (error) {
+      // Fail silently when audio playback is not allowed.
+    }
+  }
+
+  function triggerPhoneNotification() {
+    if (!phoneDiscordNotification || phoneNotificationTriggered) return;
+    phoneNotificationTriggered = true;
+    clearPhoneNotificationTimers();
+
+    phoneNotificationRevealTimer = window.setTimeout(() => {
+      phoneDiscordNotification.classList.add('is-visible');
+      phoneDiscordNotification.setAttribute('aria-hidden', 'false');
+      playPhoneNotificationAudio();
+
+      phoneNotificationHideTimer = window.setTimeout(() => {
+        hidePhoneNotification();
+      }, 5200);
+    }, 560);
+  }
 
   function clampValue(value, min, max) {
     return Math.max(min, Math.min(max, value));
@@ -97,6 +159,10 @@
     phoneMotionState.currentLift = lerpValue(phoneMotionState.currentLift, phoneMotionState.targetLift, easing);
     phoneMotionState.pointerXSmoothed = lerpValue(phoneMotionState.pointerXSmoothed, phoneMotionState.pointerX, pointerEase);
     phoneMotionState.pointerYSmoothed = lerpValue(phoneMotionState.pointerYSmoothed, phoneMotionState.pointerY, pointerEase);
+
+    if (phoneMotionVisible && !phoneNotificationTriggered && phoneMotionState.currentProgress >= 0.93) {
+      triggerPhoneNotification();
+    }
 
     let leftX = phoneMotionState.currentLeftX;
     let rightX = phoneMotionState.currentRightX;
@@ -280,12 +346,16 @@
   function initPhoneScreenSection() {
     if (!phoneLoveStage || !phoneLoveTrack) return;
 
+    hidePhoneNotification();
+
     if (!phoneMotionObserver && phoneScreenSection) {
       phoneMotionObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           phoneMotionVisible = entry.isIntersecting;
           if (phoneMotionVisible) {
             updatePhoneScreenMotion();
+          } else {
+            resetPhoneNotification();
           }
         });
       }, { threshold: 0.08 });
@@ -318,4 +388,8 @@
   }
 
   initPhoneScreenSection();
+
+  window.addEventListener('beforeunload', () => {
+    clearPhoneNotificationTimers();
+  });
 })();

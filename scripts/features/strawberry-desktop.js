@@ -177,7 +177,11 @@
         btn.innerHTML = `<span>${toAlbumLabel(albumKey)}</span><strong>${count}</strong>`;
         btn.addEventListener('click', () => {
           activeAlbum = albumKey;
-          renderAlbums();
+          // Update active class in-place so the clicked button stays in the DOM
+          // during event bubbling (avoids innerHTML = '' detaching it mid-propagation)
+          albumList.querySelectorAll('[data-album]').forEach((b) => {
+            b.classList.toggle('is-active', b.getAttribute('data-album') === albumKey);
+          });
           renderGrid();
         });
         btn.classList.toggle('is-active', albumKey === activeAlbum);
@@ -311,6 +315,51 @@
     if (discordChannelTitle) discordChannelTitle.textContent = `# ${initialDiscordChannel}`;
     if (discordComposerChannel) discordComposerChannel.textContent = initialDiscordChannel;
 
+    const deskClickAudio = new Audio('assets/audio/pc_click.mp3');
+    deskClickAudio.preload = 'auto';
+    deskClickAudio.volume = 0.48;
+
+    const playDeskClickSound = () => {
+      try {
+        deskClickAudio.currentTime = 0;
+        const playPromise = deskClickAudio.play();
+        if (playPromise && typeof playPromise.catch === 'function') {
+          playPromise.catch(() => {});
+        }
+      } catch (_) {}
+    };
+
+    const interact2Audio = new Audio('assets/audio/interact_2.mp3');
+    interact2Audio.preload = 'auto';
+    interact2Audio.volume = 0.55;
+
+    const playInteract2Sound = () => {
+      try {
+        interact2Audio.currentTime = 0;
+        const playPromise = interact2Audio.play();
+        if (playPromise && typeof playPromise.catch === 'function') {
+          playPromise.catch(() => {});
+        }
+      } catch (_) {}
+    };
+
+    strawberryDesk.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+
+      const actionable = target.closest('button, [role="button"], a, input, select, textarea');
+      if (!actionable) return;
+      if (actionable instanceof HTMLButtonElement && actionable.disabled) return;
+      if (actionable instanceof HTMLInputElement && actionable.disabled) return;
+      if (actionable instanceof HTMLSelectElement && actionable.disabled) return;
+      if (actionable instanceof HTMLTextAreaElement && actionable.disabled) return;
+
+      // Ellamori objects play interact_2 exclusively — skip the click sound
+      if (actionable.hasAttribute('data-ellamori-object')) return;
+
+      playDeskClickSound();
+    });
+
     const browserPane = strawberryDesk.querySelector('.pane-browser');
     if (browserPane) {
       const browserTabBtns = Array.from(browserPane.querySelectorAll('[data-browser-tab]'));
@@ -400,7 +449,7 @@
           gain.connect(ellamoriAudioCtx.destination);
           osc.type = 'square';
           osc.frequency.setValueAtTime(520, ellamoriAudioCtx.currentTime);
-          gain.gain.setValueAtTime(0.06, ellamoriAudioCtx.currentTime);
+          gain.gain.setValueAtTime(0.018, ellamoriAudioCtx.currentTime);
           gain.gain.exponentialRampToValueAtTime(0.001, ellamoriAudioCtx.currentTime + 0.045);
           osc.start();
           osc.stop(ellamoriAudioCtx.currentTime + 0.045);
@@ -555,6 +604,7 @@
         ellamoriState.dialogOpen = true;
         ellamoriDialog.hidden = false;
         if (ellamoriDialogSpeaker) ellamoriDialogSpeaker.textContent = 'ELLA';
+        if (objectKey !== 'ending') playInteract2Sound();
         showEllamoriLine(objectKey, 0);
         setEllamoriPrompt('');
       };
