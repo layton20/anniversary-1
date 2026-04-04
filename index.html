@@ -111,10 +111,17 @@
           <h2>Where We Met: Online Queue</h2>
           <p>It started on a gaming site, then became our League lobby, our jokes, and us.</p>
         </div>
-        <div class="queue-client motion-card charm-frame charm-frame-league" id="queueClient">
+        <div class="queue-client motion-card" id="queueClient">
           <div class="queue-header">
-            <p>RANKED SOLO/DUO - CHAMP SELECT</p>
+            <p id="queueHeaderLabel">RANKED SOLO/DUO - CHAMP SELECT</p>
             <span class="queue-state" id="queueState">Idle</span>
+          </div>
+          <div class="queue-substatus" aria-label="Queue status details">
+            <span class="status-pill">Summoner's Rift</span>
+            <span class="status-sep" aria-hidden="true">|</span>
+            <span class="status-pill">EUW1</span>
+            <span class="status-sep" aria-hidden="true">|</span>
+            <span class="status-pill">Patch 14.8</span>
           </div>
 
           <article class="champ-select-board" aria-label="Champ select style draft board">
@@ -127,10 +134,6 @@
                 <span class="pick-chip">BOT</span>
                 <span class="pick-chip">SUP</span>
               </div>
-            </div>
-            <div class="draft-center">
-              <p>Hovering: <strong>Akali</strong> and <strong>Zac</strong></p>
-              <div class="draft-timer-ring" aria-hidden="true"></div>
             </div>
             <div class="team-column red-team">
               <h3>Red Side</h3>
@@ -147,21 +150,30 @@
           <div class="queue-main">
             <aside class="party-panel">
               <h3>Your Party</h3>
-              <article class="summoner-card">
-                <img src="assets/gifs/akali_splash.jpg" alt="Akali splash" data-role="gif-slot" />
-                <div>
-                  <h4>Ella</h4>
+              <article class="summoner-card summoner-card-rank summoner-card-emerald">
+                <img class="summoner-avatar summoner-avatar-emerald" src="assets/gifs/akali_splash.jpg" alt="Akali splash" data-role="gif-slot" />
+                <div class="summoner-meta">
+                  <h4>You <span class="summoner-level">Lv 301</span></h4>
                   <p id="ellaRole">Mid - Akali</p>
+                  <div class="summoner-rankline" aria-label="Your rank">
+                    <img src="assets/images/league/emerald_rank.webp" alt="Emerald rank crest" loading="lazy" />
+                    <span>Emerald</span>
+                  </div>
+                  <p class="summoner-lp">84 LP | 57% WR</p>
                 </div>
               </article>
-              <article class="summoner-card">
-                <img src="assets/gifs/zac_splash.jpg" alt="Zac splash" data-role="gif-slot" />
-                <div>
-                  <h4>You</h4>
+              <article class="summoner-card summoner-card-rank summoner-card-bronze">
+                <img class="summoner-avatar summoner-avatar-bronze" src="assets/gifs/zac_splash.jpg" alt="Zac splash" data-role="gif-slot" />
+                <div class="summoner-meta">
+                  <h4>Johnny <span class="summoner-level">Lv 245</span></h4>
                   <p id="youRole">Jungle - Zac</p>
+                  <div class="summoner-rankline" aria-label="Johnny's rank">
+                    <img src="assets/images/league/bronze_rank.webp" alt="Bronze rank crest" loading="lazy" />
+                    <span>Bronze</span>
+                  </div>
+                  <p class="summoner-lp">63 LP | 51% WR</p>
                 </div>
               </article>
-              <button id="swapRoleBtn" class="queue-mini-btn" type="button">Swap Roles For Fun</button>
             </aside>
 
             <section class="queue-center">
@@ -179,13 +191,14 @@
               </div>
             </section>
 
-            <aside class="banter-panel">
-              <h3>Duo Notes</h3>
-              <p id="duoBanterLine">"Queue up. We scale."</p>
-              <div class="banter-chips">
-                <button class="banter-chip" type="button" data-line="No tilt, only vibes.">No Tilt</button>
-                <button class="banter-chip" type="button" data-line="If Zac jumps first, we win.">Jump First</button>
-                <button class="banter-chip" type="button" data-line="Akali side-lane raid incoming.">Side Lane</button>
+            <aside class="enemy-panel" id="enemyPanel" hidden>
+              <h3>Enemies</h3>
+              <div class="enemy-slots">
+                <div class="enemy-slot"><img class="enemy-icon" src="assets/images/league/no_icon.jpeg" alt="" aria-hidden="true" /><span class="enemy-label">Enemy 1</span></div>
+                <div class="enemy-slot"><img class="enemy-icon" src="assets/images/league/no_icon.jpeg" alt="" aria-hidden="true" /><span class="enemy-label">Enemy 2</span></div>
+                <div class="enemy-slot"><img class="enemy-icon" src="assets/images/league/no_icon.jpeg" alt="" aria-hidden="true" /><span class="enemy-label">Enemy 3</span></div>
+                <div class="enemy-slot"><img class="enemy-icon" src="assets/images/league/no_icon.jpeg" alt="" aria-hidden="true" /><span class="enemy-label">Enemy 4</span></div>
+                <div class="enemy-slot"><img class="enemy-icon" src="assets/images/league/no_icon.jpeg" alt="" aria-hidden="true" /><span class="enemy-label">Enemy 5</span></div>
               </div>
             </aside>
           </div>
@@ -234,7 +247,6 @@
               <img class="champ-crash-miku" src="assets/gifs/miku_spinning.gif" alt="Hatsune Miku spinning" />
               <p class="champ-crash-code">GAME ENDED: ENEMY DODGED</p>
               <p class="champ-crash-msg">Champ select dissolved before lock-in.<br>Reason: <code>Most likely scared of us</code><br><span class="champ-crash-sub">Reward granted: You get +30 LP.</span></p>
-              <button id="champCrashRetryBtn" class="queue-btn" type="button">Queue Again</button>
             </div>
           </div>
         </div>
@@ -1477,6 +1489,13 @@
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
   <script defer src="three-bouquet.js"></script>
+  <script defer src="scripts/features/queue-lobby.js"></script>
+  <script defer src="scripts/features/phone-screen.js"></script>
+  <script defer src="scripts/features/music-player.js"></script>
+  <script defer src="scripts/features/media-widgets.js"></script>
+  <script defer src="scripts/features/hero-memory.js"></script>
+  <script defer src="scripts/features/strawberry-desktop.js"></script>
+  <script defer src="scripts/features/visual-effects.js"></script>
   <script defer src="script.js"></script>
   <script defer src="envelope-scene.js"></script>
 
