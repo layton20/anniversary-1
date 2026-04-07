@@ -1873,7 +1873,7 @@ body.opening-settle #intro .hero-photo {
   position: relative;
   z-index: 4;
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
+  grid-template-columns: 1fr;
   gap: 0.8rem;
   margin-bottom: 0.78rem;
   padding: 0.7rem 0.15rem 0.1rem;

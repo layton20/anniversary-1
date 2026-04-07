@@ -103,7 +103,7 @@
     const previewPlace = strawberryDesk.querySelector('#photosPreviewPlace');
     let photoThumbs = [];
 
-    const albumOrder = ['all', 'ella', 'games', 'johnny', 'us'];
+    const albumOrder = ['all', 'ella', 'games', 'johnny', 'misc', 'shes_worth_it', 'us'];
     const albumFolders = albumOrder.filter((key) => key !== 'all');
     const fallbackPhotoAlbums = {
       ella: [],
@@ -116,6 +116,8 @@
       johnny: [
         { src: 'assets/images/photos/johnny/johnny_avatar.jpg', title: 'johnny_avatar' }
       ],
+      misc: [],
+      shes_worth_it: [],
       us: []
     };
     let photoAlbums = { ...fallbackPhotoAlbums, all: [] };
@@ -139,7 +141,11 @@
 
     const toAlbumLabel = (key) => {
       if (key === 'all') return 'All Photos';
-      return key.charAt(0).toUpperCase() + key.slice(1);
+      return key
+        .split(/[_-]+/)
+        .filter(Boolean)
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(' ');
     };
 
     const isImageFile = (filename) => /\.(png|jpe?g|webp|gif|avif)$/i.test(filename || '');
