@@ -101,7 +101,13 @@
     const previewTitle = strawberryDesk.querySelector('#photosPreviewTitle');
     const previewDate = strawberryDesk.querySelector('#photosPreviewDate');
     const previewPlace = strawberryDesk.querySelector('#photosPreviewPlace');
+    const PHOTO_RENDER_BATCH_SIZE = 42;
+    const PHOTO_VIRTUALIZE_THRESHOLD = 120;
+    const PHOTO_VIRTUAL_OVERSCAN_ROWS = 3;
     let photoThumbs = [];
+    let photoRenderToken = 0;
+    let photoVirtualSync = null;
+    let selectedPhotoIndex = 0;
 
     const albumOrder = ['all', 'ella', 'games', 'johnny', 'misc', 'shes_worth_it', 'us'];
     const albumFolders = albumOrder.filter((key) => key !== 'all');
@@ -170,6 +176,46 @@
       albumSummary.textContent = `${albumFolders.length} albums • ${(photoAlbums.all || []).length} photos`;
     };
 
+    const updatePhotoThumbCache = () => {
+      if (!photosGrid) {
+        photoThumbs = [];
+        return;
+      }
+      photoThumbs = Array.from(photosGrid.querySelectorAll('.photos-thumb'));
+    };
+
+    const updatePhotoPreview = (item, albumLabel, index) => {
+      if (!item) return;
+      if (previewImage && item.src) previewImage.src = item.src;
+      if (previewImage) previewImage.alt = item.title || `Photo ${index + 1}`;
+      if (previewTitle) previewTitle.textContent = item.title || `Photo ${index + 1}`;
+      if (previewDate) previewDate.textContent = albumLabel;
+      if (previewPlace) previewPlace.textContent = `Photo ${index + 1}`;
+    };
+
+    const createPhotoThumb = (item, idx, albumLabel, selectedIndex) => {
+      const thumb = document.createElement('button');
+      thumb.type = 'button';
+      thumb.className = 'photos-thumb';
+      if (idx === selectedIndex) {
+        thumb.classList.add('is-active');
+      }
+      thumb.setAttribute('data-photo-src', item.src);
+      thumb.setAttribute('data-photo-title', item.title || `Photo ${idx + 1}`);
+      thumb.setAttribute('data-photo-album', albumLabel);
+      thumb.setAttribute('data-photo-index', `${idx + 1}`);
+      thumb.setAttribute('data-photo-item-index', `${idx}`);
+
+      const img = document.createElement('img');
+      img.src = item.src;
+      img.alt = item.title || `Photo ${idx + 1}`;
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      thumb.appendChild(img);
+
+      return thumb;
+    };
+
     const renderAlbums = () => {
       if (!albumList) return;
       albumList.innerHTML = '';
@@ -197,9 +243,15 @@
 
     const renderGrid = () => {
       if (!photosGrid) return;
+      photoRenderToken += 1;
+      const currentRenderToken = photoRenderToken;
+      photoVirtualSync = null;
       photosGrid.innerHTML = '';
+      photosGrid.scrollTop = 0;
 
       const albumItems = photoAlbums[activeAlbum] || [];
+      const albumLabel = toAlbumLabel(activeAlbum);
+      selectedPhotoIndex = 0;
       if (activeAlbumTitle) activeAlbumTitle.textContent = toAlbumLabel(activeAlbum);
       if (activeAlbumMeta) activeAlbumMeta.textContent = `${albumItems.length} photo${albumItems.length === 1 ? '' : 's'}`;
 
@@ -212,37 +264,153 @@
         if (previewImage) previewImage.src = 'assets/images/hero-placeholder.jpg';
         if (previewImage) previewImage.alt = 'No photo selected';
         if (previewTitle) previewTitle.textContent = 'No photos yet';
-        if (previewDate) previewDate.textContent = toAlbumLabel(activeAlbum);
+        if (previewDate) previewDate.textContent = albumLabel;
         if (previewPlace) previewPlace.textContent = 'Waiting for uploads';
         photoThumbs = [];
         return;
       }
 
-      albumItems.forEach((item, idx) => {
-        const thumb = document.createElement('button');
-        thumb.type = 'button';
-        thumb.className = 'photos-thumb';
-        thumb.setAttribute('data-photo-src', item.src);
-        thumb.setAttribute('data-photo-title', item.title || `Photo ${idx + 1}`);
-        thumb.setAttribute('data-photo-album', toAlbumLabel(activeAlbum));
-        thumb.setAttribute('data-photo-index', `${idx + 1}`);
+      updatePhotoPreview(albumItems[0], albumLabel, 0);
 
-        const img = document.createElement('img');
-        img.src = item.src;
-        img.alt = item.title || `Photo ${idx + 1}`;
-        img.loading = 'lazy';
-        thumb.appendChild(img);
+      if (albumItems.length >= PHOTO_VIRTUALIZE_THRESHOLD) {
+        const topSpacer = document.createElement('div');
+        const bottomSpacer = document.createElement('div');
+        topSpacer.style.gridColumn = '1 / -1';
+        bottomSpacer.style.gridColumn = '1 / -1';
+        topSpacer.style.height = '0px';
+        bottomSpacer.style.height = '0px';
+        photosGrid.appendChild(topSpacer);
+        photosGrid.appendChild(bottomSpacer);
 
-        thumb.addEventListener('click', () => selectPhotoThumb(thumb));
-        photosGrid.appendChild(thumb);
-      });
+        const getMetrics = () => {
+          const styles = window.getComputedStyle(photosGrid);
+          const colGap = parseFloat(styles.columnGap || styles.gap || '0') || 0;
+          const rowGap = parseFloat(styles.rowGap || styles.gap || '0') || 0;
+          const minCellWidth = 44;
+          const containerWidth = Math.max(1, photosGrid.clientWidth);
+          const columns = Math.max(1, Math.floor((containerWidth + colGap) / (minCellWidth + colGap)));
+          const cellSize = Math.max(minCellWidth, (containerWidth - (colGap * (columns - 1))) / columns);
+          const rowHeight = cellSize + rowGap;
+          const viewportHeight = Math.max(1, photosGrid.clientHeight);
+          const visibleRows = Math.max(1, Math.ceil((viewportHeight + rowGap) / Math.max(1, rowHeight)));
+          return { columns, rowHeight, visibleRows };
+        };
 
-      photoThumbs = Array.from(photosGrid.querySelectorAll('.photos-thumb'));
-      if (photoThumbs.length) {
-        photoThumbs[0].classList.add('is-active');
-        selectPhotoThumb(photoThumbs[0]);
+        let renderScheduled = false;
+        const syncVirtualWindow = (force = false) => {
+          if (!force && renderScheduled) return;
+          renderScheduled = true;
+
+          window.requestAnimationFrame(() => {
+            renderScheduled = false;
+            if (!photosGrid || currentRenderToken !== photoRenderToken) return;
+
+            const { columns, rowHeight, visibleRows } = getMetrics();
+            const totalItems = albumItems.length;
+            const totalRows = Math.ceil(totalItems / columns);
+            const scrollTop = photosGrid.scrollTop;
+            const firstVisibleRow = Math.max(0, Math.floor(scrollTop / Math.max(1, rowHeight)));
+            const startRow = Math.max(0, firstVisibleRow - PHOTO_VIRTUAL_OVERSCAN_ROWS);
+            const endRow = Math.min(totalRows - 1, firstVisibleRow + visibleRows + PHOTO_VIRTUAL_OVERSCAN_ROWS);
+
+            const startIndex = startRow * columns;
+            const endIndex = Math.min(totalItems, (endRow + 1) * columns);
+
+            let cursor = topSpacer.nextSibling;
+            while (cursor && cursor !== bottomSpacer) {
+              const next = cursor.nextSibling;
+              cursor.remove();
+              cursor = next;
+            }
+
+            const fragment = document.createDocumentFragment();
+            for (let idx = startIndex; idx < endIndex; idx += 1) {
+              fragment.appendChild(createPhotoThumb(albumItems[idx], idx, albumLabel, selectedPhotoIndex));
+            }
+
+            photosGrid.insertBefore(fragment, bottomSpacer);
+
+            const topRows = startRow;
+            const bottomRows = Math.max(0, totalRows - endRow - 1);
+            topSpacer.style.height = `${Math.max(0, topRows * rowHeight)}px`;
+            bottomSpacer.style.height = `${Math.max(0, bottomRows * rowHeight)}px`;
+
+            updatePhotoThumbCache();
+          });
+        };
+
+        photoVirtualSync = syncVirtualWindow;
+        syncVirtualWindow(true);
+        return;
       }
+
+      let nextIndex = 0;
+      let hasSelectedInitial = false;
+
+      const appendBatch = () => {
+        if (!photosGrid || currentRenderToken !== photoRenderToken) return;
+
+        const fragment = document.createDocumentFragment();
+        const max = Math.min(nextIndex + PHOTO_RENDER_BATCH_SIZE, albumItems.length);
+
+        for (let idx = nextIndex; idx < max; idx += 1) {
+          fragment.appendChild(createPhotoThumb(albumItems[idx], idx, albumLabel, selectedPhotoIndex));
+        }
+
+        photosGrid.appendChild(fragment);
+        nextIndex = max;
+
+        if (!hasSelectedInitial) {
+          const firstThumb = photosGrid.querySelector('.photos-thumb');
+          if (firstThumb) {
+            hasSelectedInitial = true;
+            firstThumb.classList.add('is-active');
+            updatePhotoThumbCache();
+          }
+        }
+
+        if (nextIndex < albumItems.length) {
+          window.requestAnimationFrame(appendBatch);
+          return;
+        }
+
+        updatePhotoThumbCache();
+      };
+
+      appendBatch();
     };
+
+    photosGrid?.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+
+      const thumb = target.closest('.photos-thumb');
+      if (!(thumb instanceof HTMLElement)) return;
+      if (!photosGrid.contains(thumb)) return;
+
+      const thumbIndex = Number.parseInt(thumb.getAttribute('data-photo-item-index') || '0', 10);
+      if (Number.isFinite(thumbIndex) && thumbIndex >= 0) {
+        selectedPhotoIndex = thumbIndex;
+        if (photoVirtualSync) {
+          const item = (photoAlbums[activeAlbum] || [])[thumbIndex];
+          updatePhotoPreview(item, toAlbumLabel(activeAlbum), thumbIndex);
+        }
+      }
+
+      selectPhotoThumb(thumb);
+    });
+
+    photosGrid?.addEventListener('scroll', () => {
+      if (typeof photoVirtualSync === 'function') {
+        photoVirtualSync();
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      if (typeof photoVirtualSync === 'function') {
+        photoVirtualSync(true);
+      }
+    });
 
     const tryLoadAlbumsFromFolders = async () => {
       const discovered = {};

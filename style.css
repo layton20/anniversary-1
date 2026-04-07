@@ -320,6 +320,13 @@ a {
   color: var(--text-soft);
 }
 
+.section-heading .subtitle-is-typing::after {
+  content: '|';
+  margin-left: 0.06em;
+  opacity: 0.5;
+  animation: heroTypeCaret 720ms steps(1) infinite;
+}
+
 body:not(.guided-mode) .story-panel {
   transition: opacity 420ms ease, filter 420ms ease, transform 420ms ease;
 }
@@ -1800,9 +1807,8 @@ body.opening-settle #intro .hero-photo {
 
 #memoryPopImage {
   width: 100%;
-  aspect-ratio: 16 / 10;
-  max-height: 52vh;
-  object-fit: cover;
+  max-height: 60vh;
+  object-fit: contain;
   border-radius: 10px;
   border: 1px solid rgba(144, 171, 230, 0.42);
   background: linear-gradient(145deg, #e2ebff, #f6f2ff);
@@ -6861,13 +6867,7 @@ body:not(.guided-mode) .story-panel:not(.is-inview) .scroll-reveal-item[data-rev
   filter: blur(1.6px) saturate(0.82) brightness(0.9);
   transform: scale(1.02);
   transform-origin: center;
-  transition: filter 320ms ease, transform 320ms ease;
-}
-
-.trip-card-mystery:hover .trip-visual,
-.trip-card-mystery:focus-within .trip-visual {
-  filter: blur(0.15px) saturate(1) brightness(1);
-  transform: scale(1);
+  pointer-events: none;
 }
 
 .trip-mystery-mark {

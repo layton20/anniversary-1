@@ -144,6 +144,37 @@ function startHeroIntroTypewriter() {
   })();
 }
 
+// ── Section subtitle typewriter ──────────────────────────────────────────────
+const subtitleTypedSections = new Set();
+const SUBTITLE_TYPE_SPEED = 30;
+
+function typeSubtitle(el) {
+  const full = (el.dataset.subtitleFull || el.textContent || '').trim();
+  if (!full) return;
+
+  el.dataset.subtitleFull = full;
+  el.textContent = '';
+  el.classList.add('subtitle-is-typing');
+
+  let cursor = 0;
+
+  const tick = () => {
+    cursor += 1;
+    el.textContent = full.slice(0, cursor);
+    if (cursor >= full.length) {
+      el.classList.remove('subtitle-is-typing');
+      return;
+    }
+    const ch = full[cursor - 1];
+    let delay = SUBTITLE_TYPE_SPEED;
+    if (ch === ',' || ch === ';' || ch === ':') delay += SUBTITLE_TYPE_SPEED * 2;
+    else if (ch === '.' || ch === '!' || ch === '?') delay += SUBTITLE_TYPE_SPEED * 5;
+    window.setTimeout(tick, delay);
+  };
+
+  window.setTimeout(tick, SUBTITLE_TYPE_SPEED);
+}
+
 function ensureTiktokEmbedScript() {
   if (window.tiktokEmbedLoad) {
     return Promise.resolve();
@@ -711,77 +742,77 @@ function animateResistCanvas() {
 const RESIST_DIALOGUE = {
   start: {
     speaker: 'Watcher',
-    text: 'Memory corridor online. Select a thread. Resist forgetting.',
+    text: 'Corridor booted. Pick a memory. No running from cringe.',
     choices: [
-      { label: 'Trace when Ella became home', nextId: 'home' },
-      { label: 'Open the devotion file', nextId: 'love' },
-      { label: 'Project our shared future', nextId: 'future' },
-      { label: 'Replay one midnight call', nextId: 'nightcall' },
-      { label: 'Open the vow terminal', nextId: 'promise' }
+      { label: 'Replay my first hardstuck', nextId: 'home' },
+      { label: 'Open the "How She Carries" file', nextId: 'love' },
+      { label: 'Simulate a kitchen disaster', nextId: 'future' },
+      { label: 'Replay a clumsy night call', nextId: 'nightcall' },
+      { label: 'Access the loyalty contract', nextId: 'promise' }
     ]
   },
   home: {
     speaker: 'Watcher',
-    text: 'The loop was simple: call, laugh, breathe, stay. Somewhere in those repeats, distance lost authority and Ella became home.',
+    text: 'We were cursed to forever lose, but you queued up anyway. Somewhere between my inting and your patience, you became home.',
     choices: [
-      { label: 'Return to memory index', nextId: 'start' },
-      { label: 'Jump to future thread', nextId: 'future' },
-      { label: 'Simulate alternate timeline', nextId: 'whatif' }
+      { label: 'Back to memory index', nextId: 'start' },
+      { label: 'Jump to kitchen disaster', nextId: 'future' },
+      { label: 'Simulate alternate timeline (no Ella, more LP?)', nextId: 'whatif' }
     ]
   },
   love: {
     speaker: 'Watcher',
-    text: 'Ella carries gentleness like light. She makes ordinary hours feel ceremonial, like each small moment deserves to be kept.',
+    text: 'She carried every game, I did objectives without prio, she never flamed me. I still don’t know how I got so lucky.',
     choices: [
       { label: 'Replay from beginning', nextId: 'start' },
-      { label: 'Commit to promise', nextId: 'promise' },
-      { label: 'Read impact report', nextId: 'impact' }
+      { label: 'Sign the loyalty contract', nextId: 'promise' },
+      { label: 'Read the "How She Carries" report', nextId: 'impact' }
     ]
   },
   future: {
     speaker: 'Watcher',
-    text: 'Future log accepted: one kitchen, one playlist, and a thousand tiny rituals that say anniversary is not a date, but a daily practice.',
+    text: 'Future log: OH NO! The kitchen is on fire! There is flour everywhere. Kladkadda has imploded and bits are hanging on your face. Me laughing, you smiling, I apologise. Something tells me, never let me in a kitchen again.',
     choices: [
-      { label: 'Seal this memory', nextId: 'promise' },
-      { label: 'Return to archive', nextId: 'start' },
-      { label: 'Load first journey plan', nextId: 'trip' }
+      { label: 'Seal this memory (and my fate)', nextId: 'promise' },
+      { label: 'Back to archive', nextId: 'start' },
+      { label: 'Load next clumsy adventure', nextId: 'trip' }
     ]
   },
   nightcall: {
     speaker: 'You',
-    text: 'On those midnight calls, even silence had shape. Different countries, same heartbeat, same soft goodnight.',
+    text: 'Midnight call. I say something dumb, you bully me, and suddenly the world feels less heavy.',
     choices: [
       { label: 'Back to archive', nextId: 'start' },
-      { label: 'Continue to vow terminal', nextId: 'promise' }
+      { label: 'Continue to loyalty contract', nextId: 'promise' }
     ]
   },
   impact: {
     speaker: 'Watcher',
-    text: 'Impact summary: fear reduced, hope amplified. Ella turns survival mode into living mode.',
+    text: 'Impact report: LP lost, confidence gained. She’s the reason I keep queueing up. It was never about winning, it was about sending a message to my teammates',
     choices: [
       { label: 'Return', nextId: 'start' },
-      { label: 'Project forward', nextId: 'future' }
+      { label: 'Project next kitchen fire', nextId: 'future' }
     ]
   },
   trip: {
     speaker: 'Watcher',
-    text: 'Journey draft: train windows, shared headphones, one photo every stop, and one laugh we will quote for years.',
+    text: 'Trip log: missed trains, wrong turns, but you’re still here. That’s the win condition.',
     choices: [
-      { label: 'Append future log', nextId: 'future' },
-      { label: 'Seal with vow', nextId: 'promise' }
+      { label: 'Append future log (with more fails)', nextId: 'future' },
+      { label: 'Seal with loyalty contract', nextId: 'promise' }
     ]
   },
   whatif: {
     speaker: 'You',
-    text: 'Alternate timeline rejected. A life without Ella is a version of me with less light. I choose this timeline, every time.',
+    text: 'Alternate timeline: I’m not clumsy, I climb, but you’re not there. No thanks.',
     choices: [
-      { label: 'Back to home thread', nextId: 'home' },
+      { label: 'Back to heart thread', nextId: 'home' },
       { label: 'Restart corridor', nextId: 'start' }
     ]
   },
   promise: {
     speaker: 'You',
-    text: 'Final vow: in every loop, every timeline, every anniversary, I choose you first, Ella. Always <3',
+    text: 'Final contract: I’ll keep inting, you’ll keep carrying, and I’ll always pick you first. No dodge.',
     choices: [
       { label: 'Restart corridor', nextId: 'start' },
       { label: 'One more memory thread', nextId: 'nightcall' }
@@ -1212,6 +1243,16 @@ function initScrollRevealStagger() {
       item.style.setProperty('--reveal-tilt', index % 2 === 0 ? '-0.8deg' : '0.8deg');
       item.style.setProperty('--reveal-duration', `${960 + Math.min(index, 3) * 70}ms`);
     });
+
+    // Pre-hide subtitle text so it never flashes before the typewriter runs.
+    const subtitle = section.querySelector('.section-heading > p');
+    if (subtitle) {
+      const full = subtitle.textContent.trim();
+      if (full) {
+        subtitle.dataset.subtitleFull = full;
+        subtitle.textContent = '';
+      }
+    }
   });
 }
 
@@ -1242,6 +1283,14 @@ function updateMotionSections() {
           section.classList.remove('truth-sequence-playing');
           section.classList.add('truth-sequence-complete');
         }, 4050);
+      }
+    }
+
+    if (inView && !subtitleTypedSections.has(section)) {
+      subtitleTypedSections.add(section);
+      const subtitle = section.querySelector('.section-heading > p');
+      if (subtitle) {
+        typeSubtitle(subtitle);
       }
     }
   });
