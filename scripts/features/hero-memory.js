@@ -14,56 +14,16 @@
     if (!heroDigicamTrigger || !heroPolaroidStack || !heroHeartBurst) return;
     let unleashed = false;
     let unleashing = false;
-    let shutterAudioContext = null;
 
     const playShutterSound = () => {
-      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContextClass) return;
-
       try {
-        if (!shutterAudioContext) {
-          shutterAudioContext = new AudioContextClass();
+        const audio = new Audio('assets/audio/cute_pop_1.mp3');
+        audio.volume = 0.42;
+        audio.currentTime = 0;
+        const playPromise = audio.play();
+        if (playPromise && typeof playPromise.catch === 'function') {
+          playPromise.catch(() => {});
         }
-
-        if (shutterAudioContext.state === 'suspended') {
-          shutterAudioContext.resume();
-        }
-
-        const now = shutterAudioContext.currentTime;
-        const gain = shutterAudioContext.createGain();
-        gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.exponentialRampToValueAtTime(0.42, now + 0.008);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
-        gain.connect(shutterAudioContext.destination);
-
-        const osc = shutterAudioContext.createOscillator();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(1240, now);
-        osc.frequency.exponentialRampToValueAtTime(180, now + 0.1);
-        osc.connect(gain);
-        osc.start(now);
-        osc.stop(now + 0.12);
-
-        const buffer = shutterAudioContext.createBuffer(1, Math.floor(shutterAudioContext.sampleRate * 0.06), shutterAudioContext.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < data.length; i += 1) {
-          data[i] = (Math.random() * 2 - 1) * (1 - (i / data.length));
-        }
-
-        const noise = shutterAudioContext.createBufferSource();
-        noise.buffer = buffer;
-        const noiseFilter = shutterAudioContext.createBiquadFilter();
-        noiseFilter.type = 'highpass';
-        noiseFilter.frequency.setValueAtTime(1400, now);
-        const noiseGain = shutterAudioContext.createGain();
-        noiseGain.gain.setValueAtTime(0.22, now);
-        noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.07);
-
-        noise.connect(noiseFilter);
-        noiseFilter.connect(noiseGain);
-        noiseGain.connect(shutterAudioContext.destination);
-        noise.start(now + 0.01);
-        noise.stop(now + 0.08);
       } catch (error) {
         // Audio should fail silently on unsupported/restricted environments.
       }

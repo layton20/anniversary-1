@@ -386,6 +386,28 @@
       const ellamoriDialogSpeaker = browserPane.querySelector('#ellamoriDialogSpeaker');
       const ellamoriDialogNext = browserPane.querySelector('#ellamoriDialogNext');
       const ellamoriObjects = Array.from(browserPane.querySelectorAll('[data-ellamori-object]'));
+      const ellamoriPlayerCtx = ellamoriPlayer instanceof HTMLCanvasElement ? ellamoriPlayer.getContext('2d') : null;
+      const WALK_FRAME_WIDTH = 32;
+      const WALK_FRAME_HEIGHT = 32;
+      const WALK_FRAME_COUNT = 3;
+      const WALK_FPS = 12;
+      const WALK_SRC_X = 1;
+      const WALK_SRC_Y = 15;
+      const WALK_CELL_GAP = 1;
+      const WALK_COLUMN_STRIDE = WALK_FRAME_WIDTH + WALK_CELL_GAP;
+      const WALK_ROW_STRIDE = WALK_FRAME_HEIGHT + WALK_CELL_GAP;
+      const WALK_ROW_INDEX = {
+        down: 0,
+        left: 1,
+        right: 2,
+        up: 3
+      };
+      const ellamoriSpriteImage = new Image();
+      let ellamoriSpriteLoaded = false;
+      ellamoriSpriteImage.src = 'assets/images/browser/omori/aubrey_sprite.png';
+      ellamoriSpriteImage.addEventListener('load', () => {
+        ellamoriSpriteLoaded = true;
+      });
 
       const ellamoriObjectLabels = {
         phone: "johnny's phone",
@@ -434,7 +456,9 @@
         discovered: new Set(),
         endingShown: false,
         prevNearest: '',
-        facingLeft: false,
+        direction: 'down',
+        walkFrame: 0,
+        walkAccumulator: 0,
         typewriterTimer: null,
         isTyping: false
       };
@@ -637,7 +661,7 @@
         showEllamoriLine(ellamoriState.dialogObject, ellamoriState.dialogIndex);
       };
 
-      const drawEllamoriPlayer = (horizontal) => {
+      const drawEllamoriPlayer = () => {
         if (!ellamoriPlayer || !ellamoriRoom) return;
         const maxX = Math.max(0, ellamoriRoom.clientWidth - ellamoriPlayer.offsetWidth);
         const maxY = Math.max(0, ellamoriRoom.clientHeight - ellamoriPlayer.offsetHeight);
@@ -645,13 +669,33 @@
         ellamoriState.y = clampValue(ellamoriState.y, 0, maxY);
         ellamoriPlayer.style.left = `${ellamoriState.x}px`;
         ellamoriPlayer.style.top = `${ellamoriState.y}px`;
-        if (horizontal < 0 && !ellamoriState.facingLeft) {
-          ellamoriState.facingLeft = true;
-          ellamoriPlayer.style.transform = 'scaleX(-1)';
-        } else if (horizontal > 0 && ellamoriState.facingLeft) {
-          ellamoriState.facingLeft = false;
-          ellamoriPlayer.style.transform = 'scaleX(1)';
-        }
+      };
+
+      const renderEllamoriSprite = () => {
+        if (!ellamoriPlayerCtx || !ellamoriPlayer) return;
+
+        if (ellamoriPlayer.width !== WALK_FRAME_WIDTH) ellamoriPlayer.width = WALK_FRAME_WIDTH;
+        if (ellamoriPlayer.height !== WALK_FRAME_HEIGHT) ellamoriPlayer.height = WALK_FRAME_HEIGHT;
+
+        ellamoriPlayerCtx.clearRect(0, 0, WALK_FRAME_WIDTH, WALK_FRAME_HEIGHT);
+        if (!ellamoriSpriteLoaded) return;
+
+        const row = WALK_ROW_INDEX[ellamoriState.direction] ?? WALK_ROW_INDEX.down;
+        const sx = WALK_SRC_X + (ellamoriState.walkFrame * WALK_COLUMN_STRIDE);
+        const sy = WALK_SRC_Y + (row * WALK_ROW_STRIDE);
+
+        ellamoriPlayerCtx.imageSmoothingEnabled = false;
+        ellamoriPlayerCtx.drawImage(
+          ellamoriSpriteImage,
+          sx,
+          sy,
+          WALK_FRAME_WIDTH,
+          WALK_FRAME_HEIGHT,
+          0,
+          0,
+          WALK_FRAME_WIDTH,
+          WALK_FRAME_HEIGHT
+        );
       };
 
       const updateEllamori = (timeMs) => {
@@ -671,14 +715,31 @@
             - (ellamoriState.keysDown.has('ArrowUp') || ellamoriState.keysDown.has('w') ? 1 : 0);
 
           const isMoving = Boolean(horizontal || vertical);
-          ellamoriPlayer.classList.toggle('is-walking', isMoving);
+          if (isMoving) {
+            if (Math.abs(vertical) >= Math.abs(horizontal)) {
+              ellamoriState.direction = vertical > 0 ? 'down' : 'up';
+            } else {
+              ellamoriState.direction = horizontal > 0 ? 'right' : 'left';
+            }
+          }
 
           if (isMoving) {
             const length = Math.hypot(horizontal, vertical) || 1;
             ellamoriState.x += (horizontal / length) * ellamoriState.speed * delta;
             ellamoriState.y += (vertical / length) * ellamoriState.speed * delta;
-            drawEllamoriPlayer(horizontal);
+            ellamoriState.walkAccumulator += delta;
+            if (ellamoriState.walkAccumulator >= (1 / WALK_FPS)) {
+              const step = Math.floor(ellamoriState.walkAccumulator * WALK_FPS);
+              ellamoriState.walkFrame = (ellamoriState.walkFrame + step) % WALK_FRAME_COUNT;
+              ellamoriState.walkAccumulator -= step / WALK_FPS;
+            }
+            drawEllamoriPlayer();
+          } else {
+            ellamoriState.walkFrame = 0;
+            ellamoriState.walkAccumulator = 0;
           }
+
+          renderEllamoriSprite();
 
           const nearest = getNearestEllamoriObject();
           if (nearest !== ellamoriState.prevNearest) {
@@ -706,7 +767,8 @@
           ellamoriState.started = true;
           ellamoriState.x = Math.max(14, (ellamoriRoom.clientWidth * 0.5) - 12);
           ellamoriState.y = Math.max(14, (ellamoriRoom.clientHeight * 0.56) - 16);
-          drawEllamoriPlayer(0);
+          drawEllamoriPlayer();
+          renderEllamoriSprite();
           window.requestAnimationFrame(updateEllamori);
         }
 

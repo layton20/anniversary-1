@@ -41,7 +41,7 @@
         <span class="opening-envelope-icon" aria-hidden="true">💌</span>
       </button>
       <p class="opening-caption">you've got a new email</p>
-      <p id="openingEnvelopeMessage" class="opening-message">🎧 best experienced with sound</p>
+      <p id="openingEnvelopeMessage" class="opening-message">best experienced with sound and hardware acceleration haha</p>
     </div>
   </div>
 
@@ -410,37 +410,15 @@
               <div class="now-playing">
                 <div class="album-thumb" id="nowPlayingArt">ALBUM ART</div>
                 <div>
-                  <p class="now-label">Now Playing</p>
-                  <h3 id="nowPlayingTitle">Pick a Tiffany Day track</h3>
-                  <p id="nowPlayingArtist">Tiffany Day</p>
+                  <p class="now-label">Featured Track</p>
+                  <h3 id="nowPlayingTitle">forever</h3>
+                  <p id="nowPlayingArtist">keshi</p>
                 </div>
               </div>
 
-              <div class="player-controls">
-                <button id="togglePlayBtn" class="icon-btn" aria-label="Play or pause track">Play</button>
-                <div class="progress-wrap">
-                  <label for="trackProgress" class="sr-only">Track progress</label>
-                  <input id="trackProgress" type="range" min="0" max="100" value="0" />
-                  <div class="time-row">
-                    <span id="currentTime">0:00</span>
-                    <span id="duration">0:00</span>
-                  </div>
-                </div>
+              <div class="player-links">
+                <a class="icon-btn" href="https://open.spotify.com/track/0HMjXBAZmSYOTTi33WpMso?si=fc7483fe4fc24df4" target="_blank" rel="noopener noreferrer">Open In Spotify</a>
               </div>
-
-              <audio id="audioPlayer" preload="metadata">
-                <!--
-                  Add your local or hosted MP3 files here if you want a default source.
-                  Example:
-                  <source src="assets/audio/our-song.mp3" type="audio/mpeg" />
-                -->
-                Your browser does not support the audio element.
-              </audio>
-
-              <div class="visualizer" id="visualizer" aria-hidden="true">
-                <span></span><span></span><span></span><span></span><span></span>
-              </div>
-              <div class="music-notes" id="musicNotes" aria-hidden="true"></div>
             </div>
 
             <div class="track-grid" id="trackGrid">
@@ -451,41 +429,50 @@
                 - data-title / data-artist: shown in now playing panel
                 - data-spotify: optional Spotify track URL for external opening
               -->
-              <article class="track-card motion-card" data-audio="assets/audio/track-01.mp3" data-art="assets/images/tiffany_day_album_Cover.png" data-title="IT'S NOT LIKE THAT ANYMORE" data-artist="Tiffany Day" data-spotify="https://open.spotify.com/track/5FzY8uPr7G9U3cKq37DOd1?si=e123d1ab61e34e2a">
+              <article class="track-card motion-card" data-art="assets/images/requiem_album_cover.jpeg" data-title="forever" data-artist="keshi" data-spotify="https://open.spotify.com/track/0HMjXBAZmSYOTTi33WpMso?si=fc7483fe4fc24df4">
                 <span class="track-index">01</span>
+                <div class="track-art" style="background-image: linear-gradient(140deg, rgba(196, 225, 255, 0.22), rgba(169, 208, 245, 0.14)), url('assets/images/requiem_album_cover.jpeg'); background-size: cover; background-position: center;" aria-label="Keshi album art"></div>
+                <div class="track-meta">
+                  <h4>forever</h4>
+                  <p>keshi</p>
+                </div>
+                <div class="track-actions">
+                  <a href="https://open.spotify.com/track/0HMjXBAZmSYOTTi33WpMso?si=fc7483fe4fc24df4" target="_blank" rel="noopener noreferrer">Spotify</a>
+                </div>
+              </article>
+
+              <article class="track-card motion-card" data-art="assets/images/tiffany_day_album_Cover.png" data-title="IT'S NOT LIKE THAT ANYMORE" data-artist="Tiffany Day" data-spotify="https://open.spotify.com/track/5FzY8uPr7G9U3cKq37DOd1?si=e123d1ab61e34e2a">
+                <span class="track-index">02</span>
                 <div class="track-art" style="background-image: linear-gradient(140deg, rgba(196, 225, 255, 0.45), rgba(169, 208, 245, 0.45)), url('assets/images/tiffany_day_album_Cover.png'); background-size: cover; background-position: center;" aria-label="Tiffany Day album art"></div>
                 <div class="track-meta">
                   <h4>IT'S NOT LIKE THAT ANYMORE</h4>
                   <p>Tiffany Day</p>
                 </div>
                 <div class="track-actions">
-                  <button class="track-play-btn">Play</button>
                   <a href="https://open.spotify.com/track/5FzY8uPr7G9U3cKq37DOd1?si=e123d1ab61e34e2a" target="_blank" rel="noopener noreferrer">Spotify</a>
                 </div>
               </article>
 
-              <article class="track-card motion-card" data-audio="assets/audio/track-02.mp3" data-art="assets/images/tiffany_day_album_Cover.png" data-title="NO LUCK" data-artist="Tiffany Day" data-spotify="https://open.spotify.com/track/7xSm07mkWui2K3XkwUTgFi?si=784ec825828f46fd">
-                <span class="track-index">02</span>
+              <article class="track-card motion-card" data-art="assets/images/tiffany_day_album_Cover.png" data-title="NO LUCK" data-artist="Tiffany Day" data-spotify="https://open.spotify.com/track/7xSm07mkWui2K3XkwUTgFi?si=784ec825828f46fd">
+                <span class="track-index">03</span>
                 <div class="track-art" style="background-image: linear-gradient(140deg, rgba(196, 225, 255, 0.45), rgba(169, 208, 245, 0.45)), url('assets/images/tiffany_day_album_Cover.png'); background-size: cover; background-position: center;" aria-label="Tiffany Day album art"></div>
                 <div class="track-meta">
                   <h4>NO LUCK</h4>
                   <p>Tiffany Day</p>
                 </div>
                 <div class="track-actions">
-                  <button class="track-play-btn">Play</button>
                   <a href="https://open.spotify.com/track/7xSm07mkWui2K3XkwUTgFi?si=784ec825828f46fd" target="_blank" rel="noopener noreferrer">Spotify</a>
                 </div>
               </article>
 
-              <article class="track-card motion-card" data-audio="assets/audio/track-03.mp3" data-art="assets/images/tiffany_day_album_Cover.png" data-title="LOOK UP" data-artist="Tiffany Day" data-spotify="https://open.spotify.com/track/2wuDmnNqQeFKBHg7H4rY9f?si=5cc8ebfaaf4e46db">
-                <span class="track-index">03</span>
+              <article class="track-card motion-card" data-art="assets/images/tiffany_day_album_Cover.png" data-title="LOOK UP" data-artist="Tiffany Day" data-spotify="https://open.spotify.com/track/2wuDmnNqQeFKBHg7H4rY9f?si=5cc8ebfaaf4e46db">
+                <span class="track-index">04</span>
                 <div class="track-art" style="background-image: linear-gradient(140deg, rgba(196, 225, 255, 0.45), rgba(169, 208, 245, 0.45)), url('assets/images/tiffany_day_album_Cover.png'); background-size: cover; background-position: center;" aria-label="Tiffany Day album art"></div>
                 <div class="track-meta">
                   <h4>LOOK UP</h4>
                   <p>Tiffany Day</p>
                 </div>
                 <div class="track-actions">
-                  <button class="track-play-btn">Play</button>
                   <a href="https://open.spotify.com/track/2wuDmnNqQeFKBHg7H4rY9f?si=5cc8ebfaaf4e46db" target="_blank" rel="noopener noreferrer">Spotify</a>
                 </div>
               </article>
@@ -661,21 +648,21 @@
                         </div>
                       </header>
                       <div class="discord-chat" id="discordChat">
-                        <p class="discord-message" data-channel="general"><strong>you:</strong> goodnight ella, i love you&lt;3</p>
-                        <p class="discord-message" data-channel="general"><strong>ella:</strong> goodnight, i love you too ❤️</p>
-                        <p class="discord-message" data-channel="general"><strong>you:</strong> new pfp coming soon?</p>
+                        <p class="discord-message" data-channel="general"><strong>johnny:</strong> goodnight ella, i love you&lt;3</p>
+                        <p class="discord-message" data-channel="general"><strong>you:</strong> goodnight, i love you too ❤️</p>
+                        <p class="discord-message" data-channel="general"><strong>johnny:</strong> new pfp coming soon?</p>
                         <p class="discord-message discord-message-media" data-channel="general"><img src="assets/images/Screenshot 2025-05-21 002250.png" alt="Inside-joke profile picture preview" loading="lazy" /></p>
-                        <p class="discord-message" data-channel="music" hidden><strong>you:</strong> goodnight ella, i love you&lt;3</p>
-                        <p class="discord-message" data-channel="music" hidden><strong>ella:</strong> goodnight, i love you too ❤️</p>
-                        <p class="discord-message" data-channel="music" hidden><strong>you:</strong> new pfp coming soon?</p>
+                        <p class="discord-message" data-channel="music" hidden><strong>johnny:</strong> goodnight ella, i love you&lt;3</p>
+                        <p class="discord-message" data-channel="music" hidden><strong>you:</strong> goodnight, i love you too ❤️</p>
+                        <p class="discord-message" data-channel="music" hidden><strong>johnny:</strong> new pfp coming soon?</p>
                         <p class="discord-message discord-message-media" data-channel="music" hidden><img src="assets/images/Screenshot 2025-05-21 002250.png" alt="Inside-joke profile picture preview" loading="lazy" /></p>
                       </div>
                       <p class="discord-composer">Message #<span id="discordComposerChannel">general</span></p>
                     </div>
                     <aside class="discord-members" aria-label="Server members">
                       <h4>Members - 2</h4>
-                      <p><span class="member-dot online"></span> ella</p>
                       <p><span class="member-dot online"></span> you</p>
+                      <p><span class="member-dot online"></span> johnny</p>
                     </aside>
                   </article>
                 </section>
@@ -909,7 +896,7 @@
                           <button class="ellamori-object ellamori-object-cake" type="button" data-ellamori-object="cake" aria-label="Strawberry cake">
                             <span>cake</span>
                           </button>
-                          <img class="ellamori-player" id="ellamoriPlayer" src="assets/images/browser/omori/aubrey.jpg" alt="Ella character sprite" loading="lazy" />
+                          <canvas class="ellamori-player" id="ellamoriPlayer" width="32" height="32" role="img" aria-label="Ella character sprite"></canvas>
                         </div>
                         <p class="ellamori-prompt" id="ellamoriPrompt" hidden>press E</p>
                       </div>
@@ -1526,7 +1513,6 @@
   <script defer src="three-bouquet.js"></script>
   <script defer src="scripts/features/queue-lobby.js"></script>
   <script defer src="scripts/features/phone-screen.js"></script>
-  <script defer src="scripts/features/music-player.js"></script>
   <script defer src="scripts/features/media-widgets.js"></script>
   <script defer src="scripts/features/hero-memory.js"></script>
   <script defer src="scripts/features/strawberry-desktop.js"></script>
