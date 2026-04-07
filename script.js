@@ -1328,30 +1328,30 @@ document.addEventListener('visibilitychange', () => {
 });
 
 mailboxGrid?.addEventListener('click', (event) => {
+  const noteImg = event.target.closest('.locker-note-img');
+  if (noteImg) {
+    const noteText = noteImg.getAttribute('data-note') || '';
+    const overlay = document.getElementById('noteModalOverlay');
+    const modalText = document.getElementById('noteModalText');
+    if (overlay && modalText) {
+      modalText.textContent = noteText;
+      overlay.hidden = false;
+    }
+    uiSounds.playPaper();
+    return;
+  }
+
   const card = event.target.closest('.locker-door');
   if (!card) return;
 
   const name = card.dataset.name || 'Unknown';
   const hasLetters = card.dataset.hasLetters === 'true';
-  let foldedNotes = [];
-  if (name === 'Ella') {
-    foldedNotes = [
-      {
-        title: 'Love Note',
-        preview: 'No one knows me like you do',
-        sender: 'from me',
-        note: 'No one knows me like you do.'
-      },
-      {
-        title: 'Love Note',
-        preview: 'You have pretty eyes',
-        sender: 'from me',
-        note: 'You have pretty eyes.'
-      }
-    ];
-  }
 
-  document.querySelectorAll('.locker-door').forEach((locker) => locker.classList.remove('opened', 'is-selected'));
+  document.querySelectorAll('.locker-door').forEach((locker) => {
+    locker.classList.remove('opened', 'is-selected');
+    const inside = locker.querySelector('.locker-inside');
+    if (inside) inside.innerHTML = '';
+  });
   card.classList.remove('opening');
   void card.offsetWidth;
   card.classList.add('opening');
@@ -1362,88 +1362,29 @@ mailboxGrid?.addEventListener('click', (event) => {
   }, 540);
   card.classList.add('is-selected');
 
-  mailRevealName.textContent = `${name}'s locker`;
-  setInfernoVaultState(hasLetters);
-  if (mailReveal) {
-    mailReveal.dataset.state = hasLetters ? 'hit' : 'miss';
-  }
-
   if (hasLetters) {
-    if (notePile) {
-      notePile.hidden = false;
-      notePile.innerHTML = '';
-      notePile.classList.remove('has-lifted');
-
-      foldedNotes.forEach((note) => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = `folded-note ${note.tone || ''}`.trim();
-        btn.innerHTML = `<strong>${note.title}</strong><span>${note.preview}</span><em>${note.sender}</em>`;
-        btn.setAttribute('data-note', note.note);
-        notePile.appendChild(btn);
+    const inside = card.querySelector('.locker-inside');
+    if (inside) {
+      const notes = [
+        { img: 'assets/images/folded_note_1.png', note: 'No one knows me like you do.' },
+        { img: 'assets/images/folded_note_2.png', note: 'You have pretty eyes.' }
+      ];
+      notes.forEach((n) => {
+        const img = document.createElement('img');
+        img.src = n.img;
+        img.alt = 'Folded note';
+        img.className = 'locker-note-img';
+        img.setAttribute('data-note', n.note);
+        inside.appendChild(img);
       });
     }
-
-    if (unfoldedNote) {
-      unfoldedNote.hidden = false;
-      unfoldedNote.classList.remove('show');
-    }
-    if (unfoldedNoteText) {
-      unfoldedNoteText.textContent = 'Pick one folded note, then click it again to unfold.';
-    }
-
-    mailRevealText.textContent = 'This locker received notes tonight. Pick one folded post-it to unfold.';
-  } else {
-    if (notePile) {
-      notePile.hidden = true;
-      notePile.innerHTML = '';
-      notePile.classList.remove('has-lifted');
-    }
-    if (unfoldedNote) {
-      unfoldedNote.hidden = true;
-      unfoldedNote.classList.remove('show');
-    }
-    mailRevealText.textContent = 'No note tonight for this locker. Pick another contestant.';
   }
-
-  if (mailRevealMeta) {
-    mailRevealMeta.textContent = hasLetters
-      ? 'Mailbox update: Ella has 4 folded post-it notes waiting.'
-      : 'Mailbox update: only Ella received notes this round.';
-  }
-
-  mailReveal.classList.remove('flash');
-  void mailReveal.offsetWidth;
-  mailReveal.classList.add('flash');
 });
 
-notePile?.addEventListener('click', (event) => {
-  const noteCard = event.target.closest('.folded-note');
-  if (!noteCard) return;
-
-  const isLifted = noteCard.classList.contains('lifted');
-
-  if (!isLifted) {
-    notePile.querySelectorAll('.folded-note').forEach((btn) => btn.classList.remove('lifted', 'active'));
-    noteCard.classList.add('lifted');
-    notePile.classList.add('has-lifted');
-    mailRevealText.textContent = 'Selected. Click the same folded note again to unfold it.';
-    return;
+document.getElementById('noteModalOverlay')?.addEventListener('click', (event) => {
+  if (event.target === event.currentTarget || event.target.closest('.note-modal-close')) {
+    event.currentTarget.hidden = true;
   }
-
-  notePile.querySelectorAll('.folded-note').forEach((btn) => btn.classList.remove('active'));
-  noteCard.classList.add('active');
-  uiSounds.playPaper();
-
-  const note = noteCard.getAttribute('data-note') || 'A note appears here.';
-  if (unfoldedNote && unfoldedNoteText) {
-    unfoldedNote.hidden = false;
-    unfoldedNoteText.textContent = note;
-    unfoldedNote.classList.remove('show');
-    void unfoldedNote.offsetWidth;
-    unfoldedNote.classList.add('show');
-  }
-  mailRevealText.textContent = 'Message unfolded. You can still open the other folded notes.';
 });
 
 const observer = new IntersectionObserver((entries) => {

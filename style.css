@@ -6655,6 +6655,80 @@ body.trip-media-open {
   border-radius: 12px;
   background: linear-gradient(155deg, rgba(68, 39, 81, 0.88), rgba(47, 30, 59, 0.9));
   border: 1px dashed rgba(218, 143, 198, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.locker-note-img {
+  width: 60px;
+  height: auto;
+  cursor: pointer;
+  margin: 0 0.75rem;
+  transition: transform 200ms ease;
+  filter:
+    drop-shadow(2px 0 0 #fff)
+    drop-shadow(-2px 0 0 #fff)
+    drop-shadow(0 2px 0 #fff)
+    drop-shadow(0 -2px 0 #fff)
+    drop-shadow(0 6px 10px rgba(0, 0, 0, 0.3));
+}
+
+.locker-note-img:hover {
+  transform: scale(1.1);
+}
+
+.note-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+.note-modal-overlay[hidden] {
+  display: none;
+}
+
+.note-modal {
+  position: relative;
+  max-width: 380px;
+  width: 90%;
+  padding: 2rem 1.5rem;
+  border-radius: 14px;
+  background: linear-gradient(165deg, #fff8ed, #f4e4cf);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.note-modal-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #7a5d41;
+  line-height: 1;
+}
+
+.note-modal-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #7a5d41;
+  margin-bottom: 0.5rem;
+}
+
+.note-modal-text {
+  font-size: 1.1rem;
+  color: #5a3c25;
+  line-height: 1.5;
 }
 
 .locker-vent,
