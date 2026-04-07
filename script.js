@@ -30,7 +30,6 @@ const tripMediaTitle = document.getElementById('tripMediaTitle');
 const tripMediaClose = document.getElementById('tripMediaClose');
 const tripMediaYoutube = document.getElementById('tripMediaYoutube');
 const tripMediaTiktok = document.getElementById('tripMediaTiktok');
-// envelope-scene.js handles the love letter section now
 
 let tiktokEmbedScriptPromise = null;
 let heroTypewriterTimer = null;
@@ -1198,7 +1197,6 @@ function getRevealStyle(sectionId, item) {
     if (item.matches('.locker-door')) return 'flip-door';
     return 'from-right';
   }
-  if (sectionId === 'letter') return 'paper-rise';
   if (sectionId === 'truth-sequence') return 'cinema-rise';
 
   return 'from-left';
@@ -1220,8 +1218,6 @@ function initScrollRevealStagger() {
     '.inferno-intro',
     '.mailbox-grid',
     '.inferno-vault',
-    '.letter-card',
-    '.vinyl-player-card',
     '.truth-sequence-card',
     '.motion-card'
   ].join(', ');
@@ -1337,34 +1333,23 @@ mailboxGrid?.addEventListener('click', (event) => {
 
   const name = card.dataset.name || 'Unknown';
   const hasLetters = card.dataset.hasLetters === 'true';
-  const foldedNotes = [
-    {
-      title: 'Folded Note 1',
-      preview: 'first one',
-      sender: 'from paradise pick',
-      note: 'You are still my favorite hello and my safest place.'
-    },
-    {
-      title: 'Folded Note 2',
-      preview: 'little secret',
-      sender: 'from long distance',
-      note: 'From UK to Sweden, I would cross every timezone for you.',
-      tone: 'note-alt'
-    },
-    {
-      title: 'Folded Note 3',
-      preview: 'you win',
-      sender: 'from tonight',
-      note: 'Every version of my future looks better with you in it.',
-      tone: 'note-soft'
-    },
-    {
-      title: 'Folded Note 4',
-      preview: 'final one',
-      sender: 'from me',
-      note: 'I love you, and I still choose you every single day.'
-    }
-  ];
+  let foldedNotes = [];
+  if (name === 'Ella') {
+    foldedNotes = [
+      {
+        title: 'Love Note',
+        preview: 'No one knows me like you do',
+        sender: 'from me',
+        note: 'No one knows me like you do.'
+      },
+      {
+        title: 'Love Note',
+        preview: 'You have pretty eyes',
+        sender: 'from me',
+        note: 'You have pretty eyes.'
+      }
+    ];
+  }
 
   document.querySelectorAll('.locker-door').forEach((locker) => locker.classList.remove('opened', 'is-selected'));
   card.classList.remove('opening');

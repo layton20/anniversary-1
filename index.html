@@ -1359,24 +1359,9 @@
         </article>
 
         <div class="mailbox-grid" id="mailboxGrid">
-          <button class="locker-door motion-card" data-name="Ella" data-has-letters="true"
-            aria-label="Open Ella locker">
-            <span class="locker-number">01</span>
-            <span class="locker-nameplate">Ella</span>
-            <span class="locker-note-count" aria-label="4 notes">4 NOTES</span>
-            <span class="locker-door-face" aria-hidden="true">
-              <span class="locker-vent vent-a"></span>
-              <span class="locker-vent vent-b"></span>
-              <span class="locker-mail-slot"></span>
-              <span class="locker-knob"></span>
-            </span>
-            <span class="locker-badge">Paradise candidate</span>
-            <span class="locker-inside" aria-hidden="true"></span>
-          </button>
-
           <button class="locker-door motion-card" data-name="Younha" data-has-letters="false"
             aria-label="Open Younha locker">
-            <span class="locker-number">02</span>
+            <span class="locker-number">01</span>
             <span class="locker-nameplate">Younha</span>
             <span class="locker-note-count is-empty" aria-label="0 notes">0 NOTES</span>
             <span class="locker-door-face" aria-hidden="true">
@@ -1390,7 +1375,7 @@
 
           <button class="locker-door motion-card" data-name="Minji" data-has-letters="false"
             aria-label="Open Minji locker">
-            <span class="locker-number">03</span>
+            <span class="locker-number">02</span>
             <span class="locker-nameplate">Minji</span>
             <span class="locker-note-count is-empty" aria-label="0 notes">0 NOTES</span>
             <span class="locker-door-face" aria-hidden="true">
@@ -1404,7 +1389,7 @@
 
           <button class="locker-door motion-card" data-name="Sora" data-has-letters="false"
             aria-label="Open Sora locker">
-            <span class="locker-number">04</span>
+            <span class="locker-number">03</span>
             <span class="locker-nameplate">Sora</span>
             <span class="locker-note-count is-empty" aria-label="0 notes">0 NOTES</span>
             <span class="locker-door-face" aria-hidden="true">
@@ -1418,7 +1403,7 @@
 
           <button class="locker-door motion-card" data-name="Hana" data-has-letters="false"
             aria-label="Open Hana locker">
-            <span class="locker-number">05</span>
+            <span class="locker-number">04</span>
             <span class="locker-nameplate">Hana</span>
             <span class="locker-note-count is-empty" aria-label="0 notes">0 NOTES</span>
             <span class="locker-door-face" aria-hidden="true">
@@ -1427,6 +1412,21 @@
               <span class="locker-mail-slot"></span>
               <span class="locker-knob"></span>
             </span>
+            <span class="locker-inside" aria-hidden="true"></span>
+          </button>
+
+          <button class="locker-door motion-card" data-name="Ella" data-has-letters="true"
+            aria-label="Open Ella locker">
+            <span class="locker-number">05</span>
+            <span class="locker-nameplate">Ella</span>
+            <span class="locker-note-count" aria-label="2 notes">2 NOTES</span>
+            <span class="locker-door-face" aria-hidden="true">
+              <span class="locker-vent vent-a"></span>
+              <span class="locker-vent vent-b"></span>
+              <span class="locker-mail-slot"></span>
+              <span class="locker-knob"></span>
+            </span>
+            <span class="locker-badge">Paradise candidate</span>
             <span class="locker-inside" aria-hidden="true"></span>
           </button>
 
@@ -1468,81 +1468,7 @@
       </div>
     </section>
 
-    <!-- ═══════ 3-D ENVELOPE LOVE LETTER ═══════ -->
-    <section class="section story-panel reveal" id="letter" data-motion>
-      <div class="panel-pin">
-        <div class="section-heading">
-          <h2>You've Got Mail 💌</h2>
-          <p>Start the record first, then open the envelope when our story is spinning.</p>
-        </div>
 
-        <div class="mail-story-grid">
-          <div class="envelope-scene-wrap is-locked" id="letterEnvelopeStage" data-locked="true">
-            <canvas id="envelopeCanvas" aria-hidden="true"></canvas>
-
-            <div class="envelope-shell" aria-hidden="true">
-              <div class="envelope-pocket"></div>
-              <div class="envelope-flap"></div>
-              <div class="envelope-seal">❤</div>
-              <div class="envelope-address">
-                <span>to ella</span>
-                <span>from johnny</span>
-              </div>
-            </div>
-
-            <div class="letter-lock-note" id="letterLockNote" aria-live="polite">
-              turn on the record first
-            </div>
-
-            <div class="letter-popup" id="letterPopup" aria-hidden="true" hidden>
-              <div class="letter-paper" id="letterPaper">
-                <p class="letter-greeting">My love,</p>
-                <p>
-                  Thank you for being my safest place and my biggest adventure.
-                  Every section of this little site points to one truth — I love you.
-                </p>
-                <p class="letter-sign">Forever yours. 🐻</p>
-              </div>
-            </div>
-
-            <button class="envelope-click-hint" id="envelopeHint" aria-label="Open envelope" disabled
-              aria-disabled="true">
-              start the record first
-            </button>
-          </div>
-
-          <aside class="vinyl-player-card motion-card" id="vinylPlayerCard"
-            aria-label="Vinyl player to start the story">
-            <p class="vinyl-kicker">Side A</p>
-            <h3>OUR STORY</h3>
-            <p class="vinyl-copy">Flip the player on and let it spin before you open the envelope.</p>
-
-            <div class="vinyl-turntable" id="vinylTurntable" aria-hidden="true">
-              <div class="vinyl-sleeve">
-                <img src="assets/images/japan_tourism.jpg" alt="Vinyl sleeve cover art" loading="lazy" />
-                <span>OUR STORY</span>
-              </div>
-              <div class="vinyl-platter"></div>
-              <div class="vinyl-record">
-                <div class="vinyl-label-art">
-                  <img src="assets/images/venice_tourism.jpg" alt="Romantic destination art for our story vinyl"
-                    loading="lazy" />
-                  <span>OUR STORY</span>
-                </div>
-                <span class="vinyl-center"></span>
-              </div>
-              <div class="vinyl-arm-base"></div>
-              <div class="vinyl-tonearm"></div>
-              <div class="vinyl-speed-light" aria-hidden="true"></div>
-            </div>
-
-            <button class="vinyl-power-btn" id="vinylPowerBtn" type="button" aria-pressed="false">turn on
-              player</button>
-            <p class="vinyl-status" id="vinylStatus">The record needs to be spinning before the envelope will open.</p>
-          </aside>
-        </div>
-      </div>
-    </section>
 
     <!-- ═══════ TRUTH SEQUENCE (FINAL) ═══════ -->
     <section class="section story-panel reveal" id="truth-sequence" data-motion>
@@ -1604,7 +1530,6 @@
   <script defer src="scripts/features/strawberry-desktop.js"></script>
   <script defer src="scripts/features/visual-effects.js"></script>
   <script defer src="script.js"></script>
-  <script defer src="envelope-scene.js"></script>
 
 </body>
 
