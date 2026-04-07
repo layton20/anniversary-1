@@ -1171,7 +1171,7 @@ body.opening-settle #intro .hero-photo {
   3) The 3 cards below use different background positions for varied crops
 */
 .hero-shot {
-  background: #dce9f7 url("./assets/images/hero-placeholder.jpg") center center / cover no-repeat;
+  background: #dce9f7 var(--hero-photo, url("./assets/images/hero-placeholder.jpg")) center center / cover no-repeat;
   border-style: solid;
   color: transparent;
 }

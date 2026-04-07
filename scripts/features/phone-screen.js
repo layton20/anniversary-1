@@ -8,7 +8,7 @@
 
   const phoneNotificationAudio = new Audio('assets/audio/iphone_notification.mp3');
   phoneNotificationAudio.preload = 'auto';
-  phoneNotificationAudio.volume = 0.62;
+  phoneNotificationAudio.volume = 0.10;
 
   let phoneSakuraCanvas = null;
   let phoneSakuraCtx = null;
