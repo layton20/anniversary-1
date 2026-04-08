@@ -574,7 +574,7 @@ function createUiSoundEngine() {
 const uiSounds = createUiSoundEngine();
 window.uiSounds = uiSounds;
 
-const click1Audio = new Audio('assets/audio/click_1.mp3');
+const click1Audio = new Audio('assets-optimized/audio/click_1.mp3');
 click1Audio.preload = 'auto';
 click1Audio.volume = 0.55;
 
@@ -1366,8 +1366,8 @@ mailboxGrid?.addEventListener('click', (event) => {
     const inside = card.querySelector('.locker-inside');
     if (inside) {
       const notes = [
-        { img: 'assets/images/folded_note_1.png', note: 'WHAAAAT' },
-        { img: 'assets/images/folded_note_2.png', note: 'Your eyes are so pretty' }
+        { img: 'assets-optimized/images/folded_note_1.png', note: 'WHAAAAT' },
+        { img: 'assets-optimized/images/folded_note_2.png', note: 'Your eyes are so pretty' }
       ];
       notes.forEach((n) => {
         const img = document.createElement('img');

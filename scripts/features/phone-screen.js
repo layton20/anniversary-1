@@ -1,4 +1,4 @@
-(() => {
+﻿(() => {
   const phoneScreenSection = document.getElementById('phone-screen-love');
   const phoneLoveStage = document.getElementById('phoneLoveStage');
   const phoneLoveTrack = document.getElementById('phoneLoveTrack');
@@ -6,7 +6,7 @@
   const phoneRight = document.getElementById('phoneRight');
   const phoneDiscordNotification = document.getElementById('phoneDiscordNotification');
 
-  const phoneNotificationAudio = new Audio('assets/audio/iphone_notification.mp3');
+  const phoneNotificationAudio = new Audio('assets-optimized/audio/iphone_notification.mp3');
   phoneNotificationAudio.preload = 'auto';
   phoneNotificationAudio.volume = 0.10;
 

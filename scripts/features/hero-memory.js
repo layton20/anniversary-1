@@ -1,4 +1,4 @@
-(() => {
+﻿(() => {
   const headspaceGrid = document.getElementById('headspaceGrid');
   const memoryPop = document.getElementById('memoryPop');
   const memoryClose = document.getElementById('memoryClose');
@@ -17,7 +17,7 @@
 
     const playShutterSound = () => {
       try {
-        const audio = new Audio('assets/audio/cute_pop_1.mp3');
+        const audio = new Audio('assets-optimized/audio/cute_pop_1.mp3');
         audio.volume = 0.42;
         audio.currentTime = 0;
         const playPromise = audio.play();
@@ -113,7 +113,7 @@
     if (!memoryPop || !memoryPopTitle || !memoryPopImage || !memoryPopMessage) return;
 
     const title = card.dataset.memoryTitle || 'Untitled Memory';
-    const image = card.dataset.memoryImage || 'assets/images/memory-01.jpg';
+    const image = card.dataset.memoryImage || 'assets-optimized/images/memory-01.jpg';
     const message = card.dataset.memoryMessage || 'A memory opens here.';
 
     memoryPopTitle.textContent = title;

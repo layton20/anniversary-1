@@ -1,0 +1,25 @@
+{
+  "name": "anniversary-1",
+  "version": "1.0.0",
+  "description": "A site dedicated for our anniversary. Open for a few days before locking",
+  "main": "envelope-scene.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "optimize": "node optimize-images.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/layton20/anniversary-1.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/layton20/anniversary-1/issues"
+  },
+  "homepage": "https://github.com/layton20/anniversary-1#readme",
+  "dependencies": {
+    "sharp": "^0.34.5"
+  }
+}
