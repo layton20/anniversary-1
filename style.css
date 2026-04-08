@@ -662,6 +662,16 @@ body.guided-mode .story-panel.guided-animate-up {
   animation: splash-blink 1200ms steps(1) infinite;
 }
 
+.splash-expiry {
+  margin: 0.5rem 0 0;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.22);
+  text-align: center;
+}
+
 .splash-mobile-notice {
   display: flex;
   flex-direction: column;
