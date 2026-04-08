@@ -8496,6 +8496,24 @@ body.trip-media-open {
   animation-duration: 4.1s;
 }
 
+.rila-s10 {
+  width: 62px;
+  top: 42%;
+  right: 1.1%;
+  --rot: 15deg;
+  animation-delay: 2.1s;
+  animation-duration: 3.8s;
+}
+
+.rila-s11 {
+  width: 62px;
+  top: 55%;
+  left: 1.1%;
+  --rot: -15deg;
+  animation-delay: 2.1s;
+  animation-duration: 3.8s;
+}
+
 @keyframes rilaBob {
   0%,
   100% {
