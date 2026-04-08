@@ -250,7 +250,8 @@ a {
 .story-panel .panel-pin > .inferno-brand,
 .story-panel .panel-pin > .inferno-intro,
 .story-panel .panel-pin > .mailbox-grid,
-.story-panel .panel-pin > .inferno-vault {
+.story-panel .panel-pin > .inferno-vault,
+.story-panel .panel-pin > .gastronomy-widget {
   transition: opacity 520ms ease, transform 680ms cubic-bezier(0.22, 1, 0.36, 1), filter 520ms ease;
 }
 
@@ -267,7 +268,8 @@ a {
 .story-panel .panel-pin > .inferno-brand,
 .story-panel .panel-pin > .inferno-intro,
 .story-panel .panel-pin > .mailbox-grid,
-.story-panel .panel-pin > .inferno-vault {
+.story-panel .panel-pin > .inferno-vault,
+.story-panel .panel-pin > .gastronomy-widget {
   opacity: 1;
   transform: none;
   filter: none;
@@ -287,6 +289,7 @@ a {
 .story-panel.phase-2 .panel-pin > .inferno-intro,
 .story-panel.phase-2 .panel-pin > .mailbox-grid,
 .story-panel.phase-2 .panel-pin > .inferno-vault,
+.story-panel.phase-2 .panel-pin > .gastronomy-widget,
 .story-panel.phase-3 .panel-pin > .music-shell,
 .story-panel.phase-3 .panel-pin > .photo-grid,
 .story-panel.phase-3 .panel-pin > .timeline,
@@ -294,7 +297,8 @@ a {
 .story-panel.phase-3 .panel-pin > .inferno-brand,
 .story-panel.phase-3 .panel-pin > .inferno-intro,
 .story-panel.phase-3 .panel-pin > .mailbox-grid,
-.story-panel.phase-3 .panel-pin > .inferno-vault {
+.story-panel.phase-3 .panel-pin > .inferno-vault,
+.story-panel.phase-3 .panel-pin > .gastronomy-widget {
   opacity: 1;
   transform: translateY(0) scale(1);
   filter: blur(0);
@@ -5302,6 +5306,294 @@ body.peak-lightbox-open {
 }
 
 /* ═══════════════════════════════════════════════════
+   GASTRONOMY GALLERY
+═══════════════════════════════════════════════════ */
+.gastronomy-eyebrow {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #c08530;
+  margin: 0 0 0.3rem;
+}
+
+.gastronomy-widget {
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background: linear-gradient(160deg, #181008 0%, #221610 55%, #1b1108 100%);
+  border: 1px solid rgba(218, 160, 50, 0.28);
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(218, 160, 50, 0.18);
+}
+
+/* ── Banner header ── */
+.gastronomy-header {
+  position: relative;
+  height: 128px;
+  overflow: hidden;
+}
+
+.gastronomy-banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 45%;
+  display: block;
+  filter: brightness(0.6) saturate(1.15);
+}
+
+.gastronomy-header-hud {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.6rem;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.72) 0%,
+    transparent 42%,
+    transparent 58%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
+}
+
+.gastronomy-case-name {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #daa032;
+  text-shadow: 0 0 14px rgba(218, 160, 50, 0.65);
+}
+
+.gastronomy-item-counter {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ── Spotlight stage ── */
+.gastronomy-spotlight {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.8rem 1rem;
+  min-height: 300px;
+  background: radial-gradient(ellipse at 50% 50%, rgba(218, 160, 50, 0.07) 0%, transparent 68%);
+  overflow: hidden;
+}
+
+.gastronomy-scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0, 0, 0, 0.07) 3px,
+    rgba(0, 0, 0, 0.07) 4px
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.gastronomy-spotlight-inner {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.gastronomy-spotlight-photo {
+  display: block;
+  width: clamp(180px, 32vw, 300px);
+  height: clamp(180px, 32vw, 300px);
+  object-fit: cover;
+  border-radius: 12px;
+  border: 2px solid rgba(218, 160, 50, 0.55);
+  box-shadow:
+    0 0 0 1px rgba(218, 160, 50, 0.2),
+    0 0 36px rgba(218, 160, 50, 0.32),
+    0 10px 36px rgba(0, 0, 0, 0.65);
+  will-change: opacity, transform;
+  transition: opacity 240ms ease, transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.gastronomy-spotlight-photo.is-fading {
+  opacity: 0;
+  transform: scale(0.93);
+}
+
+
+.gastronomy-strip-wrap {
+  position: relative;
+  padding: 0 1rem 1.1rem;
+}
+
+/* Center‑line marker (like CSGO's orange indicator) */
+.gastronomy-center-mark {
+  position: absolute;
+  top: 0;
+  bottom: 1.1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(218, 160, 50, 0.75) 30%,
+    rgba(218, 160, 50, 0.75) 70%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 4;
+}
+
+.gastronomy-strip {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  padding: 0.45rem 0;
+}
+
+.gastronomy-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.gastronomy-thumb {
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
+  scroll-snap-align: center;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid rgba(255, 255, 255, 0.07);
+  opacity: 0.45;
+  transform: scale(1);
+  transition:
+    opacity 200ms ease,
+    transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    border-color 200ms ease,
+    box-shadow 200ms ease;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.gastronomy-thumb:hover {
+  opacity: 0.7;
+  transform: scale(1.06);
+}
+
+.gastronomy-thumb:focus-visible {
+  outline: 2px solid #daa032;
+  outline-offset: 2px;
+}
+
+.gastronomy-thumb.is-active {
+  opacity: 1;
+  transform: scale(1.18);
+  border-color: #daa032;
+  box-shadow:
+    0 0 0 2px rgba(218, 160, 50, 0.42),
+    0 0 18px rgba(218, 160, 50, 0.5);
+  z-index: 2;
+}
+
+.gastronomy-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+
+/* ── HUD bar ── */
+.gastronomy-hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  border-top: 1px solid rgba(218, 160, 50, 0.14);
+}
+
+.gastronomy-hud-label {
+  margin: 0;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gastronomy-play-btn {
+  flex-shrink: 0;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: rgba(218, 160, 50, 0.14);
+  color: #daa032;
+  border: 1px solid rgba(218, 160, 50, 0.38);
+  border-radius: 6px;
+  padding: 0.45rem 1rem;
+  cursor: pointer;
+  transition: background 150ms ease, box-shadow 150ms ease;
+  white-space: nowrap;
+}
+
+.gastronomy-play-btn:hover {
+  background: rgba(218, 160, 50, 0.28);
+  box-shadow: 0 0 14px rgba(218, 160, 50, 0.28);
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .gastronomy-header {
+    height: 86px;
+  }
+
+  .gastronomy-case-name {
+    font-size: 0.82rem;
+  }
+
+  .gastronomy-spotlight {
+    min-height: 230px;
+    padding: 1.2rem 0.75rem;
+  }
+
+  .gastronomy-spotlight-photo {
+    width: clamp(140px, 58vw, 220px);
+    height: clamp(140px, 58vw, 220px);
+  }
+
+  .gastronomy-thumb {
+    width: 58px;
+    height: 58px;
+  }
+
+  .gastronomy-hud {
+    padding: 0.6rem 1rem;
+  }
+}
+
+/* ═══════════════════════════════════════════════════
    TRUTH SEQUENCE (FINAL)
 ═══════════════════════════════════════════════════ */
 #truth-sequence {
@@ -7025,6 +7317,163 @@ body.trip-media-open {
   display: grid;
   gap: 0.8rem;
 }
+
+/* ═══════════════════════════════════════════════════
+   GIFT REVEAL
+═══════════════════════════════════════════════════ */
+.gift-reveal {
+  min-height: unset !important;
+  padding: 0 !important;
+  margin-top: -15svh;
+}
+
+.gift-reveal-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+}
+
+.gift-present-btn {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.gift-present-btn img {
+  width: clamp(72px, 9vw, 96px);
+  display: block;
+  filter: drop-shadow(0 8px 24px rgba(140, 70, 40, 0.28));
+  transition: filter 300ms ease;
+}
+
+.gift-present-btn:hover {
+  transform: scale(1.08) translateY(-4px);
+}
+
+.gift-present-btn:hover img {
+  filter: drop-shadow(0 14px 32px rgba(140, 70, 40, 0.42));
+}
+
+.gift-tooltip {
+  font-family: 'Sour Gummy', sans-serif;
+  font-size: 0.78rem;
+  color: var(--text-soft);
+  letter-spacing: 0.06em;
+  opacity: 0.7;
+}
+
+/* Modal */
+.gift-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1400;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.gift-modal[hidden] {
+  display: none;
+}
+
+.gift-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(30, 18, 10, 0.72);
+  backdrop-filter: blur(4px);
+  border: none;
+  cursor: pointer;
+}
+
+.gift-modal-panel {
+  position: relative;
+  width: min(660px, calc(100vw - 1.4rem));
+  border-radius: var(--radius-xl);
+  background: var(--bg-cream);
+  border: 1px solid rgba(192, 133, 48, 0.28);
+  box-shadow: 0 28px 64px rgba(60, 30, 10, 0.45);
+  overflow: hidden;
+  transform: scale(0.88);
+  opacity: 0;
+  transition: transform 340ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 260ms ease;
+}
+
+.gift-modal:not([hidden]) .gift-modal-panel {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.gift-modal-header {
+  padding: 1.5rem 1.8rem 1rem;
+  border-bottom: 1px solid rgba(192, 133, 48, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  text-align: center;
+}
+
+.gift-modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--text-main);
+}
+
+.gift-modal-header p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-soft);
+}
+
+.gift-modal-close {
+  position: absolute;
+  top: 0.9rem;
+  right: 1rem;
+  background: rgba(192, 133, 48, 0.12);
+  border: 1px solid rgba(192, 133, 48, 0.28);
+  border-radius: 8px;
+  color: var(--caramel);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 0.3rem 0.65rem;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+
+.gift-modal-close:hover {
+  background: rgba(192, 133, 48, 0.26);
+}
+
+.gift-modal-body {
+  padding: 1.5rem 1.8rem 1.8rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.gift-modal-body img {
+  width: 100%;
+  border-radius: var(--radius-md);
+  display: block;
+}
+
+.gift-tracking-link {
+  display: inline-block;
+  font-size: 0.82rem;
+  color: var(--caramel);
+  text-underline-offset: 3px;
+}
+
+/* ─────────────────────────────────────────────────── */
 
 .footer {
   text-align: center;

@@ -1455,6 +1455,51 @@
 
 
 
+    <!-- ═══════ GASTRONOMY GALLERY ═══════ -->
+    <section class="section story-panel reveal" id="gastronomy" data-motion>
+      <div class="panel-pin">
+        <div class="section-heading">
+          <h2>Gastronomy Gallery</h2>
+          <p class="gastronomy-eyebrow">★ Michelin 0-Star Cuisine ★</p>
+          <p>The only one who believe in me and called me a culinary genius.</p>
+        </div>
+
+        <div class="gastronomy-widget motion-card" id="gastronomyWidget">
+
+          <!-- CS:GO-style banner header -->
+          <header class="gastronomy-header">
+            <img class="gastronomy-banner-img" src="assets/images/food/food_banner.png" alt="Gastronomy Gallery banner" loading="lazy" />
+            <div class="gastronomy-header-hud">
+              <span class="gastronomy-case-name">CHEF JOHNNY'S KITCHEN</span>
+              <span class="gastronomy-item-counter" id="gastronomyCounter">1 / —</span>
+            </div>
+          </header>
+
+          <!-- Large spotlight view -->
+          <div class="gastronomy-spotlight" aria-label="Spotlight dish preview">
+            <div class="gastronomy-scanlines" aria-hidden="true"></div>
+            <div class="gastronomy-spotlight-inner" id="gastronomySpotlightInner">
+              <img class="gastronomy-spotlight-photo" id="gastronomySpotlightPhoto" src="" alt="" loading="lazy" />
+            </div>
+          </div>
+
+          <!-- Thumbnail strip with center-marker (CS:GO case opening style) -->
+          <div class="gastronomy-strip-wrap">
+            <div class="gastronomy-center-mark" aria-hidden="true"></div>
+            <div class="gastronomy-strip" id="gastronomyStrip" role="list" aria-label="Food dish thumbnails"></div>
+          </div>
+
+          <!-- HUD bar -->
+          <div class="gastronomy-hud">
+            <p class="gastronomy-hud-label" id="gastronomyHudLabel">LOADING...</p>
+            <button class="gastronomy-play-btn" id="gastronomyPlayBtn" type="button">▶ Auto-Showcase</button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+    <!-- ═══════ /GASTRONOMY GALLERY ═══════ -->
+
     <!-- ═══════ TRUTH SEQUENCE (FINAL) ═══════ -->
     <section class="section story-panel reveal" id="truth-sequence" data-motion>
       <div class="panel-pin">
@@ -1487,8 +1532,8 @@
     <button class="gift-modal-backdrop" type="button" data-gift-close aria-label="Close gift modal"></button>
     <section class="gift-modal-panel" role="dialog" aria-modal="true" aria-labelledby="giftModalTitle" aria-describedby="giftModalSubtitle">
       <header class="gift-modal-header">
-        <h3 id="giftModalTitle">Did I get the colour right this time?</h3>
-        <p id="giftModalSubtitle">Hope this makes up for my mistake~</p>
+        <h3 id="giftModalTitle">Anniversary Gift</h3>
+        <p id="giftModalSubtitle">Happy 1 year!</p>
         <button id="giftModalClose" class="gift-modal-close" type="button" aria-label="Close gift modal">Close</button>
       </header>
       <div class="gift-modal-body">
@@ -1514,6 +1559,7 @@
   <script defer src="scripts/features/hero-memory.js"></script>
   <script defer src="scripts/features/strawberry-desktop.js"></script>
   <script defer src="scripts/features/visual-effects.js"></script>
+  <script defer src="scripts/features/gastronomy-gallery.js"></script>
   <script defer src="script.js"></script>
 
 </body>

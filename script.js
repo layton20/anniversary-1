@@ -1366,8 +1366,8 @@ mailboxGrid?.addEventListener('click', (event) => {
     const inside = card.querySelector('.locker-inside');
     if (inside) {
       const notes = [
-        { img: 'assets/images/folded_note_1.png', note: 'No one knows me like you do.' },
-        { img: 'assets/images/folded_note_2.png', note: 'You have pretty eyes.' }
+        { img: 'assets/images/folded_note_1.png', note: 'I like you' },
+        { img: 'assets/images/folded_note_2.png', note: 'Your eyes are so pretty' }
       ];
       notes.forEach((n) => {
         const img = document.createElement('img');
@@ -1402,3 +1402,34 @@ updateMotionSections();
 initInfernoVaultScene();
 initResistSection();
 initGuidedMode();
+
+//  Gift modal 
+(function () {
+  const btn     = document.getElementById('giftRevealBtn');
+  const modal   = document.getElementById('giftReceiptModal');
+  const closeBtn = document.getElementById('giftModalClose');
+  if (!btn || !modal) return;
+
+  function openModal() {
+    modal.hidden = false;
+    modal.setAttribute('aria-hidden', 'false');
+    closeBtn?.focus();
+  }
+
+  function closeModal() {
+    modal.hidden = true;
+    modal.setAttribute('aria-hidden', 'true');
+    btn.focus();
+  }
+
+  btn.addEventListener('click', openModal);
+  closeBtn?.addEventListener('click', closeModal);
+
+  modal.addEventListener('click', function (e) {
+    if (e.target.closest('[data-gift-close]') || e.target === modal) closeModal();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !modal.hidden) closeModal();
+  });
+})();
