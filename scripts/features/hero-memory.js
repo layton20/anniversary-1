@@ -113,7 +113,7 @@
     if (!memoryPop || !memoryPopTitle || !memoryPopImage || !memoryPopMessage) return;
 
     const title = card.dataset.memoryTitle || 'Untitled Memory';
-    const image = card.dataset.memoryImage || 'assets-optimized/images/memory-01.jpg';
+    const image = card.dataset.memoryImage || 'assets-optimized/images/memory-01.webp';
     const message = card.dataset.memoryMessage || 'A memory opens here.';
 
     memoryPopTitle.textContent = title;

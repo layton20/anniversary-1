@@ -12,8 +12,5 @@ yarn-error.log*
 .DS_Store
 Thumbs.db
 
-# Optional: output folder for optimized images
-assets-optimized/
-
 # Optional: VS Code workspace settings
 .vscode/

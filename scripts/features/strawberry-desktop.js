@@ -113,93 +113,93 @@
     const albumFolders = albumOrder.filter((key) => key !== 'all');
     const fallbackPhotoAlbums = {
       ella: [
-        { src: 'assets-optimized/images/photos/ella/ella_1.jpg', title: 'ella_1' },
-        { src: 'assets-optimized/images/photos/ella/ella_2.jpg', title: 'ella_2' },
-        { src: 'assets-optimized/images/photos/ella/ella_3.jpg', title: 'ella_3' },
-        { src: 'assets-optimized/images/photos/ella/ella_4.jpg', title: 'ella_4' },
-        { src: 'assets-optimized/images/photos/ella/IMG_0429.JPEG', title: 'IMG_0429' },
-        { src: 'assets-optimized/images/photos/ella/IMG_0474.JPEG', title: 'IMG_0474' },
-        { src: 'assets-optimized/images/photos/ella/IMG_0903.JPEG', title: 'IMG_0903' },
-        { src: 'assets-optimized/images/photos/ella/IMG_1625.JPEG', title: 'IMG_1625' },
-        { src: 'assets-optimized/images/photos/ella/IMG_6776.PNG', title: 'IMG_6776' },
-        { src: 'assets-optimized/images/photos/ella/IMG_6797.JPEG', title: 'IMG_6797' },
-        { src: 'assets-optimized/images/photos/ella/IMG_6799.JPEG', title: 'IMG_6799' },
-        { src: 'assets-optimized/images/photos/ella/IMG_6822.JPEG', title: 'IMG_6822' },
-        { src: 'assets-optimized/images/photos/ella/IMG_6824.JPEG', title: 'IMG_6824' },
-        { src: 'assets-optimized/images/photos/ella/IMG_6831.JPEG', title: 'IMG_6831' },
-        { src: 'assets-optimized/images/photos/ella/IMG_6832.JPEG', title: 'IMG_6832' },
-        { src: 'assets-optimized/images/photos/ella/IMG_6834.JPEG', title: 'IMG_6834' },
-        { src: 'assets-optimized/images/photos/ella/IMG_6855.JPEG', title: 'IMG_6855' },
-        { src: 'assets-optimized/images/photos/ella/IMG_6873.JPEG', title: 'IMG_6873' },
-        { src: 'assets-optimized/images/photos/ella/IMG_6874.JPEG', title: 'IMG_6874' },
-        { src: 'assets-optimized/images/photos/ella/IMG_6899.JPEG', title: 'IMG_6899' },
-        { src: 'assets-optimized/images/photos/ella/IMG_8545.JPEG', title: 'IMG_8545' },
-        { src: 'assets-optimized/images/photos/ella/IMG_9732.JPEG', title: 'IMG_9732' }
+        { src: 'assets-optimized/images/photos/ella/ella_1.webp', title: 'ella_1' },
+        { src: 'assets-optimized/images/photos/ella/ella_2.webp', title: 'ella_2' },
+        { src: 'assets-optimized/images/photos/ella/ella_3.webp', title: 'ella_3' },
+        { src: 'assets-optimized/images/photos/ella/ella_4.webp', title: 'ella_4' },
+        { src: 'assets-optimized/images/photos/ella/IMG_0429.webp', title: 'IMG_0429' },
+        { src: 'assets-optimized/images/photos/ella/IMG_0474.webp', title: 'IMG_0474' },
+        { src: 'assets-optimized/images/photos/ella/IMG_0903.webp', title: 'IMG_0903' },
+        { src: 'assets-optimized/images/photos/ella/IMG_1625.webp', title: 'IMG_1625' },
+        { src: 'assets-optimized/images/photos/ella/IMG_6776.webp', title: 'IMG_6776' },
+        { src: 'assets-optimized/images/photos/ella/IMG_6797.webp', title: 'IMG_6797' },
+        { src: 'assets-optimized/images/photos/ella/IMG_6799.webp', title: 'IMG_6799' },
+        { src: 'assets-optimized/images/photos/ella/IMG_6822.webp', title: 'IMG_6822' },
+        { src: 'assets-optimized/images/photos/ella/IMG_6824.webp', title: 'IMG_6824' },
+        { src: 'assets-optimized/images/photos/ella/IMG_6831.webp', title: 'IMG_6831' },
+        { src: 'assets-optimized/images/photos/ella/IMG_6832.webp', title: 'IMG_6832' },
+        { src: 'assets-optimized/images/photos/ella/IMG_6834.webp', title: 'IMG_6834' },
+        { src: 'assets-optimized/images/photos/ella/IMG_6855.webp', title: 'IMG_6855' },
+        { src: 'assets-optimized/images/photos/ella/IMG_6873.webp', title: 'IMG_6873' },
+        { src: 'assets-optimized/images/photos/ella/IMG_6874.webp', title: 'IMG_6874' },
+        { src: 'assets-optimized/images/photos/ella/IMG_6899.webp', title: 'IMG_6899' },
+        { src: 'assets-optimized/images/photos/ella/IMG_8545.webp', title: 'IMG_8545' },
+        { src: 'assets-optimized/images/photos/ella/IMG_9732.webp', title: 'IMG_9732' }
       ],
       games: [
-        { src: 'assets-optimized/images/photos/games/20250418233217_1.jpg', title: '20250418233217_1' },
-        { src: 'assets-optimized/images/photos/games/20250830143034_1.jpg', title: '20250830143034_1' },
-        { src: 'assets-optimized/images/photos/games/20250830145235_1.jpg', title: '20250830145235_1' },
-        { src: 'assets-optimized/images/photos/games/20251208234947_1.jpg', title: '20251208234947_1' },
-        { src: 'assets-optimized/images/photos/games/Screenshot_314.PNG', title: 'Screenshot_314' }
+        { src: 'assets-optimized/images/photos/games/20250418233217_1.webp', title: '20250418233217_1' },
+        { src: 'assets-optimized/images/photos/games/20250830143034_1.webp', title: '20250830143034_1' },
+        { src: 'assets-optimized/images/photos/games/20250830145235_1.webp', title: '20250830145235_1' },
+        { src: 'assets-optimized/images/photos/games/20251208234947_1.webp', title: '20251208234947_1' },
+        { src: 'assets-optimized/images/photos/games/Screenshot_314.webp', title: 'Screenshot_314' }
       ],
       johnny: [
-        { src: 'assets-optimized/images/photos/johnny/IMG_6985.JPEG', title: 'IMG_6985' },
-        { src: 'assets-optimized/images/photos/johnny/IMG_6986.JPEG', title: 'IMG_6986' },
-        { src: 'assets-optimized/images/photos/johnny/IMG_6987.JPEG', title: 'IMG_6987' },
-        { src: 'assets-optimized/images/photos/johnny/johnny_avatar.jpg', title: 'johnny_avatar' }
+        { src: 'assets-optimized/images/photos/johnny/IMG_6985.webp', title: 'IMG_6985' },
+        { src: 'assets-optimized/images/photos/johnny/IMG_6986.webp', title: 'IMG_6986' },
+        { src: 'assets-optimized/images/photos/johnny/IMG_6987.webp', title: 'IMG_6987' },
+        { src: 'assets-optimized/images/photos/johnny/johnny_avatar.webp', title: 'johnny_avatar' }
       ],
       misc: [
-        { src: 'assets-optimized/images/photos/misc/DE7E8A09-2F7A-489D-9FDC-9DC3B36D295F.jpg', title: 'DE7E8A09' },
-        { src: 'assets-optimized/images/photos/misc/IMG_0369.JPEG', title: 'IMG_0369' },
-        { src: 'assets-optimized/images/photos/misc/IMG_0370.JPEG', title: 'IMG_0370' },
-        { src: 'assets-optimized/images/photos/misc/IMG_0372.JPEG', title: 'IMG_0372' },
-        { src: 'assets-optimized/images/photos/misc/IMG_0433.JPEG', title: 'IMG_0433' },
-        { src: 'assets-optimized/images/photos/misc/IMG_0434.JPEG', title: 'IMG_0434' },
-        { src: 'assets-optimized/images/photos/misc/IMG_0435.JPEG', title: 'IMG_0435' },
-        { src: 'assets-optimized/images/photos/misc/IMG_0438.JPEG', title: 'IMG_0438' },
-        { src: 'assets-optimized/images/photos/misc/IMG_0440.JPEG', title: 'IMG_0440' },
-        { src: 'assets-optimized/images/photos/misc/IMG_0441.JPEG', title: 'IMG_0441' },
-        { src: 'assets-optimized/images/photos/misc/IMG_0444.JPEG', title: 'IMG_0444' },
-        { src: 'assets-optimized/images/photos/misc/IMG_0447.JPEG', title: 'IMG_0447' },
-        { src: 'assets-optimized/images/photos/misc/IMG_0448.JPEG', title: 'IMG_0448' },
-        { src: 'assets-optimized/images/photos/misc/IMG_0455.JPEG', title: 'IMG_0455' },
-        { src: 'assets-optimized/images/photos/misc/IMG_0459.JPEG', title: 'IMG_0459' },
-        { src: 'assets-optimized/images/photos/misc/IMG_0463.JPEG', title: 'IMG_0463' },
-        { src: 'assets-optimized/images/photos/misc/IMG_0479.JPEG', title: 'IMG_0479' },
-        { src: 'assets-optimized/images/photos/misc/IMG_5913.JPEG', title: 'IMG_5913' },
-        { src: 'assets-optimized/images/photos/misc/IMG_6542.JPEG', title: 'IMG_6542' },
-        { src: 'assets-optimized/images/photos/misc/IMG_6801.JPEG', title: 'IMG_6801' },
-        { src: 'assets-optimized/images/photos/misc/IMG_6803.JPEG', title: 'IMG_6803' },
-        { src: 'assets-optimized/images/photos/misc/IMG_6821.JPEG', title: 'IMG_6821' },
-        { src: 'assets-optimized/images/photos/misc/IMG_6830.JPEG', title: 'IMG_6830' },
-        { src: 'assets-optimized/images/photos/misc/IMG_6851.JPEG', title: 'IMG_6851' },
-        { src: 'assets-optimized/images/photos/misc/IMG_6852.JPEG', title: 'IMG_6852' },
-        { src: 'assets-optimized/images/photos/misc/IMG_6877.JPEG', title: 'IMG_6877' },
-        { src: 'assets-optimized/images/photos/misc/IMG_6919.JPEG', title: 'IMG_6919' },
-        { src: 'assets-optimized/images/photos/misc/IMG_7211.JPEG', title: 'IMG_7211' }
+        { src: 'assets-optimized/images/photos/misc/DE7E8A09-2F7A-489D-9FDC-9DC3B36D295F.webp', title: 'DE7E8A09' },
+        { src: 'assets-optimized/images/photos/misc/IMG_0369.webp', title: 'IMG_0369' },
+        { src: 'assets-optimized/images/photos/misc/IMG_0370.webp', title: 'IMG_0370' },
+        { src: 'assets-optimized/images/photos/misc/IMG_0372.webp', title: 'IMG_0372' },
+        { src: 'assets-optimized/images/photos/misc/IMG_0433.webp', title: 'IMG_0433' },
+        { src: 'assets-optimized/images/photos/misc/IMG_0434.webp', title: 'IMG_0434' },
+        { src: 'assets-optimized/images/photos/misc/IMG_0435.webp', title: 'IMG_0435' },
+        { src: 'assets-optimized/images/photos/misc/IMG_0438.webp', title: 'IMG_0438' },
+        { src: 'assets-optimized/images/photos/misc/IMG_0440.webp', title: 'IMG_0440' },
+        { src: 'assets-optimized/images/photos/misc/IMG_0441.webp', title: 'IMG_0441' },
+        { src: 'assets-optimized/images/photos/misc/IMG_0444.webp', title: 'IMG_0444' },
+        { src: 'assets-optimized/images/photos/misc/IMG_0447.webp', title: 'IMG_0447' },
+        { src: 'assets-optimized/images/photos/misc/IMG_0448.webp', title: 'IMG_0448' },
+        { src: 'assets-optimized/images/photos/misc/IMG_0455.webp', title: 'IMG_0455' },
+        { src: 'assets-optimized/images/photos/misc/IMG_0459.webp', title: 'IMG_0459' },
+        { src: 'assets-optimized/images/photos/misc/IMG_0463.webp', title: 'IMG_0463' },
+        { src: 'assets-optimized/images/photos/misc/IMG_0479.webp', title: 'IMG_0479' },
+        { src: 'assets-optimized/images/photos/misc/IMG_5913.webp', title: 'IMG_5913' },
+        { src: 'assets-optimized/images/photos/misc/IMG_6542.webp', title: 'IMG_6542' },
+        { src: 'assets-optimized/images/photos/misc/IMG_6801.webp', title: 'IMG_6801' },
+        { src: 'assets-optimized/images/photos/misc/IMG_6803.webp', title: 'IMG_6803' },
+        { src: 'assets-optimized/images/photos/misc/IMG_6821.webp', title: 'IMG_6821' },
+        { src: 'assets-optimized/images/photos/misc/IMG_6830.webp', title: 'IMG_6830' },
+        { src: 'assets-optimized/images/photos/misc/IMG_6851.webp', title: 'IMG_6851' },
+        { src: 'assets-optimized/images/photos/misc/IMG_6852.webp', title: 'IMG_6852' },
+        { src: 'assets-optimized/images/photos/misc/IMG_6877.webp', title: 'IMG_6877' },
+        { src: 'assets-optimized/images/photos/misc/IMG_6919.webp', title: 'IMG_6919' },
+        { src: 'assets-optimized/images/photos/misc/IMG_7211.webp', title: 'IMG_7211' }
       ],
       shes_worth_it: [
-        { src: 'assets-optimized/images/photos/shes_worth_it/IMG_5934.JPEG', title: 'IMG_5934' },
-        { src: 'assets-optimized/images/photos/shes_worth_it/IMG_5935.JPEG', title: 'IMG_5935' },
-        { src: 'assets-optimized/images/photos/shes_worth_it/IMG_5937.JPEG', title: 'IMG_5937' },
-        { src: 'assets-optimized/images/photos/shes_worth_it/IMG_6327.JPEG', title: 'IMG_6327' },
-        { src: 'assets-optimized/images/photos/shes_worth_it/IMG_6519.JPEG', title: 'IMG_6519' },
-        { src: 'assets-optimized/images/photos/shes_worth_it/IMG_6522.JPEG', title: 'IMG_6522' }
+        { src: 'assets-optimized/images/photos/shes_worth_it/IMG_5934.webp', title: 'IMG_5934' },
+        { src: 'assets-optimized/images/photos/shes_worth_it/IMG_5935.webp', title: 'IMG_5935' },
+        { src: 'assets-optimized/images/photos/shes_worth_it/IMG_5937.webp', title: 'IMG_5937' },
+        { src: 'assets-optimized/images/photos/shes_worth_it/IMG_6327.webp', title: 'IMG_6327' },
+        { src: 'assets-optimized/images/photos/shes_worth_it/IMG_6519.webp', title: 'IMG_6519' },
+        { src: 'assets-optimized/images/photos/shes_worth_it/IMG_6522.webp', title: 'IMG_6522' }
       ],
       us: [
-        { src: 'assets-optimized/images/photos/us/cachedImage.PNG', title: 'cachedImage' },
-        { src: 'assets-optimized/images/photos/us/IMG_0361.JPEG', title: 'IMG_0361' },
-        { src: 'assets-optimized/images/photos/us/IMG_0484.JPEG', title: 'IMG_0484' },
-        { src: 'assets-optimized/images/photos/us/IMG_6794.JPEG', title: 'IMG_6794' },
-        { src: 'assets-optimized/images/photos/us/IMG_6807.JPEG', title: 'IMG_6807' },
-        { src: 'assets-optimized/images/photos/us/IMG_6808.JPEG', title: 'IMG_6808' },
-        { src: 'assets-optimized/images/photos/us/IMG_6846.JPEG', title: 'IMG_6846' },
-        { src: 'assets-optimized/images/photos/us/IMG_6882.JPEG', title: 'IMG_6882' },
-        { src: 'assets-optimized/images/photos/us/rilakkuma_1.jpg', title: 'rilakkuma_1' },
-        { src: 'assets-optimized/images/photos/us/rilakkuma_2.jpg', title: 'rilakkuma_2' },
-        { src: 'assets-optimized/images/photos/us/rilakkuma_3.jpg', title: 'rilakkuma_3' },
-        { src: 'assets-optimized/images/photos/us/rilakkuma_4.jpg', title: 'rilakkuma_4' }
+        { src: 'assets-optimized/images/photos/us/cachedImage.webp', title: 'cachedImage' },
+        { src: 'assets-optimized/images/photos/us/IMG_0361.webp', title: 'IMG_0361' },
+        { src: 'assets-optimized/images/photos/us/IMG_0484.webp', title: 'IMG_0484' },
+        { src: 'assets-optimized/images/photos/us/IMG_6794.webp', title: 'IMG_6794' },
+        { src: 'assets-optimized/images/photos/us/IMG_6807.webp', title: 'IMG_6807' },
+        { src: 'assets-optimized/images/photos/us/IMG_6808.webp', title: 'IMG_6808' },
+        { src: 'assets-optimized/images/photos/us/IMG_6846.webp', title: 'IMG_6846' },
+        { src: 'assets-optimized/images/photos/us/IMG_6882.webp', title: 'IMG_6882' },
+        { src: 'assets-optimized/images/photos/us/rilakkuma_1.webp', title: 'rilakkuma_1' },
+        { src: 'assets-optimized/images/photos/us/rilakkuma_2.webp', title: 'rilakkuma_2' },
+        { src: 'assets-optimized/images/photos/us/rilakkuma_3.webp', title: 'rilakkuma_3' },
+        { src: 'assets-optimized/images/photos/us/rilakkuma_4.webp', title: 'rilakkuma_4' }
       ]
     };
     let photoAlbums = { ...fallbackPhotoAlbums, all: [] };
@@ -337,7 +337,7 @@
         empty.textContent = 'No photos in this album yet.';
         photosGrid.appendChild(empty);
 
-        if (previewImage) previewImage.src = 'assets-optimized/images/hero-placeholder.jpg';
+        if (previewImage) previewImage.src = 'assets-optimized/images/hero-placeholder.webp';
         if (previewImage) previewImage.alt = 'No photo selected';
         if (previewTitle) previewTitle.textContent = 'No photos yet';
         if (previewDate) previewDate.textContent = albumLabel;
@@ -654,7 +654,7 @@
       };
       const ellamoriSpriteImage = new Image();
       let ellamoriSpriteLoaded = false;
-      ellamoriSpriteImage.src = 'assets-optimized/images/browser/omori/aubrey_sprite.png';
+      ellamoriSpriteImage.src = 'assets-optimized/images/browser/omori/aubrey_sprite.webp';
       ellamoriSpriteImage.addEventListener('load', () => {
         ellamoriSpriteLoaded = true;
       });
