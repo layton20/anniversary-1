@@ -1,10 +1,11 @@
 (function () {
   'use strict';
 
-  var splash      = document.getElementById('splashScreen');
-  var continueBtn = document.getElementById('splashContinueBtn');
-  var eyebrow     = document.getElementById('splashEyebrow');
-  var mobileNote  = document.getElementById('splashMobileNotice');
+  var splash       = document.getElementById('splashScreen');
+  var continueBtn  = document.getElementById('splashContinueBtn');
+  var eyebrow      = document.getElementById('splashEyebrow');
+  var mobileNote   = document.getElementById('splashMobileNotice');
+  var footerNotes  = splash ? splash.querySelector('.splash-footer-notes') : null;
   if (!splash) return;
 
   // ── Mobile / tablet detection ────────────────────────────────────────────
@@ -21,9 +22,10 @@
   document.body.style.overflow = 'hidden';
 
   if (isMobileOrTablet()) {
-    // ── Mobile path: lock splash, swap content ───────────────────────────
-    if (eyebrow)    eyebrow.textContent = 'Oops!';
+    // ── Mobile path: lock splash, show only embed + mobile notice ────────
+    if (eyebrow)     eyebrow.hidden     = true;
     if (continueBtn) continueBtn.hidden = true;
+    if (footerNotes) footerNotes.hidden = true;
     if (mobileNote)  mobileNote.hidden  = false;
     // Do NOT attach any dismiss handlers — splash stays up permanently
     return;
