@@ -662,13 +662,33 @@ body.guided-mode .story-panel.guided-animate-up {
   animation: splash-blink 1200ms steps(1) infinite;
 }
 
-.splash-expiry {
-  margin: 0.5rem 0 0;
+.splash-footer-notes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.75rem;
+}
+
+.splash-desktop-hint {
+  margin: 0;
   font-family: 'Rajdhani', sans-serif;
-  font-size: 0.7rem;
-  letter-spacing: 0.12em;
+  font-weight: 600;
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.22);
+  color: rgba(255, 255, 255, 0.55);
+  text-align: center;
+}
+
+.splash-expiry {
+  margin: 0;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 400;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.25);
   text-align: center;
 }
 
