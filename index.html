@@ -16,6 +16,35 @@
 </head>
 
 <body>
+  <!-- ═══════ SPLASH SCREEN ═══════ -->
+  <div class="splash-screen" id="splashScreen" aria-modal="true" role="dialog" aria-label="Welcome splash">
+    <div class="splash-inner" id="splashInner">
+      <p class="splash-eyebrow" id="splashEyebrow">Now Loading...</p>
+      <div class="splash-embed-wrap">
+        <iframe
+          title="Anniversary playlist"
+          style="border-radius:12px"
+          src="https://open.spotify.com/embed/playlist/3jgjLqx7XrxtmctHKsZyYD?utm_source=generator&theme=0"
+          width="100%" height="352"
+          frameborder="0" allowfullscreen
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="eager"
+        ></iframe>
+      </div>
+      <button class="splash-continue" id="splashContinueBtn" type="button">
+        <span class="splash-continue-text">Click to continue</span>
+        <span class="splash-continue-blink" aria-hidden="true">▼</span>
+      </button>
+      <!-- shown only on mobile/tablet -->
+      <div class="splash-mobile-notice" id="splashMobileNotice" hidden>
+        <p class="splash-mobile-icon" aria-hidden="true">🖥</p>
+        <p class="splash-mobile-title">Desktop only</p>
+        <p class="splash-mobile-body">This site is designed to be experienced on a desktop or laptop with a keyboard. Open it on a computer for the full experience.</p>
+      </div>
+    </div>
+  </div>
+  <!-- ═══════ /SPLASH SCREEN ═══════ -->
+
   <div class="bg-shapes" aria-hidden="true">
     <span class="shape shape-1"></span>
     <span class="shape shape-2"></span>
@@ -1337,7 +1366,7 @@
       <div class="panel-pin">
         <div class="section-heading">
           <h2>Singles Inferno Nights</h2>
-          <p>Then we started watching together, episode by episode, picking favorites side by side.</p>
+          <p>Little did we know watching just 1 season would turn into all 5, every night.</p>
         </div>
 
         <article class="inferno-brand motion-card" aria-label="Singles Inferno inspired header">
@@ -1553,6 +1582,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
   <script defer src="three-bouquet.js"></script>
+  <script defer src="scripts/features/splash-screen.js"></script>
   <script defer src="scripts/features/queue-lobby.js"></script>
   <script defer src="scripts/features/phone-screen.js"></script>
   <script defer src="scripts/features/media-widgets.js"></script>

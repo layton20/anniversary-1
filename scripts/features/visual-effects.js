@@ -158,7 +158,16 @@
       const mode = svg.getAttribute('data-handwrite-svg') || 'scroll';
 
       if (mode === 'immediate') {
-        playHandwrite(svg);
+        // Hide text straight away so it doesn't flash while splash is up
+        setupTargets(svg);
+        // Play the animation only after splash is dismissed
+        if (document.getElementById('splashScreen') && !document.getElementById('splashScreen').classList.contains('is-gone')) {
+          window.addEventListener('splashDismissed', function () {
+            playHandwrite(svg);
+          }, { once: true });
+        } else {
+          playHandwrite(svg);
+        }
         return;
       }
 
