@@ -214,12 +214,19 @@ a {
 .section {
   width: min(1100px, calc(100% - 2rem));
   margin: 0 auto;
-  padding: clamp(2rem, 4.2vh, 3.2rem) 0;
+  /* top padding keeps content away from the nav; bottom padding is the breathing room
+     between the end of this section's content and where the next one becomes visible */
+  padding-top: clamp(2rem, 4.2vh, 3.2rem);
+  padding-bottom: clamp(2rem, 4.2vh, 3.2rem);
   min-height: 100svh;
 }
 
 .story-panel {
+  /* Each panel is at least one full viewport tall, but gains an extra 18vh of
+     "dead air" at the bottom so the next section never bleeds into view while
+     the user is still reading the current one. */
   min-height: 100svh;
+  padding-bottom: clamp(4rem, 18vh, 10rem);
   scroll-snap-align: start;
   scroll-snap-stop: always;
   display: block;
@@ -235,7 +242,9 @@ a {
 
 .panel-pin {
   position: static;
-  min-height: calc(100svh - 5.6rem);
+  /* subtract nav height (~3.5rem) and the section's bottom buffer so content
+     stays vertically centred within the visible portion of the panel */
+  min-height: calc(100svh - 5.6rem - clamp(4rem, 18vh, 10rem));
   display: grid;
   align-content: center;
   gap: 1rem;
