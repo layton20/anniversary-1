@@ -1366,7 +1366,7 @@ mailboxGrid?.addEventListener('click', (event) => {
     const inside = card.querySelector('.locker-inside');
     if (inside) {
       const notes = [
-        { img: 'assets/images/folded_note_1.png', note: 'I like you' },
+        { img: 'assets/images/folded_note_1.png', note: 'WHAAAAT' },
         { img: 'assets/images/folded_note_2.png', note: 'Your eyes are so pretty' }
       ];
       notes.forEach((n) => {
