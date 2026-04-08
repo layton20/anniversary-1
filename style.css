@@ -8510,7 +8510,7 @@ body.trip-media-open {
   top: 55%;
   left: 1.1%;
   --rot: -15deg;
-  animation-delay: 2.1s;
+  animation-delay: 1.5s;
   animation-duration: 3.8s;
 }
 
