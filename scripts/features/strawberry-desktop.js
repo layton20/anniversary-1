@@ -112,19 +112,95 @@
     const albumOrder = ['all', 'ella', 'games', 'johnny', 'misc', 'shes_worth_it', 'us'];
     const albumFolders = albumOrder.filter((key) => key !== 'all');
     const fallbackPhotoAlbums = {
-      ella: [],
+      ella: [
+        { src: 'assets/images/photos/ella/ella_1.jpg', title: 'ella_1' },
+        { src: 'assets/images/photos/ella/ella_2.jpg', title: 'ella_2' },
+        { src: 'assets/images/photos/ella/ella_3.jpg', title: 'ella_3' },
+        { src: 'assets/images/photos/ella/ella_4.jpg', title: 'ella_4' },
+        { src: 'assets/images/photos/ella/IMG_0429.JPEG', title: 'IMG_0429' },
+        { src: 'assets/images/photos/ella/IMG_0474.JPEG', title: 'IMG_0474' },
+        { src: 'assets/images/photos/ella/IMG_0903.JPEG', title: 'IMG_0903' },
+        { src: 'assets/images/photos/ella/IMG_1625.JPEG', title: 'IMG_1625' },
+        { src: 'assets/images/photos/ella/IMG_6776.PNG', title: 'IMG_6776' },
+        { src: 'assets/images/photos/ella/IMG_6797.JPEG', title: 'IMG_6797' },
+        { src: 'assets/images/photos/ella/IMG_6799.JPEG', title: 'IMG_6799' },
+        { src: 'assets/images/photos/ella/IMG_6822.JPEG', title: 'IMG_6822' },
+        { src: 'assets/images/photos/ella/IMG_6824.JPEG', title: 'IMG_6824' },
+        { src: 'assets/images/photos/ella/IMG_6831.JPEG', title: 'IMG_6831' },
+        { src: 'assets/images/photos/ella/IMG_6832.JPEG', title: 'IMG_6832' },
+        { src: 'assets/images/photos/ella/IMG_6834.JPEG', title: 'IMG_6834' },
+        { src: 'assets/images/photos/ella/IMG_6855.JPEG', title: 'IMG_6855' },
+        { src: 'assets/images/photos/ella/IMG_6873.JPEG', title: 'IMG_6873' },
+        { src: 'assets/images/photos/ella/IMG_6874.JPEG', title: 'IMG_6874' },
+        { src: 'assets/images/photos/ella/IMG_6899.JPEG', title: 'IMG_6899' },
+        { src: 'assets/images/photos/ella/IMG_8545.JPEG', title: 'IMG_8545' },
+        { src: 'assets/images/photos/ella/IMG_9732.JPEG', title: 'IMG_9732' }
+      ],
       games: [
         { src: 'assets/images/photos/games/20250418233217_1.jpg', title: '20250418233217_1' },
         { src: 'assets/images/photos/games/20250830143034_1.jpg', title: '20250830143034_1' },
         { src: 'assets/images/photos/games/20250830145235_1.jpg', title: '20250830145235_1' },
-        { src: 'assets/images/photos/games/20251208234947_1.jpg', title: '20251208234947_1' }
+        { src: 'assets/images/photos/games/20251208234947_1.jpg', title: '20251208234947_1' },
+        { src: 'assets/images/photos/games/Screenshot_314.PNG', title: 'Screenshot_314' }
       ],
       johnny: [
+        { src: 'assets/images/photos/johnny/IMG_6985.JPEG', title: 'IMG_6985' },
+        { src: 'assets/images/photos/johnny/IMG_6986.JPEG', title: 'IMG_6986' },
+        { src: 'assets/images/photos/johnny/IMG_6987.JPEG', title: 'IMG_6987' },
         { src: 'assets/images/photos/johnny/johnny_avatar.jpg', title: 'johnny_avatar' }
       ],
-      misc: [],
-      shes_worth_it: [],
-      us: []
+      misc: [
+        { src: 'assets/images/photos/misc/DE7E8A09-2F7A-489D-9FDC-9DC3B36D295F.jpg', title: 'DE7E8A09' },
+        { src: 'assets/images/photos/misc/IMG_0369.JPEG', title: 'IMG_0369' },
+        { src: 'assets/images/photos/misc/IMG_0370.JPEG', title: 'IMG_0370' },
+        { src: 'assets/images/photos/misc/IMG_0372.JPEG', title: 'IMG_0372' },
+        { src: 'assets/images/photos/misc/IMG_0433.JPEG', title: 'IMG_0433' },
+        { src: 'assets/images/photos/misc/IMG_0434.JPEG', title: 'IMG_0434' },
+        { src: 'assets/images/photos/misc/IMG_0435.JPEG', title: 'IMG_0435' },
+        { src: 'assets/images/photos/misc/IMG_0438.JPEG', title: 'IMG_0438' },
+        { src: 'assets/images/photos/misc/IMG_0440.JPEG', title: 'IMG_0440' },
+        { src: 'assets/images/photos/misc/IMG_0441.JPEG', title: 'IMG_0441' },
+        { src: 'assets/images/photos/misc/IMG_0444.JPEG', title: 'IMG_0444' },
+        { src: 'assets/images/photos/misc/IMG_0447.JPEG', title: 'IMG_0447' },
+        { src: 'assets/images/photos/misc/IMG_0448.JPEG', title: 'IMG_0448' },
+        { src: 'assets/images/photos/misc/IMG_0455.JPEG', title: 'IMG_0455' },
+        { src: 'assets/images/photos/misc/IMG_0459.JPEG', title: 'IMG_0459' },
+        { src: 'assets/images/photos/misc/IMG_0463.JPEG', title: 'IMG_0463' },
+        { src: 'assets/images/photos/misc/IMG_0479.JPEG', title: 'IMG_0479' },
+        { src: 'assets/images/photos/misc/IMG_5913.JPEG', title: 'IMG_5913' },
+        { src: 'assets/images/photos/misc/IMG_6542.JPEG', title: 'IMG_6542' },
+        { src: 'assets/images/photos/misc/IMG_6801.JPEG', title: 'IMG_6801' },
+        { src: 'assets/images/photos/misc/IMG_6803.JPEG', title: 'IMG_6803' },
+        { src: 'assets/images/photos/misc/IMG_6821.JPEG', title: 'IMG_6821' },
+        { src: 'assets/images/photos/misc/IMG_6830.JPEG', title: 'IMG_6830' },
+        { src: 'assets/images/photos/misc/IMG_6851.JPEG', title: 'IMG_6851' },
+        { src: 'assets/images/photos/misc/IMG_6852.JPEG', title: 'IMG_6852' },
+        { src: 'assets/images/photos/misc/IMG_6877.JPEG', title: 'IMG_6877' },
+        { src: 'assets/images/photos/misc/IMG_6919.JPEG', title: 'IMG_6919' },
+        { src: 'assets/images/photos/misc/IMG_7211.JPEG', title: 'IMG_7211' }
+      ],
+      shes_worth_it: [
+        { src: 'assets/images/photos/shes_worth_it/IMG_5934.JPEG', title: 'IMG_5934' },
+        { src: 'assets/images/photos/shes_worth_it/IMG_5935.JPEG', title: 'IMG_5935' },
+        { src: 'assets/images/photos/shes_worth_it/IMG_5937.JPEG', title: 'IMG_5937' },
+        { src: 'assets/images/photos/shes_worth_it/IMG_6327.JPEG', title: 'IMG_6327' },
+        { src: 'assets/images/photos/shes_worth_it/IMG_6519.JPEG', title: 'IMG_6519' },
+        { src: 'assets/images/photos/shes_worth_it/IMG_6522.JPEG', title: 'IMG_6522' }
+      ],
+      us: [
+        { src: 'assets/images/photos/us/cachedImage.PNG', title: 'cachedImage' },
+        { src: 'assets/images/photos/us/IMG_0361.JPEG', title: 'IMG_0361' },
+        { src: 'assets/images/photos/us/IMG_0484.JPEG', title: 'IMG_0484' },
+        { src: 'assets/images/photos/us/IMG_6794.JPEG', title: 'IMG_6794' },
+        { src: 'assets/images/photos/us/IMG_6807.JPEG', title: 'IMG_6807' },
+        { src: 'assets/images/photos/us/IMG_6808.JPEG', title: 'IMG_6808' },
+        { src: 'assets/images/photos/us/IMG_6846.JPEG', title: 'IMG_6846' },
+        { src: 'assets/images/photos/us/IMG_6882.JPEG', title: 'IMG_6882' },
+        { src: 'assets/images/photos/us/rilakkuma_1.jpg', title: 'rilakkuma_1' },
+        { src: 'assets/images/photos/us/rilakkuma_2.jpg', title: 'rilakkuma_2' },
+        { src: 'assets/images/photos/us/rilakkuma_3.jpg', title: 'rilakkuma_3' },
+        { src: 'assets/images/photos/us/rilakkuma_4.jpg', title: 'rilakkuma_4' }
+      ]
     };
     let photoAlbums = { ...fallbackPhotoAlbums, all: [] };
     let activeAlbum = 'all';
