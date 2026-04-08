@@ -1403,17 +1403,123 @@ initInfernoVaultScene();
 initResistSection();
 initGuidedMode();
 
-//  Gift modal 
+//  Gift modal
 (function () {
-  const btn     = document.getElementById('giftRevealBtn');
-  const modal   = document.getElementById('giftReceiptModal');
+  const btn      = document.getElementById('giftRevealBtn');
+  const modal    = document.getElementById('giftReceiptModal');
   const closeBtn = document.getElementById('giftModalClose');
   if (!btn || !modal) return;
+
+  // ── Celebration burst ────────────────────────────────────────────────────
+  function launchCelebrationBurst() {
+    // Skip on devices that signal they prefer reduced motion
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const canvas = document.createElement('canvas');
+    canvas.className = 'gift-burst-canvas';
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    document.body.appendChild(canvas);
+
+    const ctx = canvas.getContext('2d');
+
+    // Palette drawn from the site's warm cream/caramel/pink theme
+    const COLORS = [
+      '#f47fff', '#f9b8c8', '#ffd6e7',  // pinks
+      '#c08530', '#f5c97a', '#ffe4b5',  // caramels / gold
+      '#a9d0f5', '#d7ecff',             // soft blues
+      '#ff8fa3', '#ff6b9d',             // roses
+    ];
+    const GLYPHS = ['♥', '✦', '✶', '❤', '✿', '★'];
+
+    // Burst origin: centre of the viewport (where the modal sits)
+    const ox = canvas.width  / 2;
+    const oy = canvas.height / 2;
+
+    const PARTICLE_COUNT = 90;
+    const DURATION_MS    = 2200;
+
+    const particles = Array.from({ length: PARTICLE_COUNT }, (_, i) => {
+      const angle  = (Math.PI * 2 * i) / PARTICLE_COUNT + (Math.random() - 0.5) * 0.5;
+      const speed  = 5 + Math.random() * 10;            // faster spread
+      const size   = 14 + Math.random() * 18;           // bigger glyphs
+      const spin   = (Math.random() - 0.5) * 0.22;
+      const glyph  = GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+      const color  = COLORS[Math.floor(Math.random() * COLORS.length)];
+      const delay  = Math.random() * 180;               // tighter stagger
+      return {
+        x: ox, y: oy,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - (3 + Math.random() * 4),
+        gy: 0.14 + Math.random() * 0.12,
+        size, spin, rot: Math.random() * Math.PI * 2,
+        glyph, color, delay, alpha: 0, done: false,
+      };
+    });
+
+    let start = null;
+    // Track how many particles have fully completed so we know when to stop
+    let doneCount = 0;
+
+    function frame(ts) {
+      if (!start) start = ts;
+      const elapsed = ts - start;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (const p of particles) {
+        if (p.done) continue;
+
+        const age = elapsed - p.delay;
+
+        // Not yet started — still in stagger window
+        if (age < 0) continue;
+
+        const t = age / DURATION_MS;
+
+        // This particle has fully faded out — mark it done once
+        if (t >= 1) {
+          if (!p.done) { p.done = true; doneCount++; }
+          continue;
+        }
+
+        // Fade in fast, then ease out in the latter half
+        p.alpha = t < 0.12
+          ? t / 0.12
+          : 1 - Math.max(0, (t - 0.55) / 0.45);
+
+        p.x   += p.vx;
+        p.y   += p.vy;
+        p.vy  += p.gy;   // gravity
+        p.rot += p.spin;
+
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.alpha);
+        ctx.font        = `${p.size}px serif`;
+        ctx.fillStyle   = p.color;
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.fillText(p.glyph, -p.size / 2, p.size / 2);
+        ctx.restore();
+      }
+
+      // Stop only when every particle is finished
+      if (doneCount >= particles.length) {
+        canvas.remove();
+        return;
+      }
+      requestAnimationFrame(frame);
+    }
+
+    requestAnimationFrame(frame);
+  }
+  // ─────────────────────────────────────────────────────────────────────────
 
   function openModal() {
     modal.hidden = false;
     modal.setAttribute('aria-hidden', 'false');
     closeBtn?.focus();
+    launchCelebrationBurst();
   }
 
   function closeModal() {

@@ -7636,6 +7636,16 @@ body.trip-media-open {
   display: block;
 }
 
+/* Celebration burst canvas — absolutely over the modal, pointer-events off */
+.gift-burst-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1401;
+}
+
 .gift-tracking-link {
   display: inline-block;
   font-size: 0.82rem;
